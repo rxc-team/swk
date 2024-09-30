@@ -1,0 +1,15 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    .content {
+        background-color: @component-background;
+        min-height: calc(100vh - 285px);
+        padding: 8px;
+    }
+    .menu {
+        background-color: @component-background;
+        min-height: 100%;
+    }
+  }
+});

@@ -1,0 +1,8 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "importSorter.generalConfiguration.sortOnBeforeSave": true,
+  "editor.codeActionsOnSave": {
+    // "source.fixAll": true
+  },
+  "editor.formatOnSave": true
+}

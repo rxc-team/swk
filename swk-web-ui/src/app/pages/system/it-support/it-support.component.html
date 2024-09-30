@@ -1,0 +1,17 @@
+<div class="support">
+  <div class="support-body">
+    <div nz-row nzJustify="space-around">
+      <div nz-col nzSpan="10" style="text-align: right">
+        <div class="support-body-img" [ngStyle]="{ 'background-image': 'url(' + _img + ')' }"></div>
+      </div>
+
+      <div nz-col nzSpan="12" style="text-align: left">
+        <div class="support-body-desc">
+          <h1 [innerHTML]="_title"></h1>
+          <h2 [innerHTML]="_period"></h2>
+          <h4 [innerHTML]="_desc"></h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

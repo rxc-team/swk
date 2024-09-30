@@ -1,0 +1,148 @@
+<form nz-form [formGroup]="validateForm">
+  <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'page.question.info' | translate">
+    <nz-form-item nz-row style="padding-top: 6px">
+      <nz-form-label nz-col [nzSm]="24" [nzMd]="4" nzFor="type" nzRequired>
+        {{ 'page.question.type' | translate }}
+      </nz-form-label>
+      <nz-form-control nz-col [nzSm]="24" [nzMd]="20" [nzErrorTip]="type">
+        <nz-select
+          style="width: 300px"
+          [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.question.type' | translate }"
+          formControlName="type"
+          nzAllowClear="true"
+        >
+          <nz-option
+            [nzValue]="type.value"
+            [nzLabel]="type.label | translate"
+            *ngFor="let type of questionTypes"
+          ></nz-option>
+        </nz-select>
+        <ng-template #type let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row style="padding-top: 6px">
+      <nz-form-label nz-col [nzSm]="24" [nzMd]="4" nzFor="position" nzRequired>
+        {{ 'page.question.place' | translate }}
+      </nz-form-label>
+      <nz-form-control nz-col [nzSm]="24" [nzMd]="20" [nzErrorTip]="position">
+        <nz-select
+          style="width: 300px"
+          [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.question.place' | translate }"
+          formControlName="position"
+          nzAllowClear="true"
+        >
+          <nz-option
+            [nzValue]="adminPos.value"
+            [nzLabel]="adminPos.label | translate"
+            *ngFor="let adminPos of questionWebPositions"
+          ></nz-option>
+        </nz-select>
+        <ng-template #position let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row style="padding-top: 6px">
+      <nz-form-label nz-col [nzSm]="24" [nzMd]="4" nzFor="title" nzRequired>
+        {{ 'page.question.title' | translate }}
+      </nz-form-label>
+      <nz-form-control nz-col [nzSm]="24" [nzMd]="20" [nzErrorTip]="title">
+        <input
+          nz-input
+          formControlName="title"
+          [placeholder]="'common.placeholder.input' | translate: { label: 'page.question.title' | translate }"
+          style="width: 300px"
+          trim="blur"
+        />
+        <ng-template #title let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+
+          <ng-container *ngIf="control.hasError('duplicated')">
+            {{ 'common.validator.questionNameDuplicated' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row style="padding-top: 6px">
+      <nz-form-label nz-col [nzSm]="24" [nzMd]="4">
+        <span>
+          {{ 'page.question.pictures' | translate }}
+          <i nz-icon nz-tooltip [nzTooltipTitle]="tip" nzType="question-circle" theme="outline"></i>
+          <ng-template #tip>
+            <span>
+              {{ 'common.text.supportFile' | translate }}
+              <div>
+                <span style="margin-right: 4px; color: red" *ngFor="let suffix of supportFile">{{ suffix }}</span>
+              </div>
+            </span>
+          </ng-template>
+        </span>
+      </nz-form-label>
+      <nz-form-control nz-col [nzSm]="24" [nzMd]="20">
+        <nz-upload
+          nzAction="/file/header/upload"
+          nzListType="picture-card"
+          [(nzFileList)]="fileList"
+          [nzMultiple]="true"
+          [nzShowButton]="fileList.length < 8"
+          [nzPreview]="handlePreview"
+          [nzBeforeUpload]="beforeUploadPic"
+          (nzChange)="handleChange($event)"
+          [nzCustomRequest]="customReq"
+          [nzShowUploadList]="{ showPreviewIcon: true, showRemoveIcon: true, showDownloadIcon: false }"
+        >
+          <i nz-icon nzType="plus"></i>
+        </nz-upload>
+        <nz-modal [nzVisible]="previewVisible" [nzFooter]="null" (nzOnCancel)="previewVisible = false">
+          <ng-template nzModalContent>
+            <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+          </ng-template>
+        </nz-modal>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row style="padding-top: 6px">
+      <nz-form-label nz-col [nzSm]="24" [nzMd]="4" nzRequired>
+        {{ 'page.question.detail' | translate }}
+      </nz-form-label>
+      <nz-form-control nz-col [nzSm]="24" [nzMd]="20" [nzErrorTip]="content">
+        <textarea
+          formControlName="content"
+          nz-input
+          style="width: 300px"
+          rows="4"
+          [placeholder]="'common.placeholder.input' | translate: { label: 'page.question.detail' | translate }"
+          trim="blur"
+        ></textarea>
+        <ng-template #content let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </nz-card>
+  <nz-form-item nz-row style="padding-top: 18px">
+    <nz-form-control nz-col [nzSm]="{ span: 24, offset: 0 }" [nzMd]="{ span: 20, offset: 4 }">
+      <button nz-button nzType="primary" (click)="submitForm()" appDebounceClick [disabled]="!validateForm.valid">
+        <i nz-icon nzType="send" nzTheme="outline"></i>
+        {{ 'common.button.send' | translate }}
+      </button>
+      <button nz-button (click)="reset()">
+        <i nz-icon nzType="redo" nzTheme="outline"></i>
+        {{ 'common.button.reset' | translate }}
+      </button>
+      <button nz-button (click)="cancel()">
+        <i nz-icon nzType="close" nzTheme="outline"></i>
+        {{ 'common.button.cancel' | translate }}
+      </button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

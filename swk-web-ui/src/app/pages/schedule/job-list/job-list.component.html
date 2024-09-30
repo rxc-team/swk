@@ -1,0 +1,110 @@
+<div style="padding-top: 16px">
+  <button nz-button [nzType]="'primary'" style="margin-right: 16px" (click)="downlaodTaskHistory()">
+    <i nz-icon nzType="download"></i>
+    {{ 'common.button.download' | translate }}
+  </button>
+  <button nz-button [nzType]="'primary'" style="margin-right: 16px" (click)="refresh()">
+    <i nz-icon nzType="sync"></i>
+    {{ 'common.button.refresh' | translate }}
+  </button>
+</div>
+<nz-spin [nzSpinning]="loading">
+  <div style="padding-top: 16px">
+    <nz-table #basicTable [nzData]="listData" nzBordered="true" nzSize="middle" nzFrontPagination="false"
+      [(nzPageIndex)]="index" [(nzPageSize)]="size" [nzTotal]="total" [nzShowTotal]="rangeTemplate"
+      [nzScroll]="{ y: '400px' }" (nzPageIndexChange)="search()" (nzPageSizeChange)="search()">
+      <thead>
+        <tr>
+          <th nzWidth="35px"></th>
+          <ng-container *ngFor="let col of cols">
+            <th *ngIf="col.width" nz-resizable nzBounds="window" [nzWidth]="col.width" [nzMinWidth]="80"
+              (nzResizeEnd)="onResize($event, col.title)">
+              {{ col.title | translate }}
+              <nz-resize-handle nzDirection="right"></nz-resize-handle>
+            </th>
+            <th *ngIf="!col.width">
+              {{ col.title | translate }}
+            </th>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-template ngFor let-data [ngForOf]="basicTable.data">
+          <tr (click)="onExpandChange(data.job_id)">
+            <td [nzExpand]="expandSet.has(data.job_id)"></td>
+            <td>{{ 'apps.' + data.app_id + '.app_name' | translate }}</td>
+            <td>{{ data.job_id }}</td>
+            <td>{{ data.job_name }}</td>
+            <td>
+              <div *ngIf="
+                data.task_type === 'ds-csv-download' ||
+                  data.task_type === 'ds-data-sync' ||
+                  data.task_type === 'ds-csv-import' ||
+                  data.task_type === 'rp-csv-download' ||
+                  data.task_type === 'rp-xlsx-download' ||
+                  data.task_type === 'ds-pdf-generation' ||
+                  data.task_type === 'al-csv-download' ||
+                  data.task_type === 'generate-report-data' ||
+                  data.task_type === 'hs-csv-download' ||
+                  data.task_type === 'op-csv-download';
+                else origin
+              ">
+                {{ data.origin | translate }}
+              </div>
+              <ng-template #origin>
+                {{ data.origin }}
+              </ng-template>
+            </td>
+            <td>
+              <nz-tag *ngIf="data.current_step === 'end' && data.error_file_path" [nzColor]="'red'">
+                {{ 'page.job.partSuccess' | translate }}
+              </nz-tag>
+              <nz-tag *ngIf="data.current_step === 'end' && !data.error_file_path" [nzColor]="'green'">
+                {{ 'page.job.success' | translate }}
+              </nz-tag>
+              <nz-tag *ngIf="data.current_step !== 'end' && data.error_file_path" [nzColor]="'red'">
+                {{ 'page.job.fail' | translate }}
+              </nz-tag>
+              <nz-tag *ngIf="data.current_step !== 'end' && !data.error_file_path" [nzColor]="'blue'">
+                {{ 'page.job.processing' | translate }}
+              </nz-tag>
+            </td>
+            <td>{{ data.start_time | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}</td>
+            <td>{{ data.end_time | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}</td>
+            <td>
+              <button nz-button nzType="primary" nzSize="small" style="z-index: 10" *ngIf="data.error_file_path"
+                (click)="downloadErrorLog($event, data.error_file_path)">
+                {{ 'page.job.logDownload' | translate }}
+              </button>
+              <button nz-button nzType="primary" nzSize="small" *ngIf="data.file_path"
+                (click)="downloadFile($event, data.file_path, data.origin, data.task_type)">
+                {{ 'page.job.fileDownload' | translate }}
+              </button>
+            </td>
+          </tr>
+          <tr [nzExpand]="expandSet.has(data.job_id)">
+            <div style="padding: 8px">
+              <h3>{{ 'page.job.jobStatus' | translate }}</h3>
+              <nz-steps [nzCurrent]="data.steps.indexOf(data.current_step) + 1" nzSize="small" [nzDirection]="position">
+                <nz-step *ngFor="let step of data.steps" [nzTitle]="step"></nz-step>
+              </nz-steps>
+            </div>
+            <div class="dashed_border" style="padding: 8px">
+              <h3>{{ 'page.job.jobMessage' | translate }}</h3>
+              <ol>
+                <li *ngFor="let msg of data.message">
+                  <span>{{ msg.start_time | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}</span>
+                  :
+                  <span>{{ msg.message }}</span>
+                </li>
+              </ol>
+            </div>
+          </tr>
+        </ng-template>
+      </tbody>
+    </nz-table>
+    <ng-template #rangeTemplate let-range="range" let-total>
+      {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+    </ng-template>
+  </div>
+</nz-spin>

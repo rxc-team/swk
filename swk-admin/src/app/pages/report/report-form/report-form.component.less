@@ -1,0 +1,77 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    .left-sortable {
+      height: 350px;
+      white-space: nowrap;
+      overflow: auto;
+    }
+    
+    .right-sortable {
+      padding: 2px;
+      height: 330px;
+      overflow: auto;
+    }
+    
+    .footer {
+      button {
+        margin-right: 16px;
+      }
+    }
+    
+    .lable {
+      width: 120px;
+    }
+    
+    nz-list-item {
+      height: 35px;
+      line-height: 28px;
+      width: 100%;
+      text-align: center;
+    
+      &:hover,
+      &:focus {
+        background: #aaaaaa;
+      }
+    }
+    
+    ::ng-deep .ant-card-type-inner .ant-card-body {
+      padding: 4px;
+    }
+    
+    ::ng-deep .select-field {
+      .ant-menu-inline,
+      .ant-menu-vertical,
+      .ant-menu-vertical-left {
+        border: none;
+      }
+    }
+    
+    .content {
+      position: relative;
+      height: 18px;
+    }
+    
+    .text {
+      width: 100%;
+      position: absolute;
+      overflow: hidden;
+      white-space: nowrap;
+      word-break: break-all;
+      text-overflow: ellipsis;
+    }
+    
+    :host ::ng-deep .ant-calendar-picker-input {
+      width: 300px;
+    }
+    
+    ::ng-deep .cdk-drag-preview {
+      display: table;
+    }
+    
+    ::ng-deep .cdk-drag-placeholder {
+      opacity: 0;
+    }
+  }
+});

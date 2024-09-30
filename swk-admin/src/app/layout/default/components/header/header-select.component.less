@@ -1,0 +1,16 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    width: 100%;
+    height: 100vh;
+    overflow: auto;
+
+    .select {
+      .ant-select-selection {
+        border-radius: 0;
+        color: @text-color;
+      }
+    }
+  }
+});

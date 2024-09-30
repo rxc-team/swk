@@ -1,0 +1,90 @@
+<form nz-form [formGroup]="form">
+  <!-- 状态 -->
+  <nz-form-item>
+    <nz-form-label nzFor="status" nzRequired>
+      {{ 'page.release.status' | translate }}
+    </nz-form-label>
+    <nz-form-control [nzErrorTip]="errorStatus">
+      <nz-switch formControlName="status"></nz-switch>
+      <ng-template #errorStatus let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredInput' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <!-- IP白名单 -->
+  <nz-form-item>
+    <nz-form-label nzFor="ip_list">{{ 'page.release.whitelist' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        nzMode="tags"
+        formControlName="ip_list"
+        [nzPlaceHolder]="'common.placeholder.input' | translate: { label: 'page.release.whitelist' | translate }"
+        [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+      ></nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <!-- 维护摘要 -->
+  <nz-form-item>
+    <nz-form-label nzFor="maint_summary">
+      {{ 'page.release.maintSummary' | translate }}
+    </nz-form-label>
+    <nz-form-control>
+      <textarea
+        formControlName="maint_summary"
+        nz-input
+        rows="1"
+        trim="blur"
+        [placeholder]="'common.placeholder.input' | translate: { label: 'page.release.maintSummary' | translate }"
+        [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+      ></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <!-- 维护期间 -->
+  <nz-form-item>
+    <nz-form-label nzFor="maint_period">
+      {{ 'page.release.maintPeriod' | translate }}
+    </nz-form-label>
+    <nz-form-control>
+      <textarea
+        formControlName="maint_period"
+        nz-input
+        rows="1"
+        trim="blur"
+        [placeholder]="'common.placeholder.input' | translate: { label: 'page.release.maintPeriod' | translate }"
+        [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+      ></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <!-- 维护备注 -->
+  <nz-form-item>
+    <nz-form-label nzFor="maint_remark">
+      {{ 'page.release.maintRemark' | translate }}
+    </nz-form-label>
+    <nz-form-control>
+      <textarea
+        formControlName="maint_remark"
+        nz-input
+        rows="4"
+        trim="blur"
+        [placeholder]="'common.placeholder.input' | translate: { label: 'page.release.maintRemark' | translate }"
+        [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+      ></textarea>
+    </nz-form-control>
+  </nz-form-item>
+
+  <br />
+  <nz-form-item>
+    <nz-form-control>
+      <nz-space>
+        <ng-template nzSpaceItem>
+          <button nz-button nzType="primary" type="submit" [disabled]="!form.valid" (click)="submitForm()">
+            <i nz-icon [nzType]="'edit'" nzTheme="outline"></i>
+            {{ 'common.button.save' | translate }}
+          </button>
+        </ng-template>
+      </nz-space>
+    </nz-form-control>
+  </nz-form-item>
+</form>

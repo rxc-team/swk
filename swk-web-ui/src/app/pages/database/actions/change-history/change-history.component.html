@@ -1,0 +1,29 @@
+<button nz-button nzType="primary" (click)="show()" *ngIf="!showText">
+  <i nz-icon nzType="history" nzTheme="outline"></i>
+  {{ 'common.button.history' | translate }}
+</button>
+<li nz-menu-item (click)="show()" *ngIf="showText">
+  <i nz-icon nzType="history" nzTheme="outline"></i>
+  {{ 'common.button.history' | translate }}
+</li>
+
+<nz-modal
+  [nzTitle]="'common.button.history' | translate"
+  [(nzVisible)]="visible"
+  nzWidth="600px"
+  (nzOnCancel)="onCancel()"
+  [nzFooter]="null"
+>
+  <ng-template nzModalContent>
+    <nz-card style="height: 150px">
+      <div nz-card-grid [ngStyle]="gridStyle" (click)="showHistory()">
+        <i nz-icon nzType="file-excel" style="font-size: 3em" nzTheme="outline"></i>
+        <div>{{ 'common.button.dataHistory' | translate }}</div>
+      </div>
+      <div nz-card-grid [ngStyle]="gridStyle" (click)="showCheckHistory()" *ngIf="canCheck">
+        <i nz-icon nzType="check-square" style="font-size: 3em" nzTheme="outline"></i>
+        <div>{{ 'common.button.checkHistory' | translate }}</div>
+      </div>
+    </nz-card>
+  </ng-template>
+</nz-modal>

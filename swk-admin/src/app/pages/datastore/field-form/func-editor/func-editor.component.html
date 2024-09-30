@@ -1,0 +1,84 @@
+<div style="padding: 2px" class="solid_border">
+  <div class="toolbar">
+    <nz-space>
+      <div *nzSpaceItem>
+        <button nz-button (click)="showFuncModal()" nzType="primary" nzSize="small">
+          <i nz-icon nzType="function" nzTheme="outline"></i>
+          {{ 'common.button.insertFormula' | translate }}
+        </button>
+      </div>
+      <div *nzSpaceItem>
+        <button nz-button (click)="showParamModal()" nzType="primary" nzSize="small">
+          <i nz-icon nzType="api" nzTheme="outline"></i>
+          {{ 'common.button.insertField' | translate }}
+        </button>
+      </div>
+      <div *nzSpaceItem>
+        <button nz-button (click)="check()" nzType="primary" nzSize="small">
+          {{ 'common.button.formulaCheck' | translate }}
+        </button>
+      </div>
+    </nz-space>
+    <span style="flex: 1; text-align: center; word-break: normal; white-space: nowrap; overflow: auto">
+      {{ apiKey + ' = ' + value }}
+    </span>
+    <button
+      nz-button
+      nz-tooltip
+      nzTooltipPlacement="bottomRight"
+      nzTooltipTrigger="click"
+      nzSize="small"
+      nzType="primary"
+      [nzTooltipTitle]="titleTemplate"
+    >
+      {{ 'common.button.formulaDescription' | translate }}
+      <i nz-icon nzType="question" nzTheme="outline"></i>
+    </button>
+    <ng-template #titleTemplate>
+      <div style="width: 200px; display: flex; flex-direction: column">
+        <span>{{ 'common.button.formulaDescription' | translate }}</span>
+        <span>{{ 'page.datastore.formula.funcTip1' | translate }}</span>
+        <span>{{ 'page.datastore.formula.funcTip2' | translate }}</span>
+        <span>{{ 'page.datastore.formula.funcTip3' | translate }}</span>
+        <span>{{ 'page.datastore.formula.funcTip4' | translate }}</span>
+        <span>{{ 'page.datastore.formula.funcTip5' | translate }}</span>
+      </div>
+    </ng-template>
+  </div>
+  <div style="line-height: 35px">
+    <ng-container [ngSwitch]="checkStatus | async">
+      <ng-container *ngSwitchCase="'wait'">
+        <span style="color: orange">
+          <i nz-icon nzType="warning" nzTheme="outline"></i>
+          {{ 'page.datastore.field.funcStatusWait' | translate }}
+        </span>
+      </ng-container>
+      <ng-container *ngSwitchCase="'success'">
+        <span style="color: green">
+          <i nz-icon nzType="check-circle" nzTheme="outline"></i>
+          {{ 'page.datastore.field.funcStatusSuccess' | translate }}
+        </span>
+      </ng-container>
+      <ng-container *ngSwitchCase="'required'">
+        <span style="color: red">
+          <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+          {{ verifyError | translate }}
+        </span>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <span style="color: red">
+          <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+          {{ verifyError }}
+        </span>
+      </ng-container>
+    </ng-container>
+  </div>
+  <nz-code-editor
+    class="editor solid_border"
+    [ngClass]="{ error_border: (checkStatus | async) === 'error' }"
+    [nzEditorOption]="editorOptions"
+    [(ngModel)]="value"
+    (ngModelChange)="onChange($event)"
+    (nzEditorInitialized)="onEditorInit($event)"
+  ></nz-code-editor>
+</div>

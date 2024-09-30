@@ -1,0 +1,81 @@
+<nz-form-item>
+  <nz-form-label nzSpan="8" nzRequired>
+    {{ 'page.datastore.fileUploadCharacterCode' | translate }}
+  </nz-form-label>
+  <nz-form-control>
+    <nz-radio-group [(ngModel)]="encoding" nzButtonStyle="solid">
+      <label nz-radio-button nzValue="utf-8">UTF-8</label>
+      <label nz-radio-button nzValue="sjis">Shift-JIS</label>
+    </nz-radio-group>
+  </nz-form-control>
+</nz-form-item>
+<nz-form-item>
+  <nz-form-label nzFor="csvFile" nzSpan="8" nzRequired>
+    <span>
+      {{ 'page.datastore.csvfile' | translate }}
+      <i nz-icon nz-tooltip [nzTooltipTitle]="csvTitle" nzType="question-circle" nzTheme="outline"></i>
+      <ng-template #csvTitle>
+        <span>
+          {{ 'page.datastore.supportFile' | translate }}
+          <div><span style="margin-right: 4px; color: red">.csv</span></div>
+        </span>
+      </ng-template>
+    </span>
+  </nz-form-label>
+  <nz-form-control nzSpan="16">
+    <nz-upload
+      nzListType="text"
+      [nzMultiple]="false"
+      [(nzFileList)]="csvFileList"
+      nzAccept=".csv"
+      [nzBeforeUpload]="csvBeforeUpload"
+    >
+      <button nz-button>
+        <i nz-icon nzType="upload"></i>
+        {{ 'common.button.selectFile' | translate }}
+      </button>
+    </nz-upload>
+  </nz-form-control>
+</nz-form-item>
+<nz-form-item>
+  <nz-form-label nzFor="zipFile" nzSpan="8" nzRequired>
+    <span>
+      {{ 'page.datastore.zipfile' | translate }}
+      <i nz-icon nz-tooltip [nzTooltipTitle]="zipTitle" nzType="question-circle" nzTheme="outline"></i>
+      <ng-template #zipTitle>
+        <span>
+          {{ 'common.text.supportFile' | translate }}
+          <div><span style="margin-right: 4px; color: red">.zip</span></div>
+        </span>
+      </ng-template>
+    </span>
+  </nz-form-label>
+  <nz-form-control nzSpan="16">
+    <nz-upload
+      nzListType="text"
+      [nzMultiple]="false"
+      [(nzFileList)]="zipFileList"
+      nzAccept=".zip"
+      [nzBeforeUpload]="zipBeforeUpload"
+    >
+      <button nz-button>
+        <i nz-icon nzType="upload"></i>
+        {{ 'common.button.selectFile' | translate }}
+      </button>
+    </nz-upload>
+  </nz-form-control>
+</nz-form-item>
+<nz-form-item>
+  <nz-form-label nzSpan="8" nzRequired>
+    {{ 'page.datastore.fileUploadZipCharset' | translate }}
+  </nz-form-label>
+  <nz-form-control>
+    <nz-radio-group [(ngModel)]="zipCharset" nzButtonStyle="solid">
+      <label nz-radio-button nzValue="utf-8">UTF-8</label>
+      <label nz-radio-button nzValue="shift-jis">Shift-JIS</label>
+      <label nz-radio-button nzValue="euc-jp">EUC-JP</label>
+      <label nz-radio-button nzValue="gbk">GBK</label>
+      <label nz-radio-button nzValue="gb18030">GB18030</label>
+    </nz-radio-group>
+  </nz-form-control>
+</nz-form-item>

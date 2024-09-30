@@ -1,0 +1,93 @@
+<button nz-button nzType="primary" (click)="show()" *ngIf="!showText">
+  <i nz-icon nzType="cloud-sync" nzTheme="outline"></i>
+  {{ 'page.mapping.title' | translate }}
+</button>
+<li nz-menu-item (click)="show()" *ngIf="showText">
+  <i nz-icon nzType="cloud-sync" nzTheme="outline"></i>
+  {{ 'page.mapping.title' | translate }}
+</li>
+
+<nz-modal
+  [nzTitle]="'page.mapping.title' | translate"
+  [(nzVisible)]="visible"
+  nzClosable="true"
+  [nzWidth]="800"
+  (nzOnCancel)="visible = false; selectMapping = {}"
+  [nzFooter]="null"
+>
+  <ng-template nzModalContent>
+    <p>{{ 'page.mapping.mappingSelect' | translate }}</p>
+    <div style="padding: 16px; height: 222px; white-space: nowrap; overflow: auto" class="solid_border">
+      <div *ngIf="mappings && mappings.length > 0">
+        <div *ngFor="let item of mappings" style="display: inline-block; margin: 0 4px" (click)="select(item)">
+          <nz-radio-group [ngModel]="selectMapping.mapping_id" (ngModelChange)="select(item)">
+            <nz-card nzHoverable="true" [nzBodyStyle]="{ padding: '0px' }" [nzTitle]="title" nzType="inner">
+              <div
+                style="height: 110px; overflow-y: auto; padding: 8px"
+                [ngClass]="{ 'mapping-active': item.mapping_id === selectMapping.mapping_id }"
+              >
+                <div *ngFor="let fm of item.mapping_rule" style="margin: 2px 0; line-height: 20px">
+                  <span style="display: inline-block; min-width: 80px" class="dashed_border">
+                    <a style="margin: 0 4px" *ngIf="fm.from_key">
+                      <i nz-icon nzType="key" nzTheme="outline"></i>
+                      {{ 'apps.' + appId + '.fields.' + datastoreId + '_' + fm.from_key | translate }}
+                    </a>
+                    <a style="margin: 0 4px" *ngIf="!fm.from_key">
+                      <i nz-icon nzType="key" nzTheme="outline"></i>
+                    </a>
+                  </span>
+                  <i nz-icon nzType="arrow-right" nzTheme="outline"></i>
+                  <span style="display: inline-block; min-width: 80px" class="dashed_border">
+                    <a style="margin: 0 4px">{{ fm.to_key }}</a>
+                  </span>
+                </div>
+              </div>
+              <ng-template #title>
+                <label nz-radio [nzValue]="item.mapping_id">
+                  <span style="margin: 0 8px; font-weight: bold">
+                    {{ item.mapping_name | translate }}
+                  </span>
+                  <span *ngIf="item.mapping_type === 'insert'" style="margin: 0 8px; font-weight: bold">
+                    ({{ 'common.button.submit' | translate }})
+                  </span>
+                  <span *ngIf="item.mapping_type !== 'insert'" style="margin: 0 8px; font-weight: bold">
+                    ({{ 'common.button.update' | translate }})
+                  </span>
+                </label>
+              </ng-template>
+            </nz-card>
+          </nz-radio-group>
+        </div>
+      </div>
+      <nz-empty *ngIf="!mappings || mappings.length == 0"></nz-empty>
+    </div>
+    <div>
+      <nz-card>
+        <label nz-checkbox [(ngModel)]="checkLast">{{ 'page.mapping.onlyLastRecord' | translate }}</label>
+      </nz-card>
+    </div>
+    <div style="margin-top: 16px">
+      <nz-card [nzTitle]="dw" appAccess action="mapping_download" [change]="change" style="margin-top: 16px">
+        <ng-template #dw>
+          <i nz-icon nzType="download" nzTheme="outline"></i>
+          {{ 'common.button.fileDownload' | translate }}
+        </ng-template>
+        <div>
+          <div style="text-align: center">
+            <p>{{ 'page.mapping.downloadTips' | translate }}</p>
+            <button
+              nz-button
+              [nzType]="'primary'"
+              [nzLoading]="uploading"
+              (click)="downloadByMapping()"
+              [disabled]="!selectMapping.mapping_id"
+            >
+              <i nz-icon nzType="download" nzTheme="outline"></i>
+              {{ 'common.button.downloadStart' | translate }}
+            </button>
+          </div>
+        </div>
+      </nz-card>
+    </div>
+  </ng-template>
+</nz-modal>

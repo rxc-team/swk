@@ -1,0 +1,288 @@
+<div *ngIf="show">
+  <nz-tabset [nzTabBarExtraContent]="extraTemplate">
+    <!-- 应用程序名称 -->
+    <nz-tab [nzTitle]="'page.language.labelAppName' | translate">
+      <app-languge-apps
+        [zhData]="zhData"
+        [enData]="enData"
+        [jaData]="jaData"
+        [thData]="thData"
+        [appId]="appId"
+        (saveEdit)="saveEdit($event.ids, $event.listOfData, $event.editCache, $event.subProject, $event.lang)"
+      ></app-languge-apps>
+    </nz-tab>
+    <!-- 用户组名称 -->
+    <nz-tab [nzTitle]="'page.language.labelGroups' | translate">
+      <app-languge-groups
+        [zhData]="zhData"
+        [enData]="enData"
+        [jaData]="jaData"
+        [thData]="thData"
+        (saveEdit)="saveEdit($event.ids, $event.listOfData, $event.editCache, $event.subProject, $event.lang)"
+      ></app-languge-groups>
+    </nz-tab>
+    <!-- 台账 -->
+    <nz-tab [nzTitle]="'page.language.labelDatastores' | translate">
+      <app-languge-datastores
+        [zhData]="zhData"
+        [enData]="enData"
+        [jaData]="jaData"
+        [thData]="thData"
+        [appId]="appId"
+        (saveEdit)="saveEdit($event.ids, $event.listOfData, $event.editCache, $event.subProject, $event.lang)"
+      ></app-languge-datastores>
+    </nz-tab>
+    <!-- 字段 -->
+    <nz-tab [nzTitle]="'page.language.labelFields' | translate">
+      <app-languge-fields
+        [zhData]="zhData"
+        [enData]="enData"
+        [jaData]="jaData"
+        [thData]="thData"
+        [appId]="appId"
+        [datastoreId]="selFieldDatastoreId"
+        (saveEdit)="
+          saveEdit($event.ids, $event.listOfData, $event.editCache, $event.subProject, $event.lang, $event.datastoreId)
+        "
+      ></app-languge-fields>
+    </nz-tab>
+    <!-- mapping -->
+    <nz-tab [nzTitle]="'page.language.labelMappings' | translate">
+      <app-languge-mappings
+        [zhData]="zhData"
+        [enData]="enData"
+        [jaData]="jaData"
+        [thData]="thData"
+        [appId]="appId"
+        [datastoreId]="selMappingDatastoreId"
+        (saveEdit)="
+          saveEdit($event.ids, $event.listOfData, $event.editCache, $event.subProject, $event.lang, $event.datastoreId)
+        "
+      ></app-languge-mappings>
+    </nz-tab>
+    <!-- 报表 -->
+    <nz-tab [nzTitle]="'page.language.labelReports' | translate">
+      <app-languge-reports
+        [zhData]="zhData"
+        [enData]="enData"
+        [jaData]="jaData"
+        [thData]="thData"
+        [appId]="appId"
+        (saveEdit)="saveEdit($event.ids, $event.listOfData, $event.editCache, $event.subProject, $event.lang)"
+      ></app-languge-reports>
+    </nz-tab>
+    <!-- 仪表盘 -->
+    <nz-tab [nzTitle]="'page.language.labelDashboards' | translate">
+      <app-languge-dashboards
+        [zhData]="zhData"
+        [enData]="enData"
+        [jaData]="jaData"
+        [thData]="thData"
+        [appId]="appId"
+        (saveEdit)="saveEdit($event.ids, $event.listOfData, $event.editCache, $event.subProject, $event.lang)"
+      ></app-languge-dashboards>
+    </nz-tab>
+    <!-- 选项组 -->
+    <nz-tab [nzTitle]="'page.language.labelOptions' | translate">
+      <app-languge-options
+        [zhData]="zhData"
+        [enData]="enData"
+        [jaData]="jaData"
+        [thData]="thData"
+        [appId]="appId"
+        (saveEdit)="saveEdit($event.ids, $event.listOfData, $event.editCache, $event.subProject, $event.lang)"
+      ></app-languge-options>
+    </nz-tab>
+    <!-- 工作流 -->
+    <nz-tab [nzTitle]="'page.language.labelWorkflows' | translate">
+      <app-languge-workflows
+        [zhData]="zhData"
+        [enData]="enData"
+        [jaData]="jaData"
+        [thData]="thData"
+        [appId]="appId"
+        (saveEdit)="saveEdit($event.ids, $event.listOfData, $event.editCache, $event.subProject, $event.lang)"
+      ></app-languge-workflows>
+    </nz-tab>
+  </nz-tabset>
+  <ng-template #extraTemplate>
+    <button nz-button nzType="primary" (click)="search()" nzSize="small">
+      <i nz-icon nzType="reload" nzTheme="outline"></i>
+    </button>
+    <button nz-button nzType="primary" (click)="showDownLoad()" style="margin-left: 8px" nzSize="small">
+      <i nz-icon nzType="download" nzTheme="outline"></i>
+      {{ 'common.button.download' | translate }}
+    </button>
+    <button nz-button nzType="primary" (click)="showUpLoad()" style="margin-left: 8px" nzSize="small">
+      <i nz-icon nzType="upload" nzTheme="outline"></i>
+      {{ 'common.button.upload' | translate }}
+    </button>
+  </ng-template>
+</div>
+<!-- 多语言数据下载 -->
+<nz-modal
+  [nzTitle]="'common.button.download' | translate"
+  [(nzVisible)]="showDown"
+  nzClosable="true"
+  nzMaskClosable="false"
+  nzWidth="600px"
+  (nzOnCancel)="downloadCancel()"
+  (nzOnOk)="downloadCSV()"
+>
+  <ng-template nzModalContent>
+    <!-- 多语言类型 -->
+    <nz-form-item>
+      <nz-form-label nzFor="selTypes" style="width: 120px">
+        {{ 'page.language.languageType' | translate }}
+      </nz-form-label>
+      <nz-form-control>
+        <nz-select
+          style="width: 440px"
+          [(ngModel)]="selTypes"
+          [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.language.languageType' | translate }"
+          nzMode="multiple"
+        >
+          <nz-option [nzValue]="lt.type" [nzLabel]="lt.type_name | translate" *ngFor="let lt of lanTypes"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <!-- 字段_台账 -->
+    <nz-form-item *ngIf="selTypes.includes('fields')">
+      <nz-form-label nzFor="selFDs" style="width: 120px">
+        {{ 'page.language.labelFields' | translate }}_{{ 'page.language.labelDatastores' | translate }}
+      </nz-form-label>
+      <nz-form-control>
+        <nz-select
+          style="width: 440px"
+          [(ngModel)]="selFDs"
+          [nzPlaceHolder]="
+            'common.placeholder.select' | translate: { label: 'page.language.labelDatastores' | translate }
+          "
+          nzMode="multiple"
+        >
+          <nz-option
+            [nzValue]="datastore.datastore_id"
+            [nzLabel]="datastore.datastore_name | translate"
+            *ngFor="let datastore of datastores"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <!-- 映射_台账 -->
+    <nz-form-item *ngIf="selTypes.includes('mappings')">
+      <nz-form-label nzFor="selMDs" style="width: 120px">
+        {{ 'page.language.labelMappings' | translate }}_{{ 'page.language.labelDatastores' | translate }}
+      </nz-form-label>
+      <nz-form-control>
+        <nz-select
+          style="width: 440px"
+          [(ngModel)]="selMDs"
+          [nzPlaceHolder]="
+            'common.placeholder.select' | translate: { label: 'page.language.labelDatastores' | translate }
+          "
+          nzMode="multiple"
+        >
+          <nz-option
+            [nzValue]="datastore.datastore_id"
+            [nzLabel]="datastore.datastore_name | translate"
+            *ngFor="let datastore of datastores"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <!-- 选项_类型 -->
+    <nz-form-item *ngIf="selTypes.includes('options')">
+      <nz-form-label nzFor="selOpts" style="width: 120px">
+        {{ 'page.language.labelOptions' | translate }}_{{ 'page.language.languageType' | translate }}
+      </nz-form-label>
+      <nz-form-control>
+        <nz-select
+          style="width: 440px"
+          [(ngModel)]="selOpts"
+          [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.language.languageType' | translate }"
+          nzMode="multiple"
+        >
+          <nz-option nzValue="optionGroup" [nzLabel]="'page.language.languageOptionGroup' | translate"></nz-option>
+          <nz-option nzValue="option" [nzLabel]="'page.language.labelOptions' | translate"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <!-- 选项组 -->
+    <nz-form-item *ngIf="selOpts.includes('option')">
+      <nz-form-label nzFor="selOps" style="width: 120px">
+        {{ 'page.language.languageOptionGroup' | translate }}
+      </nz-form-label>
+      <nz-form-control>
+        <nz-select
+          style="width: 440px"
+          [(ngModel)]="selOps"
+          [nzPlaceHolder]="
+            'common.placeholder.select' | translate: { label: 'page.language.languageOptionGroup' | translate }
+          "
+          nzMode="multiple"
+        >
+          <nz-option
+            [nzValue]="optionGroup.option_id"
+            [nzLabel]="optionGroup.option_name | translate"
+            *ngFor="let optionGroup of optionGroups"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <!-- 流程_类型 -->
+    <nz-form-item *ngIf="selTypes.includes('workflows')">
+      <nz-form-label nzFor="selWs" style="width: 120px">
+        {{ 'page.language.labelWorkflows' | translate }}_{{ 'page.language.languageType' | translate }}
+      </nz-form-label>
+      <nz-form-control>
+        <nz-select
+          style="width: 440px"
+          [(ngModel)]="selWs"
+          [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.language.languageType' | translate }"
+          nzMode="multiple"
+        >
+          <nz-option nzValue="wf" [nzLabel]="'page.language.labelWorkflow' | translate"></nz-option>
+          <nz-option nzValue="menu" [nzLabel]="'page.language.labelWorkflowMenu' | translate"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </ng-template>
+</nz-modal>
+<!-- 多语言数据上传 -->
+<nz-modal
+  [nzTitle]="'common.button.upload' | translate"
+  [(nzVisible)]="showUp"
+  nzClosable="true"
+  nzMaskClosable="false"
+  nzWidth="600px"
+  (nzOnCancel)="showUp = false; fileList = []"
+  (nzOnOk)="handleUpload()"
+  [nzOkDisabled]="fileList.length === 0"
+>
+  <ng-template nzModalContent>
+    <nz-form-item>
+      <nz-form-label nzFor="characterCode" style="width: 100px" nzRequired="true">
+        {{ 'page.datastore.mapping.charEncoding' | translate }}
+      </nz-form-label>
+      <nz-form-control>
+        <nz-radio-group [(ngModel)]="encoding" nzButtonStyle="solid">
+          <label nz-radio-button nzValue="utf-8">UTF-8</label>
+          <label nz-radio-button nzValue="sjis">Shift-JIS</label>
+        </nz-radio-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzFor="upfile" nzRequired style="width: 100px">
+        {{ 'common.fieldType.file' | translate }}
+      </nz-form-label>
+      <nz-form-control>
+        <nz-upload [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload" nzAccept=".csv">
+          <button nz-button>
+            <i nz-icon nzType="upload"></i>
+            {{ 'common.button.selectFile' | translate }}
+          </button>
+        </nz-upload>
+      </nz-form-control>
+    </nz-form-item>
+  </ng-template>
+</nz-modal>

@@ -1,0 +1,95 @@
+<div style="padding-top: 16px">
+  <form nz-form [formGroup]="seachForm">
+    <nz-form-item>
+      <nz-form-label>{{ 'page.subject.kbn' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-radio-group formControlName="manageFlag" (ngModelChange)="search()">
+          <label nz-radio nzValue="assets">{{ 'page.subject.assets' | translate }}</label>
+          <label nz-radio nzValue="common">{{ 'page.subject.common' | translate }}</label>
+        </nz-radio-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="seachForm.get('manageFlag').value === 'assets'">
+      <nz-form-label>{{ 'page.subject.assets' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select
+          nzAllowClear
+          style="width: 300px"
+          formControlName="assetsType"
+          (ngModelChange)="search()"
+          [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.subject.assets' | translate }"
+        >
+          <nz-option [nzValue]="item.value" [nzLabel]="item.label" *ngFor="let item of assets"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</div>
+<nz-divider></nz-divider>
+<nz-space>
+  <!-- <div *nzSpaceItem>
+    <button nz-button [nzType]="'primary'">
+      <i nz-icon nzType="upload"></i>
+      {{ 'common.button.import' | translate }}
+    </button>
+  </div> -->
+  <div *nzSpaceItem>
+    <nz-button-group>
+      <button nz-button (click)="startEdit()" [disabled]="status">
+        <i nz-icon nzType="edit" nzTheme="outline"></i>
+        {{ 'common.button.edit' | translate }}
+      </button>
+      <button nz-button (click)="save()" [disabled]="!status">
+        <i nz-icon nzType="save" nzTheme="outline"></i>
+        {{ 'common.button.save' | translate }}
+      </button>
+      <button nz-button (click)="stopEdit()" [disabled]="!status">
+        <i nz-icon nzType="redo" nzTheme="outline"></i>
+        {{ 'common.button.cancel' | translate }}
+      </button>
+    </nz-button-group>
+  </div>
+</nz-space>
+<div style="padding-top: 16px">
+  <nz-table
+    #nzTable
+    [nzData]="subjects"
+    [nzPageSize]="500"
+    nzFrontPagination="false"
+    nzBordered
+    nzSize="middle"
+    [nzScroll]="{ y: '400px' }"
+  >
+    <thead>
+      <tr>
+        <ng-container *ngFor="let col of cols">
+          <th
+            *ngIf="col.width"
+            nz-resizable
+            nzBounds="window"
+            [nzWidth]="col.width"
+            [nzMinWidth]="60"
+            (nzResizeEnd)="onResize($event, col.title)"
+          >
+            {{ col.title | translate }}
+            <nz-resize-handle nzDirection="right"></nz-resize-handle>
+          </th>
+          <th *ngIf="!col.width">
+            {{ col.title | translate }}
+          </th>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let i of nzTable.data; let index = index">
+        <td>{{ index + 1 }}</td>
+        <td>{{ i.subject_key }}</td>
+        <td>{{ i.default_name }}</td>
+        <td *ngIf="!status">{{ i.subject_name }}</td>
+        <td *ngIf="status">
+          <input nz-input nzSize="small" [(ngModel)]="i.subject_name" style="width: 300px" />
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

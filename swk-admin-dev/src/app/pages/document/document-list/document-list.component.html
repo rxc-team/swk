@@ -1,0 +1,16 @@
+<div nz-row nzJustify="start" nzAlign="top">
+  <div nz-col nzSpan="24" class="border-bottom">
+    <nz-tabset [nzTabPosition]="position" style="height: 500px; padding: 16px" nzSize="small">
+      <nz-tab [nzTitle]="'page.document.public' | translate">
+        <ng-template nz-tab>
+          <app-search-list [fo]="'public'" [delete]="true" [write]="true"></app-search-list>
+        </ng-template>
+      </nz-tab>
+      <nz-tab [nzTitle]="'page.document.company' | translate">
+        <ng-template nz-tab>
+          <app-search-list [fo]="'company'" [delete]="true" [write]="true"></app-search-list>
+        </ng-template>
+      </nz-tab>
+    </nz-tabset>
+  </div>
+</div>

@@ -1,0 +1,102 @@
+<form nz-form [formGroup]="form" nzLayout="horizontal">
+  <nz-form-item>
+    <nz-form-label nzRequired="true">{{ 'page.datastore.field.relatedKey' | translate }}</nz-form-label>
+    <nz-form-control [nzErrorTip]="rErrorTip">
+      <input nz-input formControlName="relation_id" style="width: 300px" />
+      <ng-template #rErrorTip let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredInput' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired="true">{{ 'page.datastore.field.relatedDatastore' | translate }}</nz-form-label>
+    <nz-form-control [nzErrorTip]="dErrorTip">
+      <nz-select
+        [ngStyle]="{ width: '300px' }"
+        formControlName="datastore_id"
+        nzAllowClear="true"
+        (ngModelChange)="dsChange($event)"
+        [nzPlaceHolder]="
+          'common.placeholder.select' | translate: { label: 'page.datastore.field.selectOptionType' | translate }
+        "
+      >
+        <nz-option
+          *ngFor="let o of dsOptions"
+          [nzValue]="o.datastore_id"
+          [nzLabel]="o.datastore_name | translate"
+        ></nz-option>
+      </nz-select>
+      <ng-template #dErrorTip let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredSelect' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired="true">{{ 'page.datastore.field.relatedCondition' | translate }}</nz-form-label>
+    <nz-form-control [nzErrorTip]="uErrorTip">
+      <nz-select
+        [ngStyle]="{ width: '300px' }"
+        nzAllowClear="true"
+        formControlName="ufs"
+        (ngModelChange)="ufsChange($event)"
+        [nzPlaceHolder]="
+          'common.placeholder.select' | translate: { label: 'page.datastore.field.selectOptionType' | translate }
+        "
+      >
+        <nz-option
+          *ngFor="let o of uniqueFieldsOptions"
+          [nzValue]="o.value"
+          [nzLabel]="o.label"
+          [nzDisabled]="o.disabled"
+        ></nz-option>
+      </nz-select>
+      <ng-template #uErrorTip let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredSelect' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <fieldset>
+    <legend>{{ 'page.datastore.field.correspondRelation' | translate }}</legend>
+    <div formArrayName="fields">
+      <ng-container *ngFor="let item of fsArray.controls; let i = index">
+        <div [formGroupName]="i">
+          <nz-form-item>
+            <nz-select
+              formControlName="refrenced_field"
+              id="field"
+              nzPlaceHolder="字段"
+              nzAllowClear
+              style="width: 200px"
+            >
+              <nz-option
+                *ngFor="let cf of fields"
+                [nzLabel]="cf.field_name | translate"
+                [nzValue]="cf.field_id"
+              ></nz-option>
+            </nz-select>
+            <nz-select
+              formControlName="field"
+              id="refrenced_field"
+              nzPlaceHolder="字段"
+              nzAllowClear
+              style="width: 200px"
+            >
+              <nz-option
+                *ngFor="let cf of fieldsOptions"
+                [nzDisabled]="cf.lookup_field_id !== item.get('refrenced_field').value"
+                [nzLabel]="cf.field_name | translate"
+                [nzValue]="cf.field_id"
+              ></nz-option>
+            </nz-select>
+          </nz-form-item>
+        </div>
+      </ng-container>
+    </div>
+  </fieldset>
+</form>

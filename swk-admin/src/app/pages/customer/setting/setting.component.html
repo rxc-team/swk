@@ -1,0 +1,195 @@
+<form nz-form [formGroup]="validateForm">
+  <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'common.text.baseInfo' | translate">
+    <nz-form-item>
+      <nz-form-label nzFor="customerName" nzRequired>
+        {{ 'page.systemSetting.customerName' | translate }}
+      </nz-form-label>
+      <nz-form-control [nzErrorTip]="errorCustomerName">
+        <input
+          nz-input
+          formControlName="customerName"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          [placeholder]="
+            'common.placeholder.input' | translate: { label: 'page.systemSetting.customerName' | translate }
+          "
+          trim="blur"
+        />
+        <ng-template #errorCustomerName let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+
+          <ng-container *ngIf="control.hasError('duplicated')">
+            {{ 'common.validator.customerNameDuplicated' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <!-- 二次验证开关 -->
+    <nz-form-item>
+      <nz-form-label nzFor="secondCheck">{{ 'page.systemSetting.secondCheckLabel' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-switch formControlName="secondCheck"></nz-switch>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzFor="domain" nzRequired>
+        {{ 'page.systemSetting.customerDomain' | translate }}
+      </nz-form-label>
+      <nz-form-control [nzErrorTip]="errorDomain">
+        <input
+          nz-input
+          formControlName="domain"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          [placeholder]="
+            'common.placeholder.input' | translate: { label: 'page.systemSetting.customerDomain' | translate }
+          "
+          trim="blur"
+        />
+        <ng-template #errorDomain let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('domain')">
+            {{ 'common.validator.domain' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('duplicated')">
+            {{ 'common.validator.domainDuplicated' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <!-- 用户数信息和存储空间信息 -->
+    <nz-form-item>
+      <nz-form-label nzFor="maxUsers" nzRequired>
+        {{ 'page.systemSetting.maxUsers' | translate }}
+      </nz-form-label>
+      <nz-form-control>
+        <input
+          nz-input
+          formControlName="usedUsers"
+          style="text-align: right"
+          [ngStyle]="{ width: isSmall ? '80px' : '120px' }"
+          trim="blur"
+        />
+        <span style="display: inline-block; width: 20px; line-height: 28px; text-align: center">/</span>
+        <input
+          nz-input
+          formControlName="maxUsers"
+          style="text-align: right"
+          [ngStyle]="{ width: isSmall ? '80px' : '120px' }"
+          trim="blur"
+        />
+        <span style="display: inline-block; width: 40px; line-height: 28px; text-align: right">
+          {{ percent(validateForm.get('maxUsers').value, validateForm.get('usedUsers').value) }}
+        </span>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzFor="maxSize" nzRequired>
+        {{ 'page.systemSetting.maxSize' | translate }}
+      </nz-form-label>
+      <nz-form-control>
+        <input
+          nz-input
+          formControlName="usedSize"
+          style="text-align: right"
+          [ngStyle]="{ width: isSmall ? '80px' : '120px' }"
+          trim="blur"
+        />
+        <span style="display: inline-block; width: 20px; line-height: 28px; text-align: center">/</span>
+        <input
+          nz-input
+          formControlName="maxSize"
+          style="text-align: right"
+          [ngStyle]="{ width: isSmall ? '80px' : '120px' }"
+          trim="blur"
+        />
+        <span style="display: inline-block; width: 40px; line-height: 28px; text-align: right">
+          {{ percentData(validateForm.get('maxSize').value, validateForm.get('usedSize').value) }}
+        </span>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzFor="maxDataSize" nzRequired>
+        {{ 'page.systemSetting.maxDataSize' | translate }}
+      </nz-form-label>
+      <nz-form-control>
+        <input
+          nz-input
+          formControlName="usedDataSize"
+          style="text-align: right"
+          [ngStyle]="{ width: isSmall ? '80px' : '120px' }"
+          trim="blur"
+        />
+        <span style="display: inline-block; width: 20px; line-height: 28px; text-align: center">/</span>
+        <input
+          nz-input
+          formControlName="maxDataSize"
+          style="text-align: right"
+          [ngStyle]="{ width: isSmall ? '80px' : '120px' }"
+          trim="blur"
+        />
+        <span style="display: inline-block; width: 40px; line-height: 28px; text-align: right">
+          {{ percentData(validateForm.get('maxDataSize').value, validateForm.get('usedDataSize').value) }}
+        </span>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>
+        <span>
+          {{ 'LOGO' }}
+          <i nz-icon nz-tooltip [nzTooltipTitle]="t" nzType="question-circle" theme="outline"></i>
+          <ng-template #t>
+            <span>
+              {{ 'common.text.supportFile' | translate }}
+              <div>
+                <span style="margin-right: 4px; color: red" *ngFor="let suffix of supportFile">{{ suffix }}</span>
+              </div>
+            </span>
+          </ng-template>
+        </span>
+      </nz-form-label>
+      <nz-form-control>
+        <nz-upload
+          class="avatar-uploader"
+          nzListType="picture-card"
+          nzAction="/file/header/upload"
+          nzAccept=".jpg,.png,.jpeg"
+          [nzBeforeUpload]="beforeUploadPic"
+          [nzCustomRequest]="customReq"
+          [nzFileList]="fileList"
+          (nzChange)="handleChange($event)"
+          nzShowUploadList="false"
+        >
+          <ng-container *ngIf="!logo">
+            <div style="height: 78px; width: 298px; line-height: 80px; text-align: center">
+              <i nz-icon nzType="picture" style="font-size: 24px"></i>
+            </div>
+          </ng-container>
+          <img *ngIf="logo" width="290" height="70" [src]="logo" />
+        </nz-upload>
+      </nz-form-control>
+    </nz-form-item>
+  </nz-card>
+  <br />
+  <nz-form-item>
+    <nz-form-control>
+      <nz-space>
+        <div *nzSpaceItem>
+          <button
+            nz-button
+            nzType="primary"
+            type="submit"
+            [disabled]="!validateForm.valid"
+            (click)="submitForm()"
+            appDebounceClick
+          >
+            <i nz-icon nzType="save" nzTheme="outline"></i>
+            {{ 'common.button.save' | translate }}
+          </button>
+        </div>
+      </nz-space>
+    </nz-form-control>
+  </nz-form-item>
+</form>

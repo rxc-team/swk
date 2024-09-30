@@ -1,0 +1,6 @@
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 23.3mm 0mm 10mm 0mm;
+  }
+}

@@ -1,0 +1,18 @@
+<nz-select
+  class="select"
+  [ngStyle]="{ width: isSmall ? '100%' : '180px', 'padding-left': isSmall ? '10px' : '0' }"
+  [nzSuffixIcon]="nzSuffixIcon"
+  [ngModel]="currentApp"
+  [nzPlaceHolder]="'page.home.select' | translate"
+  (ngModelChange)="change($event)"
+>
+  <nz-option
+    *ngFor="let option of apps"
+    [nzLabel]="option.app_name | translate"
+    [nzValue]="option.app_id"
+    [nzDisabled]="!option.isValid"
+  ></nz-option>
+</nz-select>
+<ng-template #nzSuffixIcon>
+  <i nz-icon nzType="appstore"></i>
+</ng-template>

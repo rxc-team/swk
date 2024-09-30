@@ -1,0 +1,231 @@
+{
+  "app": {
+    "name": "ProPlusPit-Dev",
+    "version": "0.0.1-alpha"
+  },
+  "slideMenu": [
+    {
+      "level": 1,
+      "path": "/home",
+      "title": "menu.home",
+      "icon": "home",
+      "open": false,
+      "show": true,
+      "selected": false,
+      "disabled": false
+    },
+    {
+      "level": 1,
+      "path": "/document",
+      "title": "menu.document",
+      "icon": "folder-open",
+      "open": false,
+      "selected": false,
+      "disabled": false
+    },
+    {
+      "level": 1,
+      "path": "/access",
+      "title": "menu.accessManage",
+      "icon": "safety",
+      "open": false,
+      "selected": false,
+      "disabled": false,
+      "children": [
+        {
+          "level": 2,
+          "path": "/access/user/list",
+          "title": "menu.userManage",
+          "icon": "user",
+          "open": false,
+          "selected": false,
+          "disabled": false
+        },
+        {
+          "level": 2,
+          "path": "/access/role/list",
+          "title": "menu.roleManage",
+          "icon": "team",
+          "open": false,
+          "selected": false,
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "path": "/system",
+      "title": "menu.system",
+      "icon": "interaction",
+      "open": false,
+      "selected": false,
+      "disabled": false,
+      "children": [
+        {
+          "level": 2,
+          "path": "/system/template/list",
+          "title": "menu.template",
+          "open": false,
+          "selected": false,
+          "disabled": false
+        },
+        {
+          "level": 2,
+          "path": "/system/backup/info",
+          "title": "menu.backup",
+          "open": false,
+          "selected": false,
+          "disabled": false
+        },
+        {
+          "level": 2,
+          "path": "/system/job/list",
+          "title": "menu.job",
+          "open": false,
+          "selected": false,
+          "disabled": false
+        },
+        {
+          "level": 2,
+          "path": "/system/release",
+          "title": "menu.releaseSetting",
+          "open": false,
+          "selected": false,
+          "disabled": false
+        },
+        {
+          "level": 2,
+          "path": "/system/update/list",
+          "title": "menu.updateList",
+          "open": false,
+          "selected": false,
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "path": "/config",
+      "title": "menu.config.title",
+      "icon": "unordered-list",
+      "open": false,
+      "selected": false,
+      "disabled": false,
+      "children": [
+        {
+          "level": 2,
+          "path": "/config/action/list",
+          "title": "menu.config.action.list",
+          "open": false,
+          "selected": false,
+          "disabled": false
+        },
+        {
+          "level": 2,
+          "path": "/config/allow/list",
+          "title": "menu.config.allow.list",
+          "open": false,
+          "selected": false,
+          "disabled": false
+        },
+        {
+          "level": 2,
+          "path": "/config/level/list",
+          "title": "menu.config.level.list",
+          "open": false,
+          "selected": false,
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "path": "/help",
+      "title": "menu.help.title",
+      "icon": "read",
+      "open": false,
+      "selected": false,
+      "disabled": false,
+      "children": [
+        {
+          "level": 2,
+          "path": "/help/typeList",
+          "title": "menu.help.type",
+          "open": false,
+          "selected": false,
+          "disabled": false
+        },
+        {
+          "level": 2,
+          "path": "/help/list",
+          "title": "menu.help.article",
+          "open": false,
+          "selected": false,
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "path": "/log",
+      "title": "menu.logger.title",
+      "icon": "history",
+      "open": false,
+      "selected": false,
+      "disabled": false,
+      "children": [
+        {
+          "level": 2,
+          "path": "/log/login",
+          "title": "menu.logger.login",
+          "open": false,
+          "selected": false,
+          "disabled": false
+        },
+        {
+          "level": 2,
+          "path": "/log/operate",
+          "title": "menu.logger.action",
+          "open": false,
+          "selected": false,
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "path": "/customer",
+      "title": "menu.customer.title",
+      "icon": "contacts",
+      "open": false,
+      "selected": false,
+      "disabled": false,
+      "children": [
+        {
+          "level": 2,
+          "path": "/customer/list",
+          "title": "menu.customer.list",
+          "open": false,
+          "selected": false,
+          "disabled": false
+        },
+        {
+          "level": 2,
+          "path": "/customer/question/list",
+          "title": "menu.customer.qa",
+          "open": false,
+          "selected": false,
+          "disabled": false
+        },
+        {
+          "level": 2,
+          "path": "/customer/message",
+          "title": "header.title.noticeCenter",
+          "open": false,
+          "selected": false,
+          "disabled": false
+        }
+      ]
+    }
+  ]
+}

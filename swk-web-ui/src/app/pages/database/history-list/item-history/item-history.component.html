@@ -1,0 +1,187 @@
+<div>
+  <nz-collapse [nzBordered]="true">
+    <nz-collapse-panel [nzHeader]="'common.text.search' | translate" nzActive>
+      <form nz-form [formGroup]="searchForm" nzLayout="inline">
+        <nz-form-item style="padding-top: 8px">
+          <nz-form-label nzFor="fieldId">
+            {{ 'page.history.fieldTitle' | translate }}
+          </nz-form-label>
+          <nz-form-control>
+            <nz-select
+              style="width: 200px"
+              formControlName="fieldId"
+              [nzPlaceHolder]="
+                'common.placeholder.select' | translate: { label: 'page.history.fieldTitle' | translate }
+              "
+              nzAllowClear
+            >
+              <nz-option
+                *ngFor="let item of searchFields"
+                [nzLabel]="item.field_name | translate"
+                [nzValue]="item.field_id"
+              ></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item style="padding-top: 8px">
+          <nz-form-label nzFor="oldValue">
+            {{ 'page.history.oldValue' | translate }}
+          </nz-form-label>
+          <nz-form-control>
+            <input
+              nz-input
+              style="width: 200px"
+              formControlName="oldValue"
+              [placeholder]="'common.placeholder.input' | translate: { label: 'page.history.oldValue' | translate }"
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item style="padding-top: 8px">
+          <nz-form-label nzFor="newValue">
+            {{ 'page.history.newValue' | translate }}
+          </nz-form-label>
+          <nz-form-control>
+            <input
+              nz-input
+              style="width: 200px"
+              formControlName="newValue"
+              [placeholder]="'common.placeholder.input' | translate: { label: 'page.history.newValue' | translate }"
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item style="padding-top: 8px">
+          <nz-form-label nzFor="changeType">
+            {{ 'page.history.typeTitle' | translate }}
+          </nz-form-label>
+          <nz-form-control>
+            <nz-select
+              style="width: 200px"
+              formControlName="changeType"
+              [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.history.typeTitle' | translate }"
+              nzAllowClear
+            >
+              <nz-option [nzLabel]="'page.history.new' | translate" nzValue="insert"></nz-option>
+              <nz-option [nzLabel]="'page.history.update' | translate" nzValue="update"></nz-option>
+              <nz-option [nzLabel]="'page.history.delete' | translate" nzValue="delete"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item style="padding-top: 8px">
+          <nz-form-label nzFor="createdAt">
+            {{ 'page.history.createdAtTitle' | translate }}
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="createdAt">
+            <nz-range-picker
+              [nzFormat]="'yyyy-MM-dd'"
+              formControlName="createdAt"
+              [nzPlaceHolder]="[
+                'page.history.pleaseSelectStartTime' | translate,
+                'page.history.pleaseSelectEndTime' | translate
+              ]"
+            ></nz-range-picker>
+            <ng-template #createdAt let-control>
+              <ng-container *ngIf="control.hasError('timeCompare')">
+                {{ 'common.validator.timeCompare' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item style="padding-top: 8px">
+          <nz-form-control>
+            <button nz-button type="button" [nzType]="'primary'" [disabled]="searchForm.invalid" (click)="search()">
+              <i nz-icon nzType="search"></i>
+              {{ 'common.button.search' | translate }}
+            </button>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </nz-collapse-panel>
+  </nz-collapse>
+
+  <div style="padding-top: 16px">
+    <div nz-row nzJustify="end" nzAlign="top" style="padding: 8px">
+      <div nz-col>
+        <nz-button-group>
+          <button nz-button nzType="primary" (click)="download()">
+            <i nz-icon nzType="download"></i>
+            {{ 'common.button.fileDownload' | translate }}
+          </button>
+          <!-- TODO -->
+          <!-- <app-mapping-download [conditionParam]="conditionParam" appAccess action="mapping"></app-mapping-download> -->
+        </nz-button-group>
+      </div>
+    </div>
+
+    <nz-table
+      #nzTable
+      [nzData]="historyList"
+      [nzFrontPagination]="false"
+      nzSize="middle"
+      nzBordered="true"
+      [(nzPageSize)]="pageSize"
+      [nzTotal]="total"
+      [(nzPageIndex)]="pageIndex"
+      [nzScroll]="{ x: '300px', y: '350px' }"
+      [nzShowTotal]="rangeTemplate"
+      nzShowSizeChanger
+      [nzPageSizeOptions]="[30, 100, 200, 500]"
+      (nzPageIndexChange)="search()"
+      (nzPageSizeChange)="search()"
+    >
+      <thead>
+        <tr>
+          <ng-container *ngFor="let col of cols">
+            <th
+              *ngIf="col.width"
+              nz-resizable
+              nzBounds="window"
+              [nzWidth]="col.width"
+              [nzMinWidth]="60"
+              (nzResizeEnd)="onResize($event, col.title)"
+            >
+              {{ col.title | translate }}
+              <nz-resize-handle nzDirection="right"></nz-resize-handle>
+            </th>
+            <th *ngIf="!col.width">
+              {{ col.title | translate }}
+            </th>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let i of nzTable.data">
+          <td>
+            <a (click)="openPreview(i.history_id)">{{ i.history_id }}</a>
+          </td>
+          <td>
+            {{ isExist(i.field_id) ? (i.field_name | translate) : i.local_name + '(Deprecated)' }}
+          </td>
+          <td>
+            {{ i.old_value }}
+          </td>
+          <td>
+            {{ i.new_value }}
+          </td>
+          <td>
+            {{
+              i.history_type === 'insert'
+                ? ('page.history.new' | translate)
+                : i.history_type === 'delete'
+                ? ('page.history.delete' | translate)
+                : ('page.history.update' | translate)
+            }}
+          </td>
+          <td>
+            {{ i.created_at | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}
+          </td>
+          <td>
+            {{ i.created_by | user: userList }}
+          </td>
+        </tr>
+      </tbody>
+      <ng-template #rangeTemplate let-range="range" let-total>
+        {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+      </ng-template>
+    </nz-table>
+  </div>
+</div>

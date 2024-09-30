@@ -1,0 +1,83 @@
+<div style="padding-top: 16px">
+  <nz-space>
+    <div *nzSpaceItem>
+      <button nz-button [nzType]="'primary'">
+        <i nz-icon nzType="sync"></i>
+        {{ 'common.button.refresh' | translate }}
+      </button>
+    </div>
+    <div *nzSpaceItem>
+      <nz-button-group>
+        <button nz-button (click)="compute()">
+          <i nz-icon nzType="cloud-download" nzTheme="outline"></i>
+          {{ 'page.journal.incAndDec' | translate }}
+        </button>
+        <button nz-button (click)="compute('repay')">
+          <i nz-icon nzType="cloud-download" nzTheme="outline"></i>
+          {{ 'page.journal.depreciation' | translate }}
+        </button>
+        <button nz-button (click)="compute('pay')">
+          <i nz-icon nzType="cloud-download" nzTheme="outline"></i>
+          {{ 'page.journal.payment' | translate }}
+        </button>
+      </nz-button-group>
+    </div>
+  </nz-space>
+</div>
+<div style="padding-top: 16px">
+  <!-- <div class="header">
+    <ng-container *ngFor="let col of cols">
+      <div class="th" [style.width]="col.width">
+        {{ col.title | translate }}
+      </div>
+    </ng-container>
+  </div>
+  <div *ngFor="let data of basicTable.data; let i = index" class="body" [ngClass]="{ dashboard_bg: data.no }">
+    <div class="td" [style.width]="cols[0].width">{{ data.no }}</div>
+    <div class="td" [ngClass]="{ no_border: data.no }" [style.width]="cols[1].width">{{ data.name }}</div>
+    <div class="td" [ngClass]="{ no_border: data.no }" [style.width]="cols[2].width">{{ data.credit }}</div>
+    <div class="td" [ngClass]="{ no_border: data.no }" [style.width]="cols[3].width">{{ data.debt }}</div>
+    <div class="td" [ngClass]="{ no_border: data.no }" [style.width]="cols[4].width">{{ data.amount }}</div>
+  </div> -->
+
+  <nz-table
+    #basicTable
+    [nzData]="journals"
+    nzBordered="true"
+    nzSize="middle"
+    nzFrontPagination="false"
+    [nzScroll]="{ y: '400px' }"
+    [nzPageSize]="500"
+  >
+    <thead>
+      <tr>
+        <ng-container *ngFor="let col of cols">
+          <th
+            *ngIf="col.width"
+            nz-resizable
+            nzBounds="window"
+            [nzWidth]="col.width"
+            [nzMinWidth]="60"
+            (nzResizeEnd)="onResize($event, col.title)"
+          >
+            {{ col.title | translate }}
+            <nz-resize-handle nzDirection="right"></nz-resize-handle>
+          </th>
+          <th *ngIf="!col.width">
+            {{ col.title | translate }}
+          </th>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data" [ngClass]="{ dashboard_bg: data.no }">
+        <td>{{ data.no }}</td>
+        <td [colSpan]="data.no ? 4 : 1">{{ data.name }}</td>
+        <td>{{ data.credit }}</td>
+        <td>{{ data.debt }}</td>
+        <td>{{ data.amount }}</td>
+        <td>{{ data.other }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

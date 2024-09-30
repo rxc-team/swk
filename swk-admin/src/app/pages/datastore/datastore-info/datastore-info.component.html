@@ -1,0 +1,165 @@
+<div>
+  <header>
+    <div style="display: flex; flex-direction: row; justify-content: space-between">
+      <h3>{{ datastoreInfo.datastore_name | translate }}</h3>
+      <a nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click">
+        <i nz-icon nzType="setting" nzTheme="outline"></i>
+        {{ 'page.datastore.setting' | translate }}
+      </a>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+          <li nz-menu-item (click)="fowardToDatastoreSettingPage()">
+            <i nz-icon nzType="database" nzTheme="outline"></i>
+            {{ 'page.datastore.datastoreSet' | translate }}
+          </li>
+          <li nz-menu-item (click)="fowardToFieldListPage()">
+            <i nz-icon nzType="bars" nzTheme="outline"></i>
+            {{ 'page.datastore.fieldSet' | translate }}
+          </li>
+          <li nz-menu-item (click)="fowardToMappingAddPage()">
+            <i nz-icon nzType="api" nzTheme="outline"></i>
+            {{ 'page.datastore.mapping.mappingAdd' | translate }}
+          </li>
+          <!-- <li nz-menu-item (click)="fowardToImportPage()">
+            <i nz-icon nzType="cloud-upload" nzTheme="outline"></i>
+            {{ 'page.datastore.text.csvImport' | translate }}
+          </li> -->
+        </ul>
+      </nz-dropdown-menu>
+    </div>
+    <br />
+    <p>
+      <span>
+        <i nz-icon nzType="check-circle" nzTheme="outline"></i>
+        {{ 'page.datastore.checkDatastore' | translate }}:
+      </span>
+      <span>
+        <nz-badge
+          [nzStatus]="datastoreInfo.can_check ? 'success' : 'error'"
+          [nzText]="datastoreInfo.can_check ? 'Yes' : 'No'"
+        ></nz-badge>
+      </span>
+    </p>
+    <p>
+      <span>
+        <i nz-icon nzType="menu" nzTheme="outline"></i>
+        {{ 'page.datastore.displayMenu' | translate }}:
+      </span>
+      <span>
+        <nz-badge
+          [nzStatus]="datastoreInfo.show_in_menu ? 'success' : 'error'"
+          [nzText]="datastoreInfo.show_in_menu ? 'Yes' : 'No'"
+        ></nz-badge>
+      </span>
+    </p>
+    <p>
+      <span>
+        <i nz-icon nzType="code" nzTheme="outline"></i>
+        {{ 'page.datastore.encoding' | translate }}:
+      </span>
+      <span>
+        {{ datastoreInfo.encoding }}
+      </span>
+    </p>
+  </header>
+  <div>
+    <nz-tabset [nzTabPosition]="'top'">
+      <nz-tab [nzTitle]="'page.datastore.fieldInfo' | translate">
+        <nz-table
+          #fsTable
+          [nzData]="fields"
+          nzSize="middle"
+          [nzPageSize]="500"
+          nzHideOnSinglePage="true"
+          [nzScroll]="{ y: '240px' }"
+        >
+          <tbody>
+            <tr *ngFor="let item of fsTable.data">
+              <td>
+                <div style="display: flex; flex-direction: row">
+                  <nz-avatar [nzText]="item.field_type" nzShape="square"></nz-avatar>
+                  <div style="margin: 0 8px; display: inline-flex; flex-direction: column; flex: 1">
+                    <div
+                      *ngIf="item.deleted_by"
+                      style="display: flex; flex-direction: row; justify-content: space-between"
+                    >
+                      {{ item.field_name | translate }}
+                      <nz-badge nzStatus="warning" nzText="invalid"></nz-badge>
+                    </div>
+                    <div
+                      *ngIf="!item.deleted_by"
+                      style="display: flex; flex-direction: row; justify-content: space-between"
+                    >
+                      <a (click)="fowardToFieldSettingPage(item.field_id)">{{ item.field_name | translate }}</a>
+                      <nz-badge nzStatus="success" nzText="valid"></nz-badge>
+                    </div>
+                    <span>
+                      {{
+                        'page.datastore.fieldTips'
+                          | translate
+                            : { user: item.created_by | user, time: item.created_at | dateFormat: 'yyyy-MM-dd' }
+                      }}
+                    </span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </nz-tab>
+      <nz-tab [nzTitle]="'page.datastore.mappingInfo' | translate">
+        <nz-table
+          #mpTable
+          [nzData]="datastoreInfo.mappings"
+          nzSize="middle"
+          [nzPageSize]="500"
+          nzHideOnSinglePage="true"
+          [nzScroll]="{ y: '240px' }"
+        >
+          <tbody>
+            <tr *ngFor="let item of mpTable.data">
+              <td>
+                <div style="display: flex; flex-direction: row">
+                  <nz-avatar nzShape="square" nzIcon="api"></nz-avatar>
+                  <div
+                    style="
+                      margin: 0 8px;
+                      display: inline-flex;
+                      flex-direction: row;
+                      flex: 1;
+                      justify-content: space-between;
+                    "
+                  >
+                    <div style="display: flex; flex-direction: column">
+                      <span (click)="fowardToMappingSettingPage(item.mapping_id)">
+                        <a>{{ item.mapping_name | translate }}</a>
+                        <span style="padding: 0 10px">（{{ item.mapping_id }}）</span>
+                      </span>
+                      <span>
+                        {{
+                          'page.datastore.mappingTips'
+                            | translate: { num: item.mapping_rule ? item.mapping_rule.length : 0 }
+                        }}
+                      </span>
+                    </div>
+                    <div>
+                      <button
+                        nz-button
+                        (click)="deleteMapping(item.mapping_id)"
+                        title="Delete"
+                        style="vertical-align: middle"
+                      >
+                        <i nz-icon nzType="close-circle" nzTheme="twotone" nzTwotoneColor="#ff0000"></i>
+                        <span>{{ 'common.button.delete' | translate }}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </nz-tab>
+    </nz-tabset>
+  </div>
+</div>

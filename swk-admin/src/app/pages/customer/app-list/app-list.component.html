@@ -1,0 +1,298 @@
+<nz-space>
+  <div *nzSpaceItem>
+    <nz-button-group>
+      <button nz-button [nzType]="'primary'" (click)="foward()">
+        <i nz-icon nzType="copy"></i>
+        {{ 'common.button.appCopy' | translate }}
+      </button>
+      <button nz-button [nzType]="'primary'" (click)="refresh()">
+        <i nz-icon nzType="sync"></i>
+        {{ 'common.button.refresh' | translate }}
+      </button>
+    </nz-button-group>
+  </div>
+  <div *nzSpaceItem>
+    <button nz-button nzDanger="true" nzType="primary" [disabled]="selectData.length === 0" (click)="hardDeleteAll()">
+      <i nz-icon nzType="delete"></i>
+      {{ 'common.button.delete' | translate }}
+    </button>
+  </div>
+</nz-space>
+<div style="padding-top: 16px">
+  <nz-table
+    #basicTable
+    [nzData]="listOfDataDisplay"
+    nzBordered="true"
+    nzSize="middle"
+    [nzPageSize]="100"
+    [nzTotal]="listOfDataDisplay.length"
+    [nzShowTotal]="rangeTemplate"
+    [nzScroll]="{ y: '300px', x: '1200px' }"
+  >
+    <thead>
+      <tr>
+        <th
+          nzWidth="40px"
+          nzLeft="0"
+          nzShowCheckbox
+          [(nzChecked)]="selectAll"
+          (nzCheckedChange)="checkAll($event)"
+        ></th>
+        <ng-container *ngFor="let col of cols">
+          <th
+            *ngIf="col.width"
+            nz-resizable
+            nzBounds="window"
+            [nzWidth]="col.width"
+            [nzMinWidth]="80"
+            (nzResizeEnd)="onResize($event, col.title)"
+          >
+            {{ col.title | translate }}
+            <nz-resize-handle nzDirection="right"></nz-resize-handle>
+          </th>
+          <th *ngIf="!col.width">
+            {{ col.title | translate }}
+          </th>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-template ngFor let-data [ngForOf]="basicTable.data">
+        <tr [style.background]="data.deleted_by ? '#eeeeee' : ''">
+          <td
+            nzLeft="0"
+            nzShowCheckbox
+            [(nzChecked)]="data.checked"
+            [nzDisabled]="!data.copy_from"
+            (nzCheckedChange)="checked($event)"
+            [style.background]="data.deleted_by ? '#eeeeee' : ''"
+          ></td>
+          <td>{{ data.app_name | translate }}</td>
+          <td>{{ getAppName(data.copy_from) ? (getAppName(data.copy_from) | translate) : '_' }}</td>
+          <td>{{ data.created_at | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}</td>
+          <td>
+            <nz-tag [nzColor]="data.valid_date > 0 ? 'success' : 'warning'">
+              {{ (data.valid_date > 0 ? 'common.text.valid' : 'common.text.invalid') | translate }}
+            </nz-tag>
+            {{ data.start_time + '～' + data.end_time }}
+          </td>
+          <td>{{ data.remarks }}</td>
+          <td>
+            <a nz-button nzSize="small" nzType="primary" (click)="getAppConfigs(data.app_id, data.app_type)">
+              {{ 'page.systemSetting.parameterSetting' | translate }}
+            </a>
+          </td>
+        </tr>
+      </ng-template>
+    </tbody>
+  </nz-table>
+  <ng-template #rangeTemplate let-range="range" let-total>
+    {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+  </ng-template>
+</div>
+
+<!-- 参数设置 -->
+<nz-modal
+  [(nzVisible)]="showConfig"
+  [nzTitle]="'page.systemSetting.parameterSetting' | translate"
+  (nzOnCancel)="showConfig = false"
+>
+  <div *nzModalContent>
+    <form nz-form [formGroup]="validateForm">
+      <ng-container *ngIf="currentAppType === 'rent'; then thenTemplate; else elseTemplate"></ng-container>
+      <ng-template #thenTemplate>
+        <!-- 短期租赁判断月数 -->
+        <nz-form-item>
+          <nz-form-label nzFor="shortLeases" style="width: 120px">
+            {{ 'page.systemSetting.shortLeases' | translate }}
+          </nz-form-label>
+          <nz-form-control>
+            <input
+              nz-input
+              formControlName="shortLeases"
+              [ngStyle]="{ width: isSmall ? '150px' : '250px' }"
+              [placeholder]="
+                'common.placeholder.input' | translate: { label: 'page.systemSetting.shortLeases' | translate }
+              "
+              trim="blur"
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <!-- 小额租赁判断金额 -->
+        <nz-form-item>
+          <nz-form-label nzFor="minorBaseAmount" style="width: 120px">
+            {{ 'page.systemSetting.minorBaseAmount' | translate }}
+          </nz-form-label>
+          <nz-form-control>
+            <input
+              nz-input
+              formControlName="minorBaseAmount"
+              [ngStyle]="{ width: isSmall ? '150px' : '250px' }"
+              [placeholder]="
+                'common.placeholder.input' | translate: { label: 'page.systemSetting.minorBaseAmount' | translate }
+              "
+              trim="blur"
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <!-- 期首年月 -->
+        <nz-form-item>
+          <nz-form-label nzFor="kishuYm" nzRequired style="width: 120px">
+            {{ 'page.systemSetting.firstMonthInYear' | translate }}
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="errorKishuYm">
+            <nz-select
+              formControlName="kishuYm"
+              [ngStyle]="{ width: isSmall ? '150px' : '250px' }"
+              [nzPlaceHolder]="
+                'common.placeholder.input' | translate: { label: 'page.systemSetting.firstMonthInYear' | translate }
+              "
+            >
+              <nz-option nzValue="1" nzLabel="1"></nz-option>
+              <nz-option nzValue="2" nzLabel="2"></nz-option>
+              <nz-option nzValue="3" nzLabel="3"></nz-option>
+              <nz-option nzValue="4" nzLabel="4"></nz-option>
+              <nz-option nzValue="5" nzLabel="5"></nz-option>
+              <nz-option nzValue="6" nzLabel="6"></nz-option>
+              <nz-option nzValue="7" nzLabel="7"></nz-option>
+              <nz-option nzValue="8" nzLabel="8"></nz-option>
+              <nz-option nzValue="9" nzLabel="9"></nz-option>
+              <nz-option nzValue="10" nzLabel="10"></nz-option>
+              <nz-option nzValue="11" nzLabel="11"></nz-option>
+              <nz-option nzValue="12" nzLabel="12"></nz-option>
+            </nz-select>
+            <ng-template #errorKishuYm let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!-- 处理月度 -->
+        <nz-form-item>
+          <nz-form-label nzFor="syoriYm" nzRequired style="width: 120px">
+            {{ 'page.systemSetting.handleMonth' | translate }}
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="errorSyoriYm">
+            <nz-input-group nzSearch [nzAddOnAfter]="suffix" [ngStyle]="{ width: isSmall ? '150px' : '250px' }">
+              <input
+                nz-input
+                formControlName="syoriYm"
+                [placeholder]="
+                  'common.placeholder.input' | translate: { label: 'page.systemSetting.handleMonth' | translate }
+                "
+              />
+            </nz-input-group>
+            <ng-template #suffix>
+              <button nz-button (click)="nextMonth()" nzType="primary" [disabled]="syoriYmCanChange">
+                {{ 'common.button.nextMonth' | translate }}
+              </button>
+            </ng-template>
+
+            <ng-template #errorSyoriYm let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!-- 设置特殊字符 -->
+        <nz-form-item>
+          <nz-form-label nzFor="setSpecial" style="width: 120px">
+            {{ 'common.text.checkSpecialChar' | translate }}
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="errorCheckSpecial">
+            <input
+              nz-input
+              formControlName="setSpecial"
+              trim="blur"
+              [placeholder]="
+                'common.placeholder.input' | translate: { label: 'common.text.checkSpecialChar' | translate }
+              "
+              [ngStyle]="{ width: isSmall ? '150px' : '250px' }"
+            />
+            <ng-template #errorCheckSpecial let-control>
+              <ng-container *ngIf="control.hasError('validSpecial')">
+                {{ 'common.validator.validSpecialInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </ng-template>
+      <ng-template #elseTemplate>
+        <ng-container *ngIf="currentAppType === 'check'; then checkTemplate; else checkElseTemplate"></ng-container>
+        <ng-template #checkTemplate>
+          <!-- 盘点开始日期 -->
+          <nz-form-item>
+            <nz-form-label nzFor="checkStartDate" nzRequired style="width: 120px">
+              {{ 'common.text.checkStartDate' | translate }}
+            </nz-form-label>
+            <nz-form-control [nzErrorTip]="errorCheckStartDate">
+              <nz-date-picker
+                formControlName="checkStartDate"
+                [ngStyle]="{ width: isSmall ? '150px' : '250px' }"
+                [nzPlaceHolder]="
+                  'common.placeholder.input' | translate: { label: 'common.text.checkStartDate' | translate }
+                "
+              ></nz-date-picker>
+              <ng-template #errorCheckStartDate let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{ 'common.validator.requiredInput' | translate }}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </ng-template>
+        <!-- 设置特殊字符 -->
+        <nz-form-item>
+          <nz-form-label nzFor="setSpecial" style="width: 120px">
+            {{ 'common.text.checkSpecialChar' | translate }}
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="errorCheckSpecial">
+            <input
+              nz-input
+              formControlName="setSpecial"
+              trim="blur"
+              [placeholder]="
+                'common.placeholder.input' | translate: { label: 'common.text.checkSpecialChar' | translate }
+              "
+              [ngStyle]="{ width: isSmall ? '150px' : '250px' }"
+            />
+            <ng-template #errorCheckSpecial let-control>
+              <ng-container *ngIf="control.hasError('validSpecial')">
+                {{ 'common.validator.validSpecialInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <ng-template #checkElseTemplate>
+          <!-- 默认暂时没有数据 -->
+          <nz-empty></nz-empty>
+        </ng-template>
+      </ng-template>
+    </form>
+  </div>
+  <div *nzModalFooter>
+    <nz-space>
+      <div *nzSpaceItem>
+        <button
+          nz-button
+          nzType="primary"
+          type="submit"
+          [disabled]="!validateForm.valid || !currentAppType"
+          (click)="submitForm()"
+          appDebounceClick
+        >
+          <i nz-icon nzType="save" nzTheme="outline"></i>
+          {{ 'common.button.save' | translate }}
+        </button>
+      </div>
+      <div *nzSpaceItem>
+        <button nz-button (click)="showConfig = false">
+          <i nz-icon nzType="close" nzTheme="outline"></i>
+          {{ 'common.button.cancel' | translate }}
+        </button>
+      </div>
+    </nz-space>
+  </div>
+</nz-modal>

@@ -1,0 +1,33 @@
+<ng-template #user>
+  <div style="display: inline-flex; flex-direction: row" *ngIf="item.hasChange">
+    <nz-card [nzTitle]="'page.approve.beforeChange' | translate" style="flex: 1" nzType="inner" nzSize="small">
+      <span [title]="it" *ngFor="let it of item.oldValue">
+        <span class="user-value">
+          <nz-avatar nzIcon="user" nzSize="small"></nz-avatar>
+          {{ it }}
+        </span>
+      </span>
+    </nz-card>
+    <nz-card [nzTitle]="'page.approve.afterChange' | translate" style="flex: 1" nzType="inner" nzSize="small">
+      <span [title]="it" *ngFor="let it of item.value">
+        <span class="user-value">
+          <nz-avatar nzIcon="user" nzSize="small"></nz-avatar>
+          {{ it }}
+        </span>
+      </span>
+    </nz-card>
+  </div>
+  <div *ngIf="!item.hasChange">
+    <span [title]="it" *ngFor="let it of item.value">
+      <span class="user-value">
+        <nz-avatar nzIcon="user" nzSize="small"></nz-avatar>
+        {{ it }}
+      </span>
+    </span>
+  </div>
+</ng-template>
+
+<ng-template #content></ng-template>
+<span style="display: inline-flex; flex-direction: column; width: 100%" nz-popover [nzPopoverContent]="user">
+  <ng-content></ng-content>
+</span>

@@ -1,0 +1,29 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "downlevelIteration": true,
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "module": "es2020",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2018", "dom"],
+    "paths": {
+      "@shared": ["app/shared/index"],
+      "@shared/*": ["app/shared/*"],
+      "@core": ["app/core/index"],
+      "@core/*": ["app/core/*"],
+      "@store": ["app/store/index"],
+      "@store/*": ["app/store/*"],
+      "@api": ["app/api/index"],
+      "@api/*": ["app/api/*"],
+      "@env/*": ["environments/*"]
+    }
+  }
+}

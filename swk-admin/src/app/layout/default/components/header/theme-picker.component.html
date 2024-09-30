@@ -1,0 +1,50 @@
+<span
+  *ngIf="!nxShowText"
+  class="menu"
+  style="width: 41px"
+  (click)="showModal()"
+  nz-tooltip
+  nzTooltipPlacement="bottom"
+  [nzTooltipTitle]="'header.title.theme' | translate"
+>
+  <i nz-icon nzType="bg-colors" nzTheme="outline"></i>
+</span>
+<nz-modal
+  [(nzVisible)]="isVisible"
+  [nzTitle]="'header.title.theme' | translate"
+  (nzOnCancel)="handleCancel()"
+  [nzFooter]="null"
+>
+  <ng-template nzModalContent>
+    <nz-table #themesTable [nzData]="themes" [nzShowPagination]="false" nzBordered="true">
+      <tbody>
+        <tr *ngFor="let data of themesTable.data">
+          <td [nzAlign]="'left'">{{ 'header.theme.' + data.name | translate }}</td>
+          <td [nzAlign]="'center'" *ngIf="!isSmall">
+            <img [src]="'assets/themes/' + data.name + '/image.jpeg'" height="50" />
+          </td>
+          <td [nzAlign]="'center'">
+            <button
+              nz-button
+              (click)="changeTheme(data.name)"
+              style="width: 100px; border-radius: 50px"
+              [nzType]="data.name === (currentThemeName$ | async) ? 'primary' : null"
+            >
+              {{
+                (data.name !== (currentThemeName$ | async) ? 'common.button.apply' : 'common.button.activated')
+                  | translate
+              }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </ng-template>
+</nz-modal>
+
+<li nz-menu-item *ngIf="nxShowText" style="width: 120px">
+  <span title (click)="showModal()">
+    <i nz-icon nzType="bg-colors" nzTheme="outline"></i>
+    <span>{{ 'header.title.theme' | translate }}</span>
+  </span>
+</li>

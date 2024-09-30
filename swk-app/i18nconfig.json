@@ -1,0 +1,16 @@
+{
+    "defaultLocale": "ja-JP",
+    "locales": [
+        "zh-CN",
+        "en-US",
+        "ja-JP"
+    ],
+    "localePath": "i18n",
+    "generatedPath": "lib/generated",
+    "ltr": [
+        "zh-CN",
+        "en-US",
+        "ja-JP"
+    ],
+    "rtl": []
+}

@@ -1,0 +1,93 @@
+<form nz-form [formGroup]="fieldForm">
+  <nz-form-item>
+    <nz-form-label nzRequired="true">{{ 'page.datastore.field.apiKey' | translate }}</nz-form-label>
+    <nz-form-control [nzErrorTip]="fieldID">
+      <input
+        nz-input
+        formControlName="fieldID"
+        [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+        trim="blur"
+        [placeholder]="'common.placeholder.input' | translate: { label: 'page.datastore.field.apiKey' | translate }"
+      />
+      <ng-template #fieldID let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredInput' | translate }}
+        </ng-container>
+        <ng-container *ngIf="control.hasError('pattern')">
+          {{ 'common.validator.apiKey' | translate }}
+        </ng-container>
+        <ng-container *ngIf="control.hasError('duplicated')">
+          {{ 'common.validator.apiKeyDuplicated' | translate }}
+        </ng-container>
+        <ng-container *ngIf="control.hasError('systemUseApiKey')">
+          {{ 'common.validator.systemUseApiKey' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item *ngIf="fieldType === 'text' || fieldType === 'textarea'">
+    <nz-form-label nzRequired nzFor="minLength">{{ 'page.datastore.field.digit' | translate }}</nz-form-label>
+    <nz-form-control [nzErrorTip]="length">
+      <nz-input-number style="width: 145px" formControlName="minLength" [nzStep]="1"></nz-input-number>
+      <span style="display: inline-block; height: 30px; line-height: 30px; width: 10px; text-align: center">~</span>
+      <nz-input-number
+        style="width: 145px"
+        formControlName="maxLength"
+        (ngModelChange)="maxLengthChange()"
+        [nzStep]="1"
+      ></nz-input-number>
+      <ng-template #maxLength let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredInput' | translate }}
+        </ng-container>
+      </ng-template>
+      <ng-template #length let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredInput' | translate }}
+        </ng-container>
+        <ng-container *ngIf="control.hasError('minLength')">
+          {{ 'common.validator.lengthCompare' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="fieldType === 'number'">
+    <nz-form-label nzRequired nzFor="minValue">{{ 'page.datastore.field.ranges' | translate }}</nz-form-label>
+    <nz-form-control [nzErrorTip]="value">
+      <nz-input-number formControlName="minValue" [nzStep]="1" style="width: 145px"></nz-input-number>
+      <span style="display: inline-block; height: 30px; line-height: 30px; width: 10px; text-align: center">~</span>
+      <nz-input-number
+        formControlName="maxValue"
+        style="width: 145px"
+        (ngModelChange)="maxValueChange()"
+        [nzStep]="1"
+      ></nz-input-number>
+      <ng-template #value let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredInput' | translate }}
+        </ng-container>
+        <ng-container *ngIf="control.hasError('minValue')">
+          {{ 'common.validator.valueCompare' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item *ngIf="fieldType === 'number'">
+    <nz-form-label nzRequired nzFor="precision">{{ 'page.datastore.field.precision' | translate }}</nz-form-label>
+    <nz-form-control [nzErrorTip]="precision">
+      <nz-input-number
+        formControlName="precision"
+        style="width: 300px"
+        [nzMin]="0"
+        [nzMax]="9"
+        [nzStep]="1"
+      ></nz-input-number>
+      <ng-template #precision let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredInput' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+</form>

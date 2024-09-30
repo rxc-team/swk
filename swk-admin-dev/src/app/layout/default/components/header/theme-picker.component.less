@@ -1,0 +1,23 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    i {
+      font-size: 1.2em;
+    }
+
+    .menu {
+      padding: 0 12px;
+      display: inline-block;
+      height: 64px;
+      line-height: 64px;
+      text-align: center;
+      background-color: @component-background;
+      color: @text-color;
+
+      &:hover {
+        background-color: @background-color-base;
+      }
+    }
+  }
+});

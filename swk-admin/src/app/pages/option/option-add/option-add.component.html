@@ -1,0 +1,167 @@
+<div nz-row nzJustify="start" class="option-add">
+  <div nz-col nzSpan="24" class="option-add">
+    <form nz-form [formGroup]="optionForm" (ngSubmit)="submitForm($event)" nzLayout="vertical">
+      <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'page.option.optionInfo' | translate">
+        <nz-form-item *ngIf="!addNew">
+          <nz-form-label nzRequired="true">
+            {{ 'page.option.optionName' | translate }}
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="optionId">
+            <nz-select
+              [ngStyle]="{ width: isSmall ? '200px' : '300px' }"
+              formControlName="optionId"
+              nzAllowClear="true"
+              [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.option.optionName' | translate }"
+              (ngModelChange)="optionChange($event)"
+            >
+              <nz-option
+                *ngFor="let item of optionList"
+                [nzLabel]="item.option_name | translate"
+                [nzValue]="item.option_id"
+              ></nz-option>
+            </nz-select>
+            <ng-template #optionId let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredSelect' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">
+                {{ 'page.option.optionIDPattern' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <p></p>
+        <nz-form-item *ngIf="addNew">
+          <nz-form-label nzRequired="true">
+            {{ 'page.option.optionID' | translate }}
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="optionIdNew">
+            <input
+              [ngStyle]="{ width: isSmall ? '200px' : '300px' }"
+              nz-input
+              trim="blur"
+              formControlName="optionIdNew"
+              [placeholder]="'common.placeholder.input' | translate: { label: 'page.option.optionID' | translate }"
+            />
+            <a (click)="reset()">
+              &nbsp;&nbsp;
+              <i nz-icon nzType="close-circle" nzTheme="outline" style="font-size: 1.5em"></i>
+            </a>
+            <ng-template #optionIdNew let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">
+                {{ 'page.option.optionIDPattern' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <p></p>
+        <nz-form-item *ngIf="addNew">
+          <nz-form-label nzRequired="true">{{ 'page.option.optionName' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="optionName">
+            <input
+              [ngStyle]="{ width: isSmall ? '200px' : '300px' }"
+              nz-input
+              trim="blur"
+              formControlName="optionName"
+              [placeholder]="'common.placeholder.input' | translate: { label: 'page.option.optionName' | translate }"
+            />
+            <ng-template #optionName let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.optionNameDuplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <p></p>
+        <nz-form-item>
+          <nz-form-label>{{ 'page.option.optionMemo' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="errorNote">
+            <textarea
+              formControlName="optionMemo"
+              [ngStyle]="{ width: isSmall ? '200px' : '300px' }"
+              [readonly]="!addNew"
+              trim="blur"
+              nz-input
+              rows="3"
+              [placeholder]="(hasMemo ? 'page.option.optionMemo' : '') | translate"
+            ></textarea>
+            <ng-template #errorNote let-control></ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-card>
+      <br />
+      <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'page.option.optionSubInfo' | translate">
+        <nz-form-item>
+          <nz-form-label nzRequired="true">{{ 'page.option.optionSubName' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="optionLabel">
+            <input
+              [ngStyle]="{ width: isSmall ? '200px' : '300px' }"
+              #optionName
+              nz-input
+              trim="blur"
+              formControlName="optionLabel"
+              [placeholder]="'common.placeholder.input' | translate: { label: 'page.option.optionSubName' | translate }"
+            />
+            <ng-template #optionLabel let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.optionLabelDuplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <p></p>
+        <nz-form-item>
+          <nz-form-label nzRequired="true">{{ 'page.option.optionValue' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="optionValue">
+            <input
+              [ngStyle]="{ width: isSmall ? '200px' : '300px' }"
+              nz-input
+              trim="blur"
+              formControlName="optionValue"
+              [placeholder]="'common.placeholder.input' | translate: { label: 'page.option.optionValue' | translate }"
+            />
+            <ng-template #optionValue let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('pattern')">
+                {{ 'common.validator.apiKeyOption' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.optionValueDuplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-card>
+      <br />
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" type="submit" [disabled]="!optionForm.valid">
+            <i nz-icon nzType="plus" nzTheme="outline"></i>
+            {{ 'common.button.save' | translate }}
+          </button>
+          <button nz-button type="button" (click)="reset()">
+            <i nz-icon nzType="redo" nzTheme="outline"></i>
+            {{ 'common.button.reset' | translate }}
+          </button>
+          <button nz-button type="button" (click)="cancel()">
+            <i nz-icon nzType="close" nzTheme="outline"></i>
+            {{ 'common.button.cancel' | translate }}
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,66 @@
+<nz-page-header class="site-page-header">
+  <!--title-->
+  <nz-page-header-title>{{ 'page.generage.uploadTitle' | translate }}</nz-page-header-title>
+  <!--extra-->
+  <nz-page-header-extra>
+    <button nz-button (click)="clear()" [disabled]="csvHeader.length === 0">
+      {{ 'common.button.cancel' | translate }}
+    </button>
+    <button nz-button nzType="primary" (click)="next()" [disabled]="csvHeader.length === 0">
+      {{ 'common.button.next' | translate }}
+    </button>
+  </nz-page-header-extra>
+
+  <!--content-->
+  <nz-page-header-content>
+    <div nz-row>
+      <div class="content">
+        <p nz-paragraph>
+          {{ 'page.generage.uploadSubTitle' | translate }}
+        </p>
+      </div>
+    </div>
+  </nz-page-header-content>
+</nz-page-header>
+
+<nz-upload
+  *ngIf="csvHeader.length === 0"
+  nzType="drag"
+  [nzMultiple]="false"
+  [(nzFileList)]="fileList"
+  [nzBeforeUpload]="beforeUpload"
+  nzAccept=".csv"
+>
+  <p class="ant-upload-drag-icon">
+    <i nz-icon nzType="inbox"></i>
+  </p>
+  <p class="ant-upload-text">{{ 'page.generage.uploadTips1' | translate }}</p>
+  <p class="ant-upload-hint">{{ 'page.generage.uploadTips2' | translate }}</p>
+</nz-upload>
+
+<div *ngIf="csvHeader.length > 0">
+  <nz-table
+    #nzTable
+    [nzData]="csvData"
+    [nzPageSize]="100"
+    nzSize="small"
+    [nzScroll]="{ y: '500px' }"
+    [nzShowTotal]="rangeTemplate"
+  >
+    <thead>
+      <tr>
+        <th *ngFor="let item of csvHeader" nzWidth="100px">{{ item }}</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of nzTable.data">
+        <td *ngFor="let col of row">{{ col }}</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </nz-table>
+  <ng-template #rangeTemplate let-range="range" let-total>
+    {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+  </ng-template>
+</div>

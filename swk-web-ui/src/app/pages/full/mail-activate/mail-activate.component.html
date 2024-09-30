@@ -1,0 +1,46 @@
+<div class="mail-activate">
+  <div nz-row nzJustify="center" nzAlign="top">
+    <div nz-col nzLg="20" nzXl="10" class="mail-activate-body">
+      <nz-row nzJustify="center">
+        <div nz-col nzSpan="12" class="mail-activate-body-image"></div>
+        <div nz-col nzSpan="12">
+          <div nz-row nzJustify="start" nzAlign="top">
+            <nz-col nzSpan="24" style="text-align: center">
+              <img src="/assets/themes/default/image/logo/logo.horizontal.svg" style="padding: 20px; height: 80px" />
+            </nz-col>
+            <nz-col nzSpan="24" style="text-align: center">
+              <b style="font-size: larger">{{ 'page.mailActive.title' | translate }}</b>
+            </nz-col>
+            <nz-col nzSpan="24">
+              <form nz-form [formGroup]="validateForm" class="mail-activate-form" (ngSubmit)="submitForm()">
+                <nz-form-item>
+                  <nz-form-control>
+                    <nz-input-group [nzPrefix]="prefixUser">
+                      <input type="text" nz-input formControlName="loginId" [disabled]="true" />
+                    </nz-input-group>
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-control>
+                    <nz-input-group [nzPrefix]="prefixMail">
+                      <input type="text" nz-input formControlName="email" [disabled]="true" />
+                    </nz-input-group>
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-control>
+                    <button nz-button class="mail-activate-form-button" [nzType]="'primary'">
+                      {{ 'common.button.active' | translate }}
+                    </button>
+                  </nz-form-control>
+                </nz-form-item>
+              </form>
+              <ng-template #prefixUser><i nz-icon nzType="user"></i></ng-template>
+              <ng-template #prefixMail><i nz-icon nzType="mail"></i></ng-template>
+            </nz-col>
+          </div>
+        </div>
+      </nz-row>
+    </div>
+  </div>
+</div>

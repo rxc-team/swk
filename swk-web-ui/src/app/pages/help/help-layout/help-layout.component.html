@@ -1,0 +1,26 @@
+<div #c style="display: flex; flex-direction: row; justify-content: start">
+  <nz-affix [nzOffsetTop]="16" nzTarget=".nx-content-body">
+    <div style="width: 260px">
+      <nz-tree
+        [nzData]="types"
+        nzAsyncData
+        (nzClick)="click($event)"
+        nzBlockNode="true"
+        (nzExpandChange)="expand($event)"
+        [nzTreeTemplate]="nzTreeTemplate"
+      ></nz-tree>
+      <ng-template #nzTreeTemplate let-node let-origin="origin">
+        <ng-container *ngIf="!node.isLeaf">
+          <span class="title">{{ node.title }}</span>
+        </ng-container>
+        <ng-container *ngIf="node.isLeaf">
+          <span class="title">{{ node.title }}</span>
+        </ng-container>
+      </ng-template>
+    </div>
+  </nz-affix>
+
+  <div style="flex: 1; min-width: 300px; padding: 0 16px">
+    <router-outlet></router-outlet>
+  </div>
+</div>

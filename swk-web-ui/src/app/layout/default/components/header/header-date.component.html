@@ -1,0 +1,15 @@
+<ng-container *ngIf="checkStartDate">
+  <nz-button-group style="padding-left: 4px" *ngIf="!isSmall">
+    <button nz-button nzType="primary">
+      {{ 'common.text.checkStartDate' | translate }}
+    </button>
+    <button nz-button>
+      {{ checkStartDate }}
+    </button>
+  </nz-button-group>
+  <nz-button-group style="padding-left: 4px" *ngIf="isSmall">
+    <button nz-button nzType="primary">
+      {{ checkStartDate }}
+    </button>
+  </nz-button-group>
+</ng-container>

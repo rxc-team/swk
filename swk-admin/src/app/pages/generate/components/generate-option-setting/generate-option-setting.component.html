@@ -1,0 +1,122 @@
+<form nz-form [formGroup]="optionForm">
+  <nz-form-item>
+    <nz-form-label nzRequired="true">
+      {{ '选项组设置' }}
+    </nz-form-label>
+    <nz-form-control [nzErrorTip]="optionId">
+      <nz-select
+        [ngStyle]="{ width: isSmall ? '200px' : '300px' }"
+        formControlName="optionId"
+        nzAllowClear="true"
+        [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.option.optionName' | translate }"
+        (ngModelChange)="optionChange($event)"
+      >
+        <nz-option
+          *ngFor="let item of optionList"
+          [nzLabel]="item.option_name | translate"
+          [nzValue]="item.option_id"
+        ></nz-option>
+      </nz-select>
+      <ng-template #optionId let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredSelect' | translate }}
+        </ng-container>
+        <ng-container *ngIf="control.hasError('pattern')">
+          {{ 'page.option.optionIDPattern' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired="true">{{ 'page.option.optionName' | translate }}</nz-form-label>
+    <nz-form-control [nzErrorTip]="optionName">
+      <input
+        [ngStyle]="{ width: isSmall ? '200px' : '300px' }"
+        nz-input
+        trim="blur"
+        formControlName="optionName"
+        [placeholder]="'common.placeholder.input' | translate: { label: 'page.option.optionName' | translate }"
+      />
+      <ng-template #optionName let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredInput' | translate }}
+        </ng-container>
+
+        <ng-container *ngIf="control.hasError('duplicated')">
+          {{ 'common.validator.optionNameDuplicated' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>{{ 'page.option.optionMemo' | translate }}</nz-form-label>
+    <nz-form-control [nzErrorTip]="errorNote">
+      <textarea
+        formControlName="optionMemo"
+        [ngStyle]="{ width: isSmall ? '200px' : '300px' }"
+        trim="blur"
+        nz-input
+        rows="3"
+        [placeholder]="'page.option.optionMemo' | translate"
+      ></textarea>
+      <ng-template #errorNote let-control></ng-template>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<nz-table
+  #selectTable
+  [nzTitle]="title"
+  [nzData]="displayData"
+  nzBordered="true"
+  nzShowPagination="false"
+  nzSize="middle"
+  [nzPageSize]="500"
+  [nzScroll]="{ y: '200px' }"
+>
+  <ng-template #title>
+    <div style="display: flex">
+      <span style="flex: 1">选项列表</span>
+      <button
+        nz-button
+        nzSize="small"
+        nzType="primary"
+        [disabled]="!optionForm.get('optionName').value"
+        (click)="addOption()"
+      >
+        添加选项
+      </button>
+    </div>
+  </ng-template>
+  <thead>
+    <tr>
+      <ng-container *ngFor="let col of detailCols">
+        <th
+          *ngIf="col.width"
+          nz-resizable
+          nzBounds="window"
+          [nzWidth]="col.width"
+          [nzMinWidth]="60"
+          (nzResizeEnd)="onResizeDetail($event, col.title)"
+        >
+          {{ col.title | translate }}
+          <nz-resize-handle nzDirection="right"></nz-resize-handle>
+        </th>
+        <th *ngIf="!col.width">
+          {{ col.title | translate }}
+        </th>
+      </ng-container>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of selectTable.data">
+      <td>{{ item.option_label }}</td>
+      <td>
+        <input nz-input nzBorderless="true" [(ngModel)]="item.option_value" [ngModelOptions]="{ standalone: true }" />
+      </td>
+      <td>
+        {{ item.status }}
+      </td>
+    </tr>
+  </tbody>
+</nz-table>

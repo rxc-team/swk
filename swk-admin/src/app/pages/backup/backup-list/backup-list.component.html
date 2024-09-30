@@ -1,0 +1,216 @@
+<nz-collapse [nzBordered]="true">
+  <nz-collapse-panel [nzHeader]="'common.text.search' | translate">
+    <form nz-form [formGroup]="seachForm" nzLayout="inline">
+      <nz-form-item>
+        <nz-form-label nzFor="backupName">
+          {{ 'page.backup.backUpName' | translate }}
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="errorName">
+          <input
+            nz-input
+            formControlName="backupName"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.backup.backUpName' | translate }"
+            style="width: 200px"
+            trim="blur"
+          />
+          <ng-template #errorName let-control></ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button [nzType]="'primary'" (click)="search()">
+            <i nz-icon nzType="search"></i>
+            {{ 'common.button.search' | translate }}
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </nz-collapse-panel>
+</nz-collapse>
+<div style="padding-top: 16px" *ngIf="!isSmall; else elseButtonZoom">
+  <nz-space>
+    <div *nzSpaceItem>
+      <nz-button-group>
+        <button nz-button [nzType]="'primary'" (click)="foward()">
+          <i nz-icon nzType="plus"></i>
+          {{ 'common.button.backupAdd' | translate }}
+        </button>
+        <button nz-button [nzType]="'primary'" (click)="refresh()">
+          <i nz-icon nzType="sync"></i>
+          {{ 'common.button.refresh' | translate }}
+        </button>
+      </nz-button-group>
+    </div>
+    <!-- <div *nzSpaceItem>
+      <nz-button-group>
+        <button nz-button (click)="showFileSelect = true">
+          <i nz-icon nzType="redo"></i>
+          {{ 'common.button.localRecover' | translate }}
+        </button>
+        <button nz-button [disabled]="selectData.length !== 1" (click)="restore()">
+          <i nz-icon nzType="redo"></i>
+          {{ 'common.button.recover' | translate }}
+        </button>
+      </nz-button-group>
+    </div> -->
+    <div *nzSpaceItem>
+      <button nz-button nzType="primary" nzDanger="true" [disabled]="selectData.length === 0" (click)="deleteAll()">
+        <i nz-icon nzType="delete"></i>
+        {{ 'common.button.delete' | translate }}
+      </button>
+    </div>
+  </nz-space>
+</div>
+
+<!-- 画面变小，折叠按钮 -->
+<ng-template #elseButtonZoom>
+  <div nz-row style="padding-top: 16px">
+    <nz-button-group>
+      <button nz-button nzType="primary" (click)="foward()">
+        <i nz-icon nzType="plus"></i>
+        {{ 'common.button.backupAdd' | translate }}
+      </button>
+      <button
+        nz-button
+        nz-dropdown
+        nzType="primary"
+        [nzDropdownMenu]="buttonZoom"
+        [(nzVisible)]="isZoomFlg"
+        nzPlacement="bottomLeft"
+      >
+        <i nz-icon nzType="ellipsis"></i>
+      </button>
+    </nz-button-group>
+    <nz-dropdown-menu #buttonZoom="nzDropdownMenu">
+      <ul nz-menu nzSelectable>
+        <li nz-menu-item (click)="refresh()">
+          <i nz-icon nzType="sync"></i>
+          {{ 'common.button.refresh' | translate }}
+        </li>
+        <!-- <li nz-menu-item (click)="showFileSelect = true">
+          <i nz-icon nzType="redo"></i>
+          {{ 'common.button.localRecover' | translate }}
+        </li>
+        <li nz-menu-item (click)="restore()">
+          <i nz-icon nzType="redo"></i>
+          {{ 'common.button.recover' | translate }}
+        </li> -->
+        <li nz-menu-item (click)="deleteAll()">
+          <i nz-icon nzType="delete"></i>
+          {{ 'common.button.delete' | translate }}
+        </li>
+      </ul>
+    </nz-dropdown-menu>
+  </div>
+</ng-template>
+
+<div style="padding-top: 16px">
+  <nz-table
+    #basicTable
+    [nzData]="listData"
+    nzBordered="true"
+    nzSize="middle"
+    nzFrontPagination="true"
+    [(nzPageIndex)]="index"
+    [(nzPageSize)]="size"
+    [nzTotal]="total"
+    [nzShowTotal]="rangeTemplate"
+    [nzScroll]="{ y: '300px' }"
+  >
+    <thead>
+      <tr>
+        <th
+          nzWidth="40px"
+          nzLeft="0"
+          nzShowCheckbox
+          [(nzChecked)]="selectAll"
+          (nzCheckedChange)="checkAll($event)"
+        ></th>
+        <ng-container *ngFor="let col of cols">
+          <th
+            *ngIf="col.width"
+            nz-resizable
+            nzBounds="window"
+            [nzWidth]="col.width"
+            [nzMinWidth]="80"
+            (nzResizeEnd)="onResize($event, col.title)"
+          >
+            {{ col.title | translate }}
+            <nz-resize-handle nzDirection="right"></nz-resize-handle>
+          </th>
+          <th *ngIf="!col.width">
+            {{ col.title | translate }}
+          </th>
+        </ng-container>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-template ngFor let-data [ngForOf]="basicTable.data">
+        <tr>
+          <td nzLeft="0" nzShowCheckbox [(nzChecked)]="data.checked" (nzCheckedChange)="checked($event)"></td>
+          <td>{{ data.backup_name }}</td>
+          <td>{{ data.size | fileSize }}</td>
+          <td>{{ data.created_by | user }}</td>
+          <td>{{ data.created_at | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}</td>
+          <td>
+            <a (click)="downloadFile(data.backup_name, data.file_path, '1')">
+              {{ data.file_name }}
+            </a>
+          </td>
+          <td></td>
+        </tr>
+      </ng-template>
+    </tbody>
+  </nz-table>
+  <ng-template #rangeTemplate let-range="range" let-total>
+    {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+  </ng-template>
+</div>
+
+<!--本地恢复--文件选择-->
+<nz-modal [(nzVisible)]="showFileSelect" [nzTitle]="modalTitle" nzClosable="false" nzMaskClosable="false">
+  <ng-template #modalTitle>
+    {{ 'page.backup.localBackup' | translate }}
+  </ng-template>
+  <ng-template nzModalContent>
+    <nz-form-item>
+      <nz-form-label nzFor="zipFile" nzRequired>
+        <span>
+          {{ 'page.backup.localBackupFile' | translate }}
+          <i nz-icon nz-tooltip [nzTooltipTitle]="zipTitle" nzType="question-circle" nzTheme="outline"></i>
+          <ng-template #zipTitle>
+            <span>
+              {{ 'common.text.supportFile' | translate }}
+              <span style="margin-right: 4px; color: red">.zip</span>
+            </span>
+          </ng-template>
+        </span>
+      </nz-form-label>
+      <nz-form-control>
+        <nz-upload
+          nzListType="text"
+          [nzMultiple]="false"
+          [(nzFileList)]="zipFileList"
+          nzAccept=".zip"
+          [nzBeforeUpload]="beforeUpload"
+        >
+          <button nz-button nzType="primary">
+            <i nz-icon nzType="upload"></i>
+            {{ 'common.button.clickBackupFile' | translate }}
+          </button>
+        </nz-upload>
+      </nz-form-control>
+    </nz-form-item>
+  </ng-template>
+  <ng-template nzModalFooter>
+    <button nz-button nzType="primary" (click)="localRestore()" appDebounceClick [disabled]="zipFileList.length == 0">
+      <i nz-icon nzType="check" nzTheme="outline"></i>
+      {{ 'common.button.recover' | translate }}
+    </button>
+    <button nz-button (click)="cancel()">
+      <i nz-icon nzType="close" nzTheme="outline"></i>
+      {{ 'common.button.cancel' | translate }}
+    </button>
+  </ng-template>
+</nz-modal>

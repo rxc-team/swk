@@ -1,0 +1,108 @@
+<div nz-row nzJustify="start" class="base-setting">
+  <div nz-col nzSpan="24" class="base-setting-left">
+    <form nz-form [formGroup]="mailConfigForm" (ngSubmit)="submitUserForm($event)">
+      <nz-form-item>
+        <nz-form-label nzSpan="4" nzRequired="true">{{ 'page.userCenter.sendAddress' | translate }}</nz-form-label>
+        <nz-form-control nzSpan="16" [nzErrorTip]="errorTpl">
+          <input
+            nz-input
+            formControlName="mail"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.userCenter.sendAddress' | translate }"
+            type="email"
+            [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+            trim="blur"
+          />
+          <ng-template #errorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.hasError('email')">
+              {{ 'common.validator.email' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzSpan="4" nzRequired="true">{{ 'page.userCenter.emailPassword' | translate }}</nz-form-label>
+        <nz-form-control nzSpan="16" [nzErrorTip]="errorTp2">
+          <input
+            nz-input
+            formControlName="password"
+            [placeholder]="
+              'common.placeholder.input' | translate: { label: 'page.userCenter.emailPassword' | translate }
+            "
+            type="password"
+            [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+            trim="blur"
+          />
+          <ng-template #errorTp2 let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzSpan="4" nzRequired="true">{{ 'page.userCenter.smtp' | translate }}</nz-form-label>
+        <nz-form-control nzSpan="16" [nzErrorTip]="errorTp3">
+          <input
+            nz-input
+            formControlName="host"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.userCenter.smtp' | translate }"
+            [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+            trim="blur"
+          />
+          <ng-template #errorTp3 let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzSpan="4" nzRequired="true">{{ 'page.userCenter.port' | translate }}</nz-form-label>
+        <nz-form-control nzSpan="16" [nzErrorTip]="errorTp4">
+          <input
+            nz-input
+            formControlName="port"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.userCenter.port' | translate }"
+            [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+            trim="blur"
+          />
+          <ng-template #errorTp4 let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.hasError('halfNumber')">
+              {{ 'common.validator.halfNumber' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzSpan="4" nzRequired="true">{{ 'page.userCenter.ssl' | translate }}</nz-form-label>
+        <nz-form-control nzSpan="16" [nzErrorTip]="errorTp5">
+          <nz-switch formControlName="ssl"></nz-switch>
+          <ng-template #errorTp5 let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control nzOffset="4">
+          <button nz-button nzType="primary" [disabled]="!mailConfigForm.valid">
+            <i nz-icon nzType="edit" nzTheme="outline"></i>
+            {{ 'common.button.save' | translate }}
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+</div>

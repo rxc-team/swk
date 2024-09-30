@@ -1,0 +1,16 @@
+<span nz-popover [nzPopoverContent]="textarea">
+  <ng-content></ng-content>
+</span>
+<ng-template #textarea>
+  <div style="display: inline-flex; flex-direction: row" *ngIf="item.hasChange">
+    <nz-card [nzTitle]="'page.approve.beforeChange' | translate" style="flex: 1" nzType="inner" nzSize="small">
+      <textarea nz-input readonly *ngIf="item.hasChange" [rows]="(item.rows - 1) * 0.5">{{ item.oldValue }}</textarea>
+    </nz-card>
+    <nz-card [nzTitle]="'page.approve.afterChange' | translate" style="flex: 1" nzType="inner" nzSize="small">
+      <textarea nz-input readonly [rows]="(item.rows - 1) * 0.5">{{ item.value }}</textarea>
+    </nz-card>
+  </div>
+  <div *ngIf="!item.hasChange">
+    <textarea nz-input readonly [rows]="(item.rows - 1) * 0.5">{{ item.value }}</textarea>
+  </div>
+</ng-template>

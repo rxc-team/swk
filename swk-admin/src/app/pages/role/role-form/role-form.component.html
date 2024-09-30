@@ -1,0 +1,519 @@
+<form nz-form [formGroup]="roleForm" nzLayout="vertical">
+  <!-- 基本信息 -->
+  <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'common.text.baseInfo' | translate">
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.role.roleName' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="name">
+        <input
+          nz-input
+          style="width: 300px"
+          formControlName="name"
+          trim="blur"
+          [placeholder]="'common.placeholder.input' | translate: { label: 'page.role.roleName' | translate }"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+        />
+        <ng-template #name let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+
+          <ng-container *ngIf="control.hasError('duplicated')">
+            {{ 'common.validator.roleNameDuplicated' | translate }}
+          </ng-container>
+
+          <ng-container *ngIf="control.hasError('validName')">
+            {{ 'common.validator.validName' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <p></p>
+    <nz-form-item>
+      <nz-form-label>{{ 'page.role.description' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="errorName">
+        <textarea
+          formControlName="description"
+          nz-input
+          rows="3"
+          style="width: 300px"
+          trim="blur"
+          [placeholder]="'common.placeholder.input' | translate: { label: 'page.role.description' | translate }"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+        ></textarea>
+        <ng-template #errorName let-control></ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <p></p>
+    <nz-form-item>
+      <nz-form-label nzFor="ipWhitelist">{{ 'page.role.ipWhitelist' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="ipErrorName">
+        <textarea
+          formControlName="ipWhitelist"
+          nz-input
+          rows="5"
+          style="width: 300px"
+          trim="blur"
+          [placeholder]="'common.placeholder.input' | translate: { label: 'page.role.ipWhitelist' | translate }"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+        ></textarea>
+        <ng-template #ipErrorName let-control>
+          <ng-container *ngIf="control.hasError('validateIP')">
+            {{ 'page.role.ipError' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </nz-card>
+  <br />
+  <!-- 台账显示设置 -->
+  <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'page.role.datastoreSetting' | translate">
+    <nz-empty *ngIf="datastores.length === 0"></nz-empty>
+    <nz-tabset *ngIf="datastores.length > 0">
+      <nz-tab [nzTitle]="ds.datastore_name | translate" *ngFor="let ds of datastores">
+        <nz-empty *ngIf="dsPermission.actions.get(ds.datastore_id).groupMap.size === 0"></nz-empty>
+        <div *ngFor="let item of dsPermission.actions.get(ds.datastore_id).groupMap | keyvalue">
+          <h4 style="padding: 2px 16px" class="header">
+            {{ item.key }}
+          </h4>
+          <label
+            class="checkbox"
+            *ngFor="let act of item.value"
+            nz-checkbox
+            [(ngModel)]="act.checked"
+            (ngModelChange)="dsChange($event, act.key, ds.datastore_id)"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            {{ act.name[newLang.replace('-', '_')] }}
+          </label>
+        </div>
+        <div class="border" style="padding: 0px; margin-top: 8px">
+          <h4 style="padding: 2px 16px" class="header">{{ 'page.role.fieldSelect' | translate }}</h4>
+          <nz-list
+            style="margin-top: 8px; height: 150px; overflow: auto"
+            [nzDataSource]="dsPermission.actions.get(ds.datastore_id).fields"
+            nzSize="small"
+            [nzRenderItem]="fieldItem"
+            nzSplit="true"
+          >
+            <ng-template #fieldItem let-fieldItem>
+              <nz-list-item [nzContent]="content"></nz-list-item>
+              <ng-template #content>
+                <label
+                  nz-checkbox
+                  [(ngModel)]="fieldItem.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                  [nzDisabled]="fieldItem.is_fixed"
+                >
+                  {{ fieldItem.name | translate }}
+                </label>
+              </ng-template>
+            </ng-template>
+          </nz-list>
+        </div>
+      </nz-tab>
+    </nz-tabset>
+  </nz-card>
+  <!-- 台账显示设置 -->
+  <!-- <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'page.role.datastoreSetting' | translate">
+    <nz-empty *ngIf="datastores.length === 0"></nz-empty>
+    <nz-tabset *ngIf="datastores.length > 0">
+      <nz-tab [nzTitle]="tag.datastore_name | translate" *ngFor="let tag of datastores">
+        <div class="header border" style="padding: 4px 16px">
+          <label
+            nz-checkbox
+            [(ngModel)]="tag.checked"
+            (ngModelChange)="dsChange($event, tag.datastore_id)"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            {{ 'page.role.datastoreDisplay' | translate }}
+          </label>
+        </div>
+        <div *ngIf="actions.size > 0" style="margin-top: 8px">
+          <div>
+            <h4 style="padding: 2px 16px" class="header">{{ 'page.role.actionBase' | translate }}</h4>
+            <div style="padding: 2px 16px; height: 25px">
+              <ng-container
+                *ngIf="
+                  actions.get(tag.datastore_id).insert === undefined &&
+                  actions.get(tag.datastore_id).copy_insert === undefined &&
+                  actions.get(tag.datastore_id).delete === undefined &&
+                  actions.get(tag.datastore_id).sync === undefined &&
+                  actions.get(tag.datastore_id).update === undefined
+                "
+              >
+                {{ 'page.role.noRightData' | translate }}
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).insert !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).insert"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionInsert' | translate }}
+                </label>
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).update !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).update"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionUpdate' | translate }}
+                </label>
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).copy_insert !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).copy_insert"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionCopyInsert' | translate }}
+                </label>
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).delete !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).delete"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionDelete' | translate }}
+                </label>
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).sync !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).sync"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionSync' | translate }}
+                </label>
+              </ng-container>
+            </div>
+          </div>
+          <div style="margin-top: 8px">
+            <h4 style="padding: 2px 16px" class="header">{{ 'page.role.actionLease' | translate }}</h4>
+            <div style="padding: 2px 16px; height: 25px">
+              <ng-container
+                *ngIf="
+                  actions.get(tag.datastore_id).contract_update === undefined &&
+                  actions.get(tag.datastore_id).midway_cancel === undefined &&
+                  actions.get(tag.datastore_id).estimate_update === undefined &&
+                  actions.get(tag.datastore_id).principal_repayment === undefined &&
+                  actions.get(tag.datastore_id).contract_expire === undefined
+                "
+              >
+                {{ 'page.role.noRightData' | translate }}
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).contract_update !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).contract_update"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionContractUpdate' | translate }}
+                </label>
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).midway_cancel !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).midway_cancel"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionMidwayCancel' | translate }}
+                </label>
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).estimate_update !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).estimate_update"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionEstimateUpdate' | translate }}
+                </label>
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).contract_expire !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).contract_expire"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionContractExpire' | translate }}
+                </label>
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).principal_repayment !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).principal_repayment"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionPrincipalRepayment' | translate }}
+                </label>
+              </ng-container>
+            </div>
+          </div>
+          <div style="margin-top: 8px">
+            <h4 style="padding: 2px 16px" class="header">{{ 'page.role.actionImport' | translate }}</h4>
+            <div style="padding: 2px 16px; height: 25px">
+              <ng-container
+                *ngIf="
+                  actions.get(tag.datastore_id).csv === undefined &&
+                  actions.get(tag.datastore_id).image === undefined &&
+                  actions.get(tag.datastore_id).mapping === undefined
+                "
+              >
+                {{ 'page.role.noRightData' | translate }}
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).csv !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).csv"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionCsv' | translate }}
+                </label>
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).image !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).image"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionImage' | translate }}
+                </label>
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).mapping !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).mapping"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionMapping' | translate }}
+                </label>
+              </ng-container>
+            </div>
+          </div>
+          <div style="margin-top: 8px">
+            <h4 style="padding: 2px 16px" class="header">{{ 'page.role.actionExport' | translate }}</h4>
+            <div style="padding: 2px 16px">
+              <ng-container
+                *ngIf="
+                  actions.get(tag.datastore_id).tpl === undefined && actions.get(tag.datastore_id).data === undefined
+                "
+              >
+                {{ 'page.role.noRightData' | translate }}
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).tpl !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).tpl"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionTpl' | translate }}
+                </label>
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).data !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).data"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionData' | translate }}
+                </label>
+              </ng-container>
+            </div>
+          </div>
+          <div style="margin-top: 8px">
+            <h4 style="padding: 2px 16px" class="header">{{ 'page.role.actionOther' | translate }}</h4>
+            <div style="padding: 2px 16px; height: 25px">
+              <ng-container
+                *ngIf="
+                  actions.get(tag.datastore_id).history === undefined &&
+                  actions.get(tag.datastore_id).print === undefined &&
+                  actions.get(tag.datastore_id).clear === undefined &&
+                  actions.get(tag.datastore_id).group === undefined
+                "
+              >
+                {{ 'page.role.noRightData' | translate }}
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).history !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).history"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionHistory' | translate }}
+                </label>
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).print !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).print"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionPrint' | translate }}
+                </label>
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).clear !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).clear"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionClear' | translate }}
+                </label>
+              </ng-container>
+              <ng-container *ngIf="actions.get(tag.datastore_id).group !== undefined">
+                <label
+                  class="checkbox"
+                  nz-checkbox
+                  [(ngModel)]="actions.get(tag.datastore_id).group"
+                  [nzDisabled]="!tag.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  {{ 'page.role.actionGroup' | translate }}
+                </label>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <div class="border" style="padding: 0px; margin-top: 8px">
+          <h4 style="padding: 2px 16px" class="header">{{ 'page.role.fieldSelect' | translate }}</h4>
+          <nz-list
+            style="margin-top: 8px; height: 150px; overflow: auto"
+            [nzDataSource]="fields.get(tag.datastore_id)"
+            nzSize="small"
+            [nzRenderItem]="fieldItem"
+            nzSplit="true"
+          >
+            <ng-template #fieldItem let-fieldItem>
+              <nz-list-item [nzContent]="content"></nz-list-item>
+              <ng-template #content>
+                <label
+                  nz-checkbox
+                  [(ngModel)]="fieldItem.checked"
+                  [ngModelOptions]="{ standalone: true }"
+                  [nzDisabled]="!tag.checked || fieldItem.is_fixed"
+                >
+                  {{ fieldItem.field_name | translate }}
+                </label>
+              </ng-template>
+            </ng-template>
+          </nz-list>
+        </div>
+      </nz-tab>
+    </nz-tabset>
+  </nz-card> -->
+  <!-- 报表显示设置 -->
+  <br />
+  <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'page.role.reportSetting' | translate">
+    <nz-empty *ngIf="reports.length === 0"></nz-empty>
+    <nz-tabset *ngIf="reports.length > 0">
+      <nz-tab [nzTitle]="rp.report_name | translate" *ngFor="let rp of reports">
+        <nz-empty *ngIf="rpPermission.actions.get(rp.report_id).groupMap.size === 0"></nz-empty>
+        <div *ngFor="let item of rpPermission.actions.get(rp.report_id).groupMap | keyvalue">
+          <h4 style="padding: 2px 16px" class="header">
+            {{ item.key }}
+          </h4>
+          <label
+            class="checkbox"
+            *ngFor="let act of item.value"
+            nz-checkbox
+            [(ngModel)]="act.checked"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            {{ act.name[newLang.replace('-', '_')] }}
+          </label>
+        </div>
+      </nz-tab>
+    </nz-tabset>
+  </nz-card>
+  <!-- 文件夹显示设置 -->
+  <br />
+  <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'page.role.folderSetting' | translate">
+    <nz-empty *ngIf="folders.length === 0"></nz-empty>
+    <nz-tabset *ngIf="folders.length > 0">
+      <nz-tab [nzTitle]="fo.folder_name" *ngFor="let fo of folders">
+        <nz-empty *ngIf="docPermission.actions.get(fo.folder_id).groupMap.size === 0"></nz-empty>
+        <div *ngFor="let item of docPermission.actions.get(fo.folder_id).groupMap | keyvalue">
+          <h4 style="padding: 2px 16px" class="header">
+            {{ item.key }}
+          </h4>
+          <label
+            class="checkbox"
+            *ngFor="let act of item.value"
+            nz-checkbox
+            [(ngModel)]="act.checked"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            {{ act.name[newLang.replace('-', '_')] }}
+          </label>
+        </div>
+      </nz-tab>
+    </nz-tabset>
+  </nz-card>
+  <br />
+  <nz-form-item>
+    <nz-space>
+      <div *nzSpaceItem>
+        <button
+          nz-button
+          nzType="primary"
+          [disabled]="!roleForm.valid"
+          appDebounceClick
+          (click)="submitroleForm($event, roleForm.value)"
+        >
+          <i nz-icon [nzType]="'save'" nzTheme="outline"></i>
+          {{ 'common.button.save' | translate }}
+        </button>
+      </div>
+      <div *nzSpaceItem>
+        <button nz-button nzType="default" (click)="reset()" *ngIf="status === 'add'">
+          <i nz-icon nzType="redo" nzTheme="outline"></i>
+          {{ 'common.button.reset' | translate }}
+        </button>
+      </div>
+      <div *nzSpaceItem>
+        <button nz-button nzType="default" (click)="cancel()">
+          <i nz-icon nzType="close" nzTheme="outline"></i>
+          {{ 'common.button.cancel' | translate }}
+        </button>
+      </div>
+    </nz-space>
+  </nz-form-item>
+</form>

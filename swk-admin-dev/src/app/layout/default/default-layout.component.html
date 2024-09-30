@@ -1,0 +1,123 @@
+<!--
+ * @Descripttion: 
+ * @Author: Rxc 陳平
+ * @Date: 2020-06-28 09:21:10
+ * @LastEditors: Rxc 陳平
+ * @LastEditTime: 2020-08-17 11:23:19
+-->
+<app-http-spin></app-http-spin>
+<!-- 任务栏 -->
+<app-task-list></app-task-list>
+<!-- 头部 -->
+<nz-layout class="layout" style="height: 100%" *ngIf="!show">
+  <nz-header class="nx-header">
+    <div nz-row nzJustify="space-between">
+      <div nz-col nzSpan="*" class="nx-header-left">
+        <app-header-logo [width]="sliderWidth$ | async" *ngIf="!isSmall"></app-header-logo>
+        <span class="menu" style="width: 41px" (click)="toggle()">
+          <i nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
+        </span>
+      </div>
+      <div nz-col nzSpan="*" class="nx-header-right">
+        <app-header-i18n></app-header-i18n>
+        <app-theme-picker></app-theme-picker>
+        <app-header-notify></app-header-notify>
+        <app-header-user></app-header-user>
+      </div>
+    </div>
+  </nz-header>
+  <nz-layout style="height: 100%">
+    <!--  侧边栏 -->
+    <nz-sider
+      class="nx-sider"
+      (nzCollapsedChange)="toggle($event)"
+      [nzWidth]="sliderWidth$ | async"
+      [nzCollapsedWidth]="sliderWidth$ | async"
+      [nzTheme]="(currentTheme$ | async).mode"
+      [nzCollapsed]="isCollapsed"
+      style="overflow-y: auto; overflow-x: hidden"
+    >
+      <ul
+        nz-menu
+        [nzMode]="'inline'"
+        [nzTheme]="(currentTheme$ | async).mode"
+        style="height: 100%"
+        [nzInlineCollapsed]="isCollapsed"
+      >
+        <div *ngIf="(sliderWidth$ | async) === 200" class="nx-sider-category">
+          <h3>{{ 'menu.subtitle.main' | translate }}</h3>
+        </div>
+        <ng-container
+          *ngTemplateOutlet="staticMenuTpl; context: { $implicit: (asideMenu$ | async).menu }"
+        ></ng-container>
+        <ng-template #staticMenuTpl let-menus>
+          <ng-container *ngFor="let menu of menus">
+            <ng-container *ngIf="menu.show">
+              <li
+                nz-menu-item
+                [nzPaddingLeft]="isCollapsed ? 0 : menu.level * 24"
+                *ngIf="!menu.children"
+                [routerLink]="menu.path"
+                nzMatchRouter
+                (click)="tabs(menu.path)"
+              >
+                <span title>
+                  <i nz-icon [nzType]="menu.icon" *ngIf="menu.icon"></i>
+                  <span [title]="menu.title | translate">{{ menu.title | translate }}</span>
+                </span>
+              </li>
+              <li
+                nz-submenu
+                [nzPaddingLeft]="isCollapsed ? 0 : menu.level * 24"
+                *ngIf="menu.children"
+                [nzOpen]="menu.open"
+              >
+                <span title>
+                  <i nz-icon [nzType]="menu.icon" *ngIf="menu.icon"></i>
+                  <span [title]="menu.title | translate">{{ menu.title | translate }}</span>
+                </span>
+                <ul>
+                  <ng-container *ngTemplateOutlet="staticMenuTpl; context: { $implicit: menu.children }"></ng-container>
+                </ul>
+              </li>
+            </ng-container>
+          </ng-container>
+        </ng-template>
+      </ul>
+    </nz-sider>
+
+    <nz-layout style="height: 100%">
+      <nz-content class="nx-content" style="height: 100%">
+        <div class="nx-content-header">
+          <nz-breadcrumb>
+            <nz-breadcrumb-item *ngIf="canBack">
+              <a (click)="back()">
+                <i nz-icon nzType="left"></i>
+                {{ 'common.text.return' | translate }}
+              </a>
+            </nz-breadcrumb-item>
+            <nz-breadcrumb-item *ngIf="!canBack">
+              <a [routerLink]="['/home']">
+                <i nz-icon nzType="home"></i>
+                {{ 'route.home' | translate }}
+              </a>
+            </nz-breadcrumb-item>
+            <nz-breadcrumb-item *ngIf="breadcrumb">
+              {{ breadcrumb | translate }}
+            </nz-breadcrumb-item>
+          </nz-breadcrumb>
+        </div>
+        <div class="nx-content-body" style="position: relative">
+          <router-outlet></router-outlet>
+        </div>
+      </nz-content>
+      <nz-footer style="text-align: center; height: 50px">
+        <div nz-row nzJustify="center" nzAlign="middle">
+          <div nz-col nzSpan="24">
+            {{ 'footer.copyright' | translate }}
+          </div>
+        </div>
+      </nz-footer>
+    </nz-layout>
+  </nz-layout>
+</nz-layout>

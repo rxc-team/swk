@@ -1,0 +1,75 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    .dynamic-delete-button {
+      cursor: pointer;
+      position: relative;
+      top: 4px;
+      font-size: 24px;
+      color: #999;
+      transition: all 0.3s;
+    }
+    
+    .dynamic-delete-button:hover {
+      color: #777;
+    }
+    
+    .passenger-input {
+      width: 60%;
+      margin-right: 8px;
+    }
+    
+    [nz-form] {
+      max-width: 800px;
+    }
+    
+    .add-button {
+      width: 60%;
+    }
+    
+    .value {
+      display: inline-block;
+      height: 100%;
+      color: #000000;
+    }
+    
+    .bround {
+      border: 1px solid #d8d8d8;
+      padding: 2px;
+      color: #ffffff;
+      background-color: orchid;
+      border-radius: 4px;
+    }
+    
+    .inputfile {
+      display: none;
+    }
+    
+    .upload {
+      line-height: 32px;
+      margin-right: 16px;
+    }
+    
+    button {
+      margin-right: 16px;
+    }
+    
+    mwlResizable {
+      box-sizing: border-box; // required for the enableGhostResize option to work
+    }
+    
+    .content {
+      position: relative;
+      height: 18px;
+    }
+    
+    .text {
+      width: 100%;
+      position: absolute;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+});

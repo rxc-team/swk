@@ -1,0 +1,25 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    .box {
+        padding-left: @icon-size; 
+        height: 14px; 
+        line-height: 14px;
+
+        .span {
+            display: inline-block;
+            width: @checkbox-size;
+            text-align: center;
+            margin-right: 8px;
+            background-color: @primary-1;
+            border: 1px solid @border-color-base;
+        }
+        .active {
+            background-color: @primary-color;
+            color: @white;
+            border: none;
+        }
+    }
+  }
+});

@@ -1,0 +1,67 @@
+<nz-tree-view [nzTreeControl]="treeControl" [nzDataSource]="dataSource">
+  <nz-tree-node *nzTreeNodeDef="let node" nzTreeNodePadding>
+    <div style="display: flex; flex-direction: column">
+      <div class="box">
+        <span class="span">R</span>
+        <span class="span">W</span>
+        <span class="span">D</span>
+      </div>
+
+      <div style="display: flex; flex-direction: row">
+        <nz-tree-node-toggle nzTreeNodeNoopToggle></nz-tree-node-toggle>
+        <nz-tree-node-checkbox
+          [nzDisabled]="node.canChange"
+          [nzChecked]="node.canFind"
+          (nzClick)="leafItemSelectionToggle(node)"
+        ></nz-tree-node-checkbox>
+        <nz-tree-node-checkbox
+          [nzDisabled]="!node.canFind"
+          [nzChecked]="node.canUpdate"
+          (nzClick)="canUpdateToggle(node)"
+        ></nz-tree-node-checkbox>
+        <nz-tree-node-checkbox
+          [nzDisabled]="!node.canFind"
+          [nzChecked]="node.canDelete"
+          (nzClick)="canDeleteToggle(node)"
+        ></nz-tree-node-checkbox>
+        <nz-tree-node-option [nzDisabled]="node.disabled" (nzClick)="leafItemSelectionToggle(node)">
+          {{ node.group_name | translate }}
+        </nz-tree-node-option>
+      </div>
+    </div>
+  </nz-tree-node>
+
+  <nz-tree-node *nzTreeNodeDef="let node; when: hasChild" nzTreeNodePadding>
+    <div style="display: flex; flex-direction: column">
+      <div class="box">
+        <span class="span">R</span>
+        <span class="span">W</span>
+        <span class="span">D</span>
+      </div>
+
+      <div style="display: flex; flex-direction: row">
+        <nz-tree-node-toggle>
+          <i nz-icon nzType="caret-down" nzTreeNodeToggleRotateIcon></i>
+        </nz-tree-node-toggle>
+        <nz-tree-node-checkbox
+          [nzDisabled]="node.canChange"
+          [nzChecked]="node.canFind"
+          (nzClick)="itemSelectionToggle(node)"
+        ></nz-tree-node-checkbox>
+        <nz-tree-node-checkbox
+          [nzDisabled]="!node.canFind"
+          [nzChecked]="node.canUpdate"
+          (nzClick)="canUpdateToggle(node)"
+        ></nz-tree-node-checkbox>
+        <nz-tree-node-checkbox
+          [nzDisabled]="!node.canFind"
+          [nzChecked]="node.canDelete"
+          (nzClick)="canDeleteToggle(node)"
+        ></nz-tree-node-checkbox>
+        <nz-tree-node-option [nzDisabled]="node.disabled" (nzClick)="itemSelectionToggle(node)">
+          {{ node.group_name | translate }}
+        </nz-tree-node-option>
+      </div>
+    </div>
+  </nz-tree-node>
+</nz-tree-view>

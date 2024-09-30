@@ -1,0 +1,115 @@
+<form nz-form [formGroup]="form" nzLayout="vertical">
+  <!-- 基本信息 -->
+  <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'common.text.baseInfo' | translate">
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'page.dataAccess.group' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="groupId">
+        <nz-select
+          style="width: 200px"
+          formControlName="groupId"
+          (ngModelChange)="groupChange($event)"
+          [nzDisabled]="status === 'edit'"
+          [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.dataAccess.group' | translate }"
+          nzAllowClear
+        >
+          <nz-option
+            *ngFor="let item of groups"
+            [nzLabel]="item.group_name | translate"
+            [nzValue]="item.group_id"
+          ></nz-option>
+        </nz-select>
+        <ng-template #groupId let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'page.dataAccess.role' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="roleId">
+        <nz-select
+          style="width: 200px"
+          formControlName="roleId"
+          (ngModelChange)="roleChange($event)"
+          [nzDisabled]="status === 'edit'"
+          [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.dataAccess.role' | translate }"
+          nzAllowClear
+        >
+          <nz-option *ngFor="let item of roles" [nzLabel]="item.role_name" [nzValue]="item.role_id"></nz-option>
+        </nz-select>
+        <ng-template #roleId let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </nz-card>
+</form>
+<br />
+<!-- 台账显示设置 -->
+<nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'page.role.datastoreSetting' | translate">
+  <nz-empty *ngIf="dataAccess.length === 0"></nz-empty>
+  <nz-tabset *ngIf="dataAccess.length > 0">
+    <nz-tab [nzTitle]="ds.datastore_name | translate" *ngFor="let ds of dataAccess">
+      <!-- <nz-empty *ngIf="dsPermission.actions.get(ds.datastore_id).groupMap.size === 0"></nz-empty> -->
+
+      <app-tree-access [data]="ds.actions" (dataChange)="setNodes(ds, $event)"></app-tree-access>
+
+      <!-- <nz-tree
+        [nzData]="ds.actions"
+        nzExpandAll
+        nzBlockNode="true"
+        nzCheckable="true"
+        (nzCheckBoxChange)="checkBoxChange($event, ds.actions)"
+        [nzTreeTemplate]="nzTreeTemplate"
+      >
+        <ng-template #nzTreeTemplate let-node>
+          <div class="custom-node" [title]="node.title | translate">
+            <div *ngIf="!node.isLeaf">
+              <span class="folder-name">{{ node.title | translate }}</span>
+              <span style="float: right">
+                <label nz-checkbox [(ngModel)]="node.isChecked" [nzDisabled]="true">查看</label>
+                <label nz-checkbox [(ngModel)]="node.origin.can_update" [nzDisabled]="!node.isChecked">更新</label>
+                <label nz-checkbox [(ngModel)]="node.origin.can_delete" [nzDisabled]="!node.isChecked">删除</label>
+              </span>
+            </div>
+            <div *ngIf="node.isLeaf">
+              <span class="file-name">{{ node.title | translate }}</span>
+              <span style="float: right">
+                <label nz-checkbox [(ngModel)]="node.isChecked" [nzDisabled]="true">查看</label>
+                <label nz-checkbox [(ngModel)]="node.origin.can_update" [nzDisabled]="!node.isChecked">更新</label>
+                <label nz-checkbox [(ngModel)]="node.origin.can_delete" [nzDisabled]="!node.isChecked">删除</label>
+              </span>
+            </div>
+          </div>
+        </ng-template>
+      </nz-tree> -->
+    </nz-tab>
+  </nz-tabset>
+</nz-card>
+
+<br />
+<nz-form-item>
+  <nz-space>
+    <ng-template nzSpaceItem>
+      <button
+        nz-button
+        nzType="primary"
+        [disabled]="!form.valid"
+        appDebounceClick
+        (click)="submitroleForm($event, form.value)"
+      >
+        <i nz-icon [nzType]="'save'" nzTheme="outline"></i>
+        {{ 'common.button.save' | translate }}
+      </button>
+    </ng-template>
+    <ng-template nzSpaceItem>
+      <button nz-button nzType="default" (click)="cancel()">
+        <i nz-icon nzType="close" nzTheme="outline"></i>
+        {{ 'common.button.cancel' | translate }}
+      </button>
+    </ng-template>
+  </nz-space>
+</nz-form-item>

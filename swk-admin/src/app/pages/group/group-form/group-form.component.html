@@ -1,0 +1,47 @@
+<div
+  *ngIf="!show"
+  style="text-align: center; display: flex; justify-content: center; align-items: center; height: 150px"
+>
+  <nz-spin nzSimple></nz-spin>
+</div>
+<form nz-form [formGroup]="validateForm" *ngIf="show">
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="name">{{ 'page.group.groupName' | translate }}</nz-form-label>
+    <nz-form-control [nzErrorTip]="reName">
+      <input
+        type="text"
+        nz-input
+        trim="blur"
+        formControlName="name"
+        style="width: 300px"
+        [placeholder]="'common.placeholder.input' | translate: { label: 'page.group.groupName' | translate }"
+      />
+      <ng-template #reName let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredInput' | translate }}
+        </ng-container>
+
+        <ng-container *ngIf="control.hasError('duplicated')">
+          {{ 'common.validator.groupNameDuplicated' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item *ngIf="!(validateForm.get('parent_id').value === 'root')">
+    <nz-form-label nzRequired nzFor="parent_id">{{ 'page.group.parentgroup' | translate }}</nz-form-label>
+    <nz-form-control [nzErrorTip]="reParentId">
+      <nz-tree-select
+        formControlName="parent_id"
+        style="width: 300px"
+        [nzNodes]="selectNodes"
+        nzDefaultExpandAll
+        [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.group.parentgroup' | translate }"
+      ></nz-tree-select>
+      <ng-template #reParentId let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredSelect' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+</form>

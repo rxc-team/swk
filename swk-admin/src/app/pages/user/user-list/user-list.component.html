@@ -1,0 +1,285 @@
+<nz-collapse [nzBordered]="true">
+  <nz-collapse-panel [nzHeader]="'common.text.search' | translate">
+    <form nz-form [formGroup]="seachForm" nzLayout="inline">
+      <nz-form-item>
+        <nz-form-label nzFor="name">{{ 'page.user.userName' | translate }}</nz-form-label>
+        <nz-form-control [nzErrorTip]="name">
+          <input nz-input formControlName="name" trim="blur"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.user.userName' | translate }"
+            style="width: 200px" />
+          <ng-template #name let-control></ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="email">{{ 'page.user.email' | translate }}</nz-form-label>
+        <nz-form-control [nzErrorTip]="email">
+          <input nz-input formControlName="email" type="email" trim="blur"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.user.email' | translate }"
+            style="width: 200px" />
+          <ng-template #email let-control>
+            <ng-container *ngIf="control.hasError('email')">
+              {{ 'common.validator.loginId' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="group">
+          {{ 'page.user.userGroup' | translate }}
+        </nz-form-label>
+        <nz-form-control>
+          <nz-select formControlName="group" style="width: 200px" nzAllowClear
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.user.userGroup' | translate }">
+            <nz-option [nzValue]="group.group_id" [nzLabel]="group.group_name | translate"
+              *ngFor="let group of groupsSelect"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="app">{{ 'page.user.app' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select formControlName="app" style="width: 200px" nzAllowClear
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.user.app' | translate }">
+            <nz-option [nzValue]="app.app_id" [nzLabel]="app.app_name | translate"
+              *ngFor="let app of appsSelect"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="role">{{ 'page.user.userRole' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select formControlName="role" style="width: 200px" nzAllowClear
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.user.userRole' | translate }">
+            <nz-option [nzValue]="role.role_id" [nzLabel]="role.role_name" *ngFor="let role of rolesSelect"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="status">{{ 'page.user.mailverify' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select formControlName="status" style="width: 200px" nzAllowClear
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.user.mailverify' | translate }">
+            <nz-option [nzLabel]="'page.userCenter.noticeEmailVerified' | translate " nzValue="Verified"></nz-option>
+            <nz-option [nzLabel]="'page.userCenter.noticeEmailVerifying' | translate " nzValue="Verifying"></nz-option>
+            <nz-option [nzLabel]="'page.userCenter.noticeEmailUnVerified' | translate "
+              nzValue="UnVerified"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <label nz-checkbox formControlName="errorCount" style="text-align: right">
+            {{ 'page.user.errorCount' | translate }}
+          </label>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <label nz-checkbox formControlName="invalidatedIn" style="text-align: right">
+            {{ 'page.user.invalidatedIn' | translate }}
+          </label>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button [nzType]="'primary'" (click)="init()" [disabled]="seachForm.invalid">
+            <i nz-icon nzType="search"></i>
+            {{ 'common.button.search' | translate }}
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </nz-collapse-panel>
+</nz-collapse>
+
+<div style="padding-top: 16px" *ngIf="!isSmall; else elseButtonZoom">
+  <nz-space>
+    <div *nzSpaceItem>
+      <nz-button-group>
+        <button nz-button [nzType]="'primary'" (click)="foward()" [disabled]="!canAddMoreUser">
+          <i nz-icon nzType="plus"></i>
+          {{ 'common.button.add' | translate }}
+        </button>
+        <button nz-button [nzType]="'primary'" (click)="refresh()">
+          <i nz-icon nzType="sync"></i>
+          {{ 'common.button.refresh' | translate }}
+        </button>
+      </nz-button-group>
+    </div>
+    <div *nzSpaceItem>
+      <nz-button-group>
+        <button nz-button nzType="primary" nzDanger="true"
+          [disabled]="selectDataOfValid.length === 0 || selectData.length !== selectDataOfValid.length"
+          (click)="deleteAll()">
+          <i nz-icon nzType="rest"></i>
+          {{ 'common.button.invalid' | translate }}
+        </button>
+      </nz-button-group>
+    </div>
+    <div *nzSpaceItem>
+      <nz-button-group>
+        <button nz-button
+          [disabled]="selectDataOflocked.length === 0 || selectData.length !== selectDataOflocked.length"
+          (click)="unlock()">
+          <i nz-icon nzType="unlock"></i>
+          {{ 'common.button.unlock' | translate }}
+        </button>
+        <button nz-button [disabled]="
+            selectDataOfInvalid.length === 0 || selectData.length !== selectDataOfInvalid.length || !canRecoverUser
+          " (click)="recover()">
+          <i nz-icon nzType="redo"></i>
+          {{ 'common.button.recover' | translate }}
+        </button>
+        <button nz-button nzType="primary"
+          [disabled]="selectDataOfValid.length === 0 || selectData.length !== selectDataOfValid.length"
+          (click)="resetSelectedPassword()">
+          <i nz-icon nzType="redo"></i>
+          {{ 'common.button.resetPassword' | translate }}
+        </button>
+        <button nz-button nzType="primary"
+          [disabled]="selectDataOfValid.length === 0 || selectData.length !== selectDataOfValid.length"
+          (click)="mailverify()">
+          <i nz-icon nzType="mail"></i>
+          {{ 'common.button.mailverify' | translate }}
+        </button>
+      </nz-button-group>
+    </div>
+    <div *nzSpaceItem>
+      <nz-button-group>
+        <button nz-button (click)="uploadUsers()" [disabled]="!canAddMoreUser">
+          <i nz-icon nzType="upload"></i>
+          {{ 'common.button.upload' | translate }}
+        </button>
+        <button nz-button [disabled]="listOfDataDisplay.length === 0" (click)="downloadCsv()">
+          <i nz-icon nzType="download"></i>
+          {{ 'common.button.download' | translate }}
+        </button>
+      </nz-button-group>
+    </div>
+  </nz-space>
+</div>
+
+<!-- 画面变小，折叠按钮 -->
+<ng-template #elseButtonZoom>
+  <div nz-row style="padding-top: 16px">
+    <nz-button-group>
+      <button nz-button nzType="primary" (click)="foward()" [disabled]="!canAddMoreUser">
+        <i nz-icon nzType="plus"></i>
+        {{ 'common.button.add' | translate }}
+      </button>
+      <button nz-button nz-dropdown nzType="primary" [nzDropdownMenu]="buttonZoom" [(nzVisible)]="isZoomFlg"
+        nzPlacement="bottomLeft">
+        <i nz-icon nzType="ellipsis"></i>
+      </button>
+    </nz-button-group>
+    <nz-dropdown-menu #buttonZoom="nzDropdownMenu">
+      <ul nz-menu nzSelectable>
+        <li nz-menu-item (click)="refresh()">
+          <i nz-icon nzType="sync"></i>
+          {{ 'common.button.refresh' | translate }}
+        </li>
+        <li nz-menu-item (click)="deleteAll()"
+          [nzDisabled]="selectDataOfValid.length === 0 || selectData.length !== selectDataOfValid.length">
+          <i nz-icon nzType="rest"></i>
+          {{ 'common.button.invalid' | translate }}
+        </li>
+        <li nz-menu-item (click)="unlock()"
+          [nzDisabled]="selectDataOflocked.length === 0 || selectData.length !== selectDataOflocked.length">
+          <i nz-icon nzType="unlock"></i>
+          {{ 'common.button.unlock' | translate }}
+        </li>
+        <li nz-menu-item (click)="recover()" [nzDisabled]="
+            selectDataOfInvalid.length === 0 || selectData.length !== selectDataOfInvalid.length || !canRecoverUser
+          ">
+          <i nz-icon nzType="redo"></i>
+          {{ 'common.button.recover' | translate }}
+        </li>
+        <li nz-menu-item (click)="uploadUsers()" [disabled]="!canAddMoreUser">
+          <i nz-icon nzType="upload"></i>
+          {{ 'common.button.upload' | translate }}
+        </li>
+        <li nz-menu-item [disabled]="listOfDataDisplay.length === 0" (click)="downloadCsv()">
+          <i nz-icon nzType="download"></i>
+          {{ 'common.button.download' | translate }}
+        </li>
+      </ul>
+    </nz-dropdown-menu>
+  </div>
+</ng-template>
+
+<div style="padding-top: 16px">
+  <nz-table #basicTable [nzData]="listOfDataDisplay" nzBordered="true" nzSize="middle" [nzPageSize]="100"
+    [nzScroll]="{ y: '300px' }" [nzTotal]="listOfDataDisplay.length" [nzShowTotal]="rangeTemplate">
+    <thead>
+      <tr>
+        <th nzWidth="40px" nzLeft="0" nzShowCheckbox [(nzChecked)]="selectAll" (nzCheckedChange)="checkAll($event)">
+        </th>
+        <ng-container *ngFor="let col of cols">
+          <th *ngIf="col.width" nz-resizable nzBounds="window" [nzWidth]="col.width" [nzMinWidth]="60"
+            (nzResizeEnd)="onResize($event, col.title)">
+            {{ col.title | translate }}
+            <nz-resize-handle nzDirection="right"></nz-resize-handle>
+          </th>
+          <th *ngIf="!col.width">
+            {{ col.title | translate }}
+          </th>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-template ngFor let-data [ngForOf]="basicTable.data">
+        <tr (click)="data.deleted_by ? null : goToDetail(data.user_id)"
+          [style.background]="data.deleted_by ? '#eeeeee' : data.error_count >= maxErrInputTimes ? '#FF0000' : ''">
+          <td nzLeft="0" nzShowCheckbox [nzDisabled]="data.user_type === 1" nzShowCheckbox [(nzChecked)]="data.checked"
+            (nzCheckedChange)="checked($event)"
+            [style.background]="data.deleted_by ? '#eeeeee' : data.error_count >= maxErrInputTimes ? '#FF0000' : ''">
+          </td>
+          <td>{{ data.user_name }}</td>
+          <td>{{ data.email }}</td>
+          <td>{{ getGroupName(data.group) | translate }}</td>
+          <td>
+            <span nz-popover nzType="primary" [nzPopoverContent]="tags" nzPopoverPlacement="bottomLeft">
+              <ng-container *ngFor="let item of data.apps">
+                <nz-tag [nzColor]="'orange'" *ngIf="getAppName(item) !== ''">{{ getAppName(item) | translate }}</nz-tag>
+              </ng-container>
+              <ng-template #tags>
+                <div style="padding: 16px; max-width: 300px">
+                  <span *ngFor="let item of data.apps">
+                    <nz-tag [nzColor]="'orange'" *ngIf="getAppName(item) !== ''">
+                      {{ getAppName(item) | translate }}
+                    </nz-tag>
+                  </span>
+                </div>
+              </ng-template>
+            </span>
+          </td>
+          <td>
+            <span nz-popover nzType="primary" [nzPopoverContent]="roles" nzPopoverPlacement="bottomLeft">
+              <nz-tag [nzColor]="'orange'" *ngFor="let item of data.roles">
+                {{ getRoleName(item) }}
+              </nz-tag>
+              <ng-template #roles>
+                <div style="padding: 16px; max-width: 300px">
+                  <nz-tag [nzColor]="'orange'" *ngFor="let item of data.roles">
+                    {{ getRoleName(item) }}
+                  </nz-tag>
+                </div>
+              </ng-template>
+            </span>
+          </td>
+          <td *ngIf="data.notice_email_status == 'Verified'">{{ 'page.userCenter.noticeEmailVerified' | translate }}
+          </td>
+          <td *ngIf="data.notice_email_status == 'Verifying'">{{ 'page.userCenter.noticeEmailVerifying' | translate }}
+          </td>
+          <td *ngIf="data.notice_email_status == 'UnVerified'"> {{ 'page.userCenter.noticeEmailUnVerified' | translate
+            }}</td>
+          <td>{{ data.created_at | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}</td>
+          <td>{{ data.updated_at | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}</td>
+        </tr>
+      </ng-template>
+    </tbody>
+  </nz-table>
+  <ng-template #rangeTemplate let-range="range" let-total>
+    {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+  </ng-template>
+</div>

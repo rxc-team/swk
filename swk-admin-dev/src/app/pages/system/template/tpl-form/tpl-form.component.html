@@ -1,0 +1,141 @@
+<form nz-form [formGroup]="form">
+  <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'common.text.baseInfo' | translate">
+    <nz-form-item>
+      <nz-form-label nzFor="backupName" nzRequired>
+        {{ 'page.template.tplName' | translate }}
+      </nz-form-label>
+      <nz-form-control [nzErrorTip]="errorBackupName">
+        <input
+          nz-input
+          formControlName="backupName"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          [placeholder]="'common.placeholder.input' | translate: { label: 'page.template.tplName' | translate }"
+          trim="blur"
+        />
+        <ng-template #errorBackupName let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+
+          <ng-container *ngIf="control.hasError('duplicated')">
+            {{ 'common.validator.tplNameDuplicated' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzFor="customerId" nzRequired>
+        {{ 'page.template.customer' | translate }}
+      </nz-form-label>
+      <nz-form-control [nzErrorTip]="errorCustomerId">
+        <nz-select
+          formControlName="customerId"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.template.customer' | translate }"
+          (ngModelChange)="change($event)"
+          nzAllowClear
+        >
+          <nz-option
+            *ngFor="let item of customerSelect"
+            [nzLabel]="item.customer_name"
+            [nzValue]="item.customer_id"
+          ></nz-option>
+        </nz-select>
+        <ng-template #errorCustomerId let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredSelect' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzFor="appId" nzRequired>
+        {{ 'page.template.application' | translate }}
+      </nz-form-label>
+      <nz-form-control [nzErrorTip]="errorAppId">
+        <nz-select
+          formControlName="appId"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.template.application' | translate }"
+          nzAllowClear
+          [nzDisabled]="disable"
+        >
+          <nz-option
+            *ngFor="let item of appSelect"
+            [nzLabel]="item.app_name | translate"
+            [nzValue]="item.app_id"
+          ></nz-option>
+        </nz-select>
+        <ng-template #errorAppId let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredSelect' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzFor="appType">
+        {{ 'page.template.applicationType' | translate }}
+      </nz-form-label>
+      <nz-form-control [nzErrorTip]="errorAppType">
+        <nz-select
+          formControlName="appType"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          [nzPlaceHolder]="
+            'common.placeholder.select' | translate: { label: 'page.template.applicationType' | translate }
+          "
+          nzAllowClear
+        >
+          <nz-option
+            *ngFor="let item of appTypeSelect"
+            [nzLabel]="item.label | translate"
+            [nzValue]="item.value"
+          ></nz-option>
+        </nz-select>
+        <ng-template #errorAppType let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredSelect' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzFor="hasData">
+        {{ 'page.template.dataHandle' | translate }}
+      </nz-form-label>
+      <nz-form-control>
+        <label nz-checkbox formControlName="hasData">{{ 'page.template.hasData' | translate }}</label>
+      </nz-form-control>
+    </nz-form-item>
+  </nz-card>
+  <br />
+  <nz-form-item>
+    <nz-space nzSize="small">
+      <ng-template nzSpaceItem>
+        <button
+          nz-button
+          nzType="primary"
+          type="submit"
+          [disabled]="!form.valid"
+          (click)="submitForm()"
+          appDebounceClick
+        >
+          <i nz-icon [nzType]="status === 'edit' ? 'edit' : 'plus'" nzTheme="outline"></i>
+          {{ 'common.button.save' | translate }}
+        </button>
+      </ng-template>
+      <ng-template nzSpaceItem>
+        <button nz-button *ngIf="status === 'add'" (click)="reset()">
+          <i nz-icon nzType="redo" nzTheme="outline"></i>
+          {{ 'common.button.reset' | translate }}
+        </button>
+      </ng-template>
+      <ng-template nzSpaceItem>
+        <button nz-button (click)="cancel()">
+          <i nz-icon nzType="close" nzTheme="outline"></i>
+          {{ 'common.button.cancel' | translate }}
+        </button>
+      </ng-template>
+    </nz-space>
+  </nz-form-item>
+</form>

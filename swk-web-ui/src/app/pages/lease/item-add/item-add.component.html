@@ -1,0 +1,21 @@
+<div style="padding: 16px 0 0 0">
+  <ng-container *ngIf="dsType == 'keiyaku'; else elseTemplate">
+    <app-contract-form
+      *ngIf="!loading"
+      [controlArray]="controlArray"
+      (nxCancel)="cancel()"
+      [userList]="userList"
+      (nxSubmit)="submit($event)"
+    ></app-contract-form>
+  </ng-container>
+  <ng-template #elseTemplate>
+    <app-datatype-form
+      *ngIf="!loading"
+      [controlArray]="controlArray"
+      [isUpdate]="false"
+      (nxCancel)="cancel()"
+      [userList]="userList"
+      (nxSubmit)="submit($event)"
+    ></app-datatype-form>
+  </ng-template>
+</div>

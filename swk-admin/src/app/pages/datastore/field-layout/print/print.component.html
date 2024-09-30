@@ -1,0 +1,200 @@
+<form nz-form [formGroup]="form" nzLayout="vertical">
+  <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'common.text.baseInfo' | translate">
+    <!-- 是否显示系统情报 -->
+    <nz-form-item>
+      <nz-form-label>
+        {{ 'page.datastore.field.showSystemInfo' | translate }}
+      </nz-form-label>
+      <nz-form-control>
+        <nz-switch formControlName="showSystem"></nz-switch>
+      </nz-form-control>
+    </nz-form-item>
+    <!-- 是否显示签名 -->
+    <nz-form-item>
+      <nz-form-label>
+        {{ 'page.datastore.field.showSignInfo' | translate }}
+      </nz-form-label>
+      <nz-form-control>
+        <nz-switch formControlName="showSign" (ngModelChange)="signChange($event)"></nz-switch>
+      </nz-form-control>
+    </nz-form-item>
+    <!-- 签名1 -->
+    <nz-form-item *ngIf="this.form.controls.showSign.value">
+      <nz-form-label>{{ 'page.datastore.field.sign1' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="sign1Name">
+        <input
+          nz-input
+          style="width: 200px"
+          formControlName="signName1"
+          trim="blur"
+          [placeholder]="'common.placeholder.input' | translate: { label: 'page.datastore.field.sign1' | translate }"
+        />
+        <ng-template #sign1Name let-control>
+          <ng-container *ngIf="control.hasError('lengthexceeded')">
+            {{ 'common.validator.lengthExceeded' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <!-- 签名2 -->
+    <nz-form-item *ngIf="this.form.controls.showSign.value">
+      <nz-form-label>{{ 'page.datastore.field.sign2' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="sign2Name">
+        <input
+          nz-input
+          style="width: 200px"
+          formControlName="signName2"
+          trim="blur"
+          [placeholder]="'common.placeholder.input' | translate: { label: 'page.datastore.field.sign2' | translate }"
+        />
+        <ng-template #sign2Name let-control>
+          <ng-container *ngIf="control.hasError('lengthexceeded')">
+            {{ 'common.validator.lengthExceeded' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <!-- タイトル幅 -->
+    <nz-form-item>
+      <nz-form-label>{{ 'page.datastore.field.titleWidth' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-input-group nzAddOnAfter="mm" style="width: 200px">
+          <nz-input-number
+            style="width: 100%"
+            formControlName="titleWidth"
+            nzMin="20"
+            nzMax="100"
+            [nzPlaceHolder]="
+              'common.placeholder.input' | translate: { label: 'page.datastore.field.titleWidth' | translate }
+            "
+          ></nz-input-number>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+  </nz-card>
+</form>
+
+<div style="display: flex; justify-content: space-between; margin-top: 16px">
+  <button nz-button nzType="primary" (click)="showFieldSet()">
+    <i nz-icon nzType="plus"></i>
+    {{ 'page.datastore.field.printFieldSet' | translate }}
+  </button>
+
+  <button nz-button nzType="primary" (click)="save()" [disabled]="!options.draggable.enabled || form.invalid">
+    <i nz-icon nzType="save"></i>
+    {{ 'common.button.save' | translate }}
+  </button>
+</div>
+
+<div class="box">
+  <gridster
+    [options]="options"
+    [ngClass]="{ draggable: options.draggable.enabled, undraggable: !options.draggable.enabled }"
+  >
+    <gridster-item
+      [item]="item"
+      *ngFor="let item of listData; let i = index"
+      class="item"
+      [ngClass]="{ label: item.field_type === 'text' && item.as_title }"
+    >
+      <div [ngSwitch]="item.field_type">
+        <button
+          nz-button
+          (click)="delete(item.field_id)"
+          class="close"
+          nzSize="small"
+          *ngIf="options.draggable.enabled"
+        >
+          <i nz-icon nzType="close" nzTheme="outline"></i>
+        </button>
+        <div style="height: 100%; padding: 0" *ngSwitchCase="'text'">
+          <ng-container *ngIf="item.as_title; then thenTemplate; else elseTemplate"></ng-container>
+          <ng-template #thenTemplate>
+            <span class="title label">▼{{ item.field_name | translate }}</span>
+          </ng-template>
+          <ng-template #elseTemplate>
+            <span class="title" [style.width.px]="titleWidth * 4">{{ item.field_name | translate }}：</span>
+            <span class="value">{{ item.value }}</span>
+          </ng-template>
+        </div>
+        <div style="height: 100%; padding: 0" *ngSwitchCase="'textarea'">
+          <span class="title" [style.width.px]="titleWidth * 4">{{ item.field_name | translate }}：</span>
+          <span class="value">{{ item.value }}</span>
+        </div>
+        <div style="height: 100%; padding: 0" *ngSwitchCase="'number'">
+          <span class="title" [style.width.px]="titleWidth * 4">{{ item.field_name | translate }}：</span>
+          <span class="value">{{ item.value }}</span>
+        </div>
+        <div style="height: 100%; padding: 0" *ngSwitchCase="'date'">
+          <span class="title" [style.width.px]="titleWidth * 4">{{ item.field_name | translate }}：</span>
+          <span class="value">{{ item.value | date: 'yyyy-MM-dd' }}</span>
+        </div>
+        <div style="height: 100%; padding: 0" *ngSwitchCase="'time'">
+          <span class="title" [style.width.px]="titleWidth * 4">{{ item.field_name | translate }}：</span>
+          <span class="value">{{ item.value | date: 'HH:mm:ss' }}</span>
+        </div>
+        <div style="height: 100%; padding: 0" *ngSwitchCase="'switch'">
+          <span class="title" [style.width.px]="titleWidth * 4">{{ item.field_name | translate }}：</span>
+          <span class="value">{{ item.value }}</span>
+        </div>
+        <div style="height: 100%; padding: 0" *ngSwitchCase="'options'">
+          <span class="title" [style.width.px]="titleWidth * 4">{{ item.field_name | translate }}：</span>
+          <span class="value">{{ item.value }}</span>
+        </div>
+        <div style="height: 100%; padding: 0" *ngSwitchCase="'lookup'">
+          <span class="title" [style.width.px]="titleWidth * 4">{{ item.field_name | translate }}：</span>
+          <span class="value">{{ item.value }}</span>
+        </div>
+        <div style="height: 100%; padding: 0" *ngSwitchCase="'user'">
+          <span class="title" [style.width.px]="titleWidth * 4">{{ item.field_name | translate }}：</span>
+          <span class="value">{{ item.value }}</span>
+        </div>
+        <div style="height: 100%; padding: 0px" *ngSwitchCase="'file'">
+          <ng-container *ngIf="item.is_image">
+            <img
+              [src]="file.url"
+              *ngFor="let file of item.value"
+              [alt]="file.name"
+              [height]="item.rows * 36"
+              [width]="item.rows * 36"
+            />
+          </ng-container>
+          <ng-container *ngIf="!item.is_image">
+            <span class="title" [style.width.px]="titleWidth * 4">{{ item.field_name | translate }}：</span>
+            <span class="value" *ngFor="let file of item.value">
+              {{ file.name }}
+            </span>
+          </ng-container>
+        </div>
+        <div style="height: 100%; padding: 0" *ngSwitchDefault>
+          <span class="title" [style.width.px]="titleWidth * 4">{{ item.field_name | translate }}：</span>
+          <span class="value">{{ item.value }}</span>
+        </div>
+      </div>
+    </gridster-item>
+  </gridster>
+</div>
+<nz-modal
+  [(nzVisible)]="showFieldSelect"
+  [nzTitle]="'page.datastore.field.printFieldSet' | translate"
+  (nzOnCancel)="hiddenFieldSet()"
+  (nzOnOk)="addField(selectField)"
+  nzMaskClosable="false"
+  nzClosable="false"
+>
+  <ng-template nzModalContent>
+    <nz-select
+      style="width: 100%"
+      nzAllowClear="true"
+      [(ngModel)]="selectField"
+      [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.language.labelFields' | translate }"
+    >
+      <nz-option
+        *ngFor="let item of fields"
+        [nzLabel]="item.field_name | translate"
+        [nzValue]="item.field_id"
+        [nzDisabled]="item.disabled"
+      ></nz-option>
+    </nz-select>
+  </ng-template>
+</nz-modal>

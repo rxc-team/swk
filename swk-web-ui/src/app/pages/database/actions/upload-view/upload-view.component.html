@@ -1,0 +1,94 @@
+<nz-form-item *ngIf="dsType === 'keiyakudaicho'">
+  <nz-form-label nzFor="wordflow" style="width: 100px" nzRequired>
+    {{ 'page.datastore.fileUploadAction' | translate }}
+  </nz-form-label>
+  <nz-form-control>
+    <nz-radio-group [(ngModel)]="action">
+      <label nz-radio nzValue="contract-insert">{{ 'page.datastore.fileUploadActionInsert' | translate }}</label>
+      <label nz-radio nzValue="debt-change">{{ 'page.datastore.fileUploadActionDebt' | translate }}</label>
+      <label nz-radio nzValue="info-change">{{ 'page.datastore.fileUploadActionInfo' | translate }}</label>
+      <label nz-radio nzValue="midway-cancel">{{ 'page.datastore.fileUploadActionCancel' | translate }}</label>
+      <label nz-radio nzValue="contract-expire">{{ 'page.datastore.fileUploadActionExpire' | translate }}</label>
+    </nz-radio-group>
+  </nz-form-control>
+</nz-form-item>
+<nz-form-item *ngIf="dsType !== 'keiyakudaicho'">
+  <nz-form-label nzFor="wordflow" style="width: 100px" nzRequired>
+    {{ 'page.datastore.fileUploadAction' | translate }}
+  </nz-form-label>
+  <nz-form-control>
+    <nz-radio-group [(ngModel)]="action" (ngModelChange)="select($event)">
+      <label nz-radio nzValue="insert">{{ 'page.datastore.fileUploadActionAdd' | translate }}</label>
+      <label nz-radio nzValue="update">{{ 'page.datastore.fileUploadActionUpdate' | translate }}</label>
+    </nz-radio-group>
+  </nz-form-control>
+</nz-form-item>
+<nz-form-item *ngIf="dsType !== 'keiyakudaicho'">
+  <nz-form-label nzFor="wordflow" style="width: 100px" nzRequired>
+    {{ 'page.datastore.emptyHandle' | translate }}
+  </nz-form-label>
+  <nz-form-control>
+    <nz-radio-group [(ngModel)]="emptyChange">
+      <label nz-radio nzValue="false">
+        {{ 'page.datastore.emptyNotUpdate' | translate }}
+      </label>
+      <label nz-radio nzValue="true">{{ 'page.datastore.emptyUpadte' | translate }}</label>
+    </nz-radio-group>
+  </nz-form-control>
+</nz-form-item>
+<nz-form-item *ngIf="action === 'update' && workflows.length > 0">
+  <nz-form-label nzFor="wordflow" style="width: 100px">
+    {{ 'page.datastore.fileUploadwf' | translate }}
+  </nz-form-label>
+  <nz-form-control>
+    <nz-select
+      [(ngModel)]="wfId"
+      [nzPlaceHolder]="'common.placeholder.selectWf' | translate"
+      nzAllowClear
+      style="width: 300px"
+    >
+      <nz-option
+        *ngFor="let item of workflows"
+        [nzLabel]="item.menu_name | translate"
+        [nzValue]="item.wf_id"
+      ></nz-option>
+    </nz-select>
+  </nz-form-control>
+</nz-form-item>
+<nz-form-item>
+  <nz-form-label nzFor="wordflow" style="width: 100px" nzRequired="true">
+    {{ 'page.datastore.fileUploadCharacterCode' | translate }}
+  </nz-form-label>
+  <nz-form-control>
+    <nz-radio-group [(ngModel)]="encoding" nzButtonStyle="solid">
+      <label nz-radio-button nzValue="utf-8">UTF-8</label>
+      <label nz-radio-button nzValue="sjis">Shift-JIS</label>
+    </nz-radio-group>
+  </nz-form-control>
+</nz-form-item>
+<nz-form-item>
+  <nz-form-label nzFor="flie" nzRequired style="width: 100px">
+    {{ 'page.datastore.fileUploadDatafile' | translate }}
+  </nz-form-label>
+  <nz-form-control>
+    <nz-upload [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload" nzAccept=".csv,.xlsx,.xlsm">
+      <button nz-button>
+        <i nz-icon nzType="upload"></i>
+        {{ 'common.button.selectFile' | translate }}
+      </button>
+    </nz-upload>
+  </nz-form-control>
+</nz-form-item>
+<nz-form-item *ngIf="dsType === 'keiyakudaicho' && (action === 'contract-insert' || action === 'debt-change')">
+  <nz-form-label nzFor="flie" style="width: 100px">
+    {{ 'page.datastore.fileUploadPayfile' | translate }}
+  </nz-form-label>
+  <nz-form-control>
+    <nz-upload [(nzFileList)]="payFileList" [nzBeforeUpload]="payBeforeUpload" nzAccept=".csv,.xlsx,.xlsm">
+      <button nz-button>
+        <i nz-icon nzType="upload"></i>
+        {{ 'common.button.selectFile' | translate }}
+      </button>
+    </nz-upload>
+  </nz-form-control>
+</nz-form-item>

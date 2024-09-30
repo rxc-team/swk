@@ -1,0 +1,98 @@
+<div nz-row nzJustify="start" class="base-setting">
+  <div nz-col nzSpan="24" class="base-setting-left">
+    <form
+      nz-form
+      [formGroup]="passwordForm"
+      nzLayout="vertical"
+      (ngSubmit)="submitPasswordForm($event, passwordForm.value)"
+      autocomplete="off"
+    >
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'page.userCenter.oldPassword' | translate }}</nz-form-label>
+        <nz-form-control [nzErrorTip]="oldPassword">
+          <input
+            nz-input
+            type="password"
+            formControlName="oldPassword"
+            style="width: 300px"
+            trim="blur"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.userCenter.oldPassword' | translate }"
+            autocomplete="off"
+          />
+          <ng-template #oldPassword let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.hasError('password')">
+              {{ 'common.validator.password' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.hasError('duplicated')">
+              {{ 'common.validator.passwordUplicated' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.pending">
+              {{ 'common.validator.pending' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <p></p>
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'page.userCenter.newPassword' | translate }}</nz-form-label>
+        <nz-form-control [nzErrorTip]="newPassword">
+          <input
+            nz-input
+            type="password"
+            formControlName="newPassword"
+            style="width: 300px"
+            trim="blur"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.userCenter.newPassword' | translate }"
+            autocomplete="newPassword"
+            (ngModelChange)="validateConfirmPassword()"
+          />
+          <ng-template #newPassword let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.hasError('password')">
+              {{ 'common.validator.password' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <p></p>
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'page.userCenter.confirmPassword' | translate }}</nz-form-label>
+        <nz-form-control [nzErrorTip]="confirm">
+          <input
+            nz-input
+            type="password"
+            formControlName="confirm"
+            style="width: 300px"
+            trim="blur"
+            [placeholder]="
+              'common.placeholder.input' | translate: { label: 'page.userCenter.confirmPassword' | translate }
+            "
+            autocomplete="newPassword"
+          />
+          <ng-template #confirm let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.hasError('confirm')">
+              {{ 'common.validator.passwordConfirm' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <p></p>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" [disabled]="!passwordForm.valid">
+            <i nz-icon nzType="save" nzTheme="outline"></i>
+            {{ 'common.button.save' | translate }}
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+</div>

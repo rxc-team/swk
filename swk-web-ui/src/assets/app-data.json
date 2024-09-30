@@ -1,0 +1,34 @@
+{
+  "app": {
+    "name": "ProPlusPit",
+    "version": "0.0.1-alpha"
+  },
+  "slideMenu": [{
+      "level": 1,
+      "path": "/home",
+      "title": "menu.home",
+      "icon": "home",
+      "open": false,
+      "selected": false,
+      "disabled": false
+    },
+    {
+      "level": 1,
+      "path": "/document",
+      "title": "menu.document",
+      "icon": "folder-open",
+      "open": false,
+      "selected": false,
+      "disabled": false
+    },
+    {
+      "level": 1,
+      "path": "/schedule/job/list",
+      "title": "menu.jobList",
+      "icon": "schedule",
+      "open": false,
+      "selected": false,
+      "disabled": false
+    }
+  ]
+}

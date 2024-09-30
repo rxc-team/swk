@@ -1,0 +1,24 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    .sortable-list-item {
+      padding: 8px 4px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+    
+    nz-form-label {
+      width: 130px;
+    }
+    
+    ::ng-deep .cdk-drag-preview {
+      display: table;
+    }
+    
+    ::ng-deep .cdk-drag-placeholder {
+      opacity: 0;
+    }
+  }
+});

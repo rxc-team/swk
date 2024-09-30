@@ -1,0 +1,49 @@
+<h3>{{ 'page.datastore.formula.selectDatastore' | translate }}</h3>
+<div style="height: 100px; overflow: auto; padding: 2px" class="solid_border">
+  <ul nz-menu nzMode="inline">
+    <ng-container *ngFor="let item of datastoreList">
+      <li nz-menu-item [nzSelected]="selectDs.datastore_id === item.datastore_id">
+        {{ item.datastore_name | translate }}
+      </li>
+    </ng-container>
+  </ul>
+</div>
+<h3>{{ 'page.datastore.formula.selectField' | translate }}</h3>
+<div style="height: 200px; overflow: auto; padding: 2px">
+  <ul nz-menu nzMode="inline">
+    <ng-container *ngFor="let item of fieldList">
+      <ng-container *ngIf="item.child; else elseTemplate">
+        <li
+          nz-submenu
+          [nzTitle]="item.field_name | translate"
+          class="solid_border"
+          style="margin-top: 2px; padding: 2px"
+        >
+          <ul>
+            <li
+              nz-menu-item
+              *ngFor="let it of item.child"
+              class="solid_border"
+              style="margin-top: 2px"
+              [nzDisabled]="it.disabled"
+              (click)="selectField = it"
+            >
+              {{ it.field_name | translate }}
+            </li>
+          </ul>
+        </li>
+      </ng-container>
+      <ng-template #elseTemplate>
+        <li
+          nz-menu-item
+          class="solid_border"
+          style="margin-top: 2px"
+          (click)="selectField = item"
+          [nzDisabled]="item.disabled"
+        >
+          {{ item.field_name | translate }}
+        </li>
+      </ng-template>
+    </ng-container>
+  </ul>
+</div>

@@ -1,0 +1,188 @@
+<form nz-form nzLayout="vertical">
+  <div [style.height.px]="350">
+    <gridster
+      [options]="options"
+      [ngClass]="{
+        undraggable: !options.draggable.enabled
+      }"
+    >
+      <gridster-item
+        [item]="item"
+        *ngFor="let item of listData; let i = index"
+        [ngClass]="{ label: item.type === 'text' && item.as_title }"
+      >
+        <div [ngSwitch]="item.type">
+          <div *ngSwitchCase="'text'" class="box">
+            <ng-container *ngIf="item.as_title; then thenTemplate; else elseTemplate"></ng-container>
+            <ng-template #thenTemplate>
+              <nz-form-item style="width: 100%">
+                <span class="label-title">▼ {{ item.name | translate }}</span>
+              </nz-form-item>
+            </ng-template>
+            <ng-template #elseTemplate>
+              <nz-form-item style="width: 100%">
+                <nz-form-label [nzRequired]="item.is_required" class="title">
+                  {{ item.name | translate }}
+                </nz-form-label>
+                <nz-form-control style="width: 100%">
+                  <span class="value" [title]="item.value">{{ item.value }}</span>
+                </nz-form-control>
+              </nz-form-item>
+            </ng-template>
+          </div>
+          <div *ngSwitchCase="'textarea'">
+            <nz-form-item style="width: 100%">
+              <nz-form-label [nzRequired]="item.is_required" class="title">
+                {{ item.name | translate }}
+              </nz-form-label>
+              <nz-form-control style="width: 100%">
+                <textarea nz-input readonly [rows]="item.rows - 1">{{ item.value }}</textarea>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div *ngSwitchCase="'number'" class="box">
+            <nz-form-item style="width: 100%">
+              <nz-form-label [nzRequired]="item.is_required" class="title">
+                {{ item.name | translate }}
+              </nz-form-label>
+              <nz-form-control style="width: 100%">
+                <span class="value text-right">{{ item.value | number: '1.0-9' }}</span>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div *ngSwitchCase="'autonum'" class="box">
+            <nz-form-item style="width: 100%">
+              <nz-form-label [nzRequired]="item.is_required" class="title">
+                {{ item.name | translate }}
+              </nz-form-label>
+              <nz-form-control style="width: 100%">
+                <span class="value">{{ item.value }}</span>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div *ngSwitchCase="'date'" class="box">
+            <nz-form-item style="width: 100%">
+              <nz-form-label [nzRequired]="item.is_required" class="title">
+                {{ item.name | translate }}
+              </nz-form-label>
+              <nz-form-control style="width: 100%">
+                <span class="value">{{ item.value }}</span>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div *ngSwitchCase="'time'" class="box">
+            <nz-form-item style="width: 100%">
+              <nz-form-label [nzRequired]="item.is_required" class="title">
+                {{ item.name | translate }}
+              </nz-form-label>
+              <nz-form-control style="width: 100%">
+                <span class="value">{{ item.value }}</span>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div *ngSwitchCase="'switch'" class="box">
+            <nz-form-item style="width: 100%">
+              <nz-form-label [nzRequired]="item.is_required" class="title">
+                {{ item.name | translate }}
+              </nz-form-label>
+              <nz-form-control style="width: 100%">
+                <nz-switch [(ngModel)]="item.value" [ngModelOptions]="{ standalone: true }" nzDisabled></nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div *ngSwitchCase="'options'" class="box">
+            <nz-form-item style="width: 100%">
+              <nz-form-label [nzRequired]="item.is_required" class="title">
+                {{ item.name | translate }}
+              </nz-form-label>
+              <nz-form-control style="width: 100%">
+                <span class="value" [title]="item.value">{{ item.value }}</span>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div *ngSwitchCase="'lookup'" class="box">
+            <nz-form-item style="width: 100%">
+              <nz-form-label [nzRequired]="item.is_required" class="title">
+                {{ item.name | translate }}
+              </nz-form-label>
+              <nz-form-control style="width: 100%">
+                <span class="value" [title]="item.value">
+                  {{ item.value }}
+                </span>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div *ngSwitchCase="'user'">
+            <nz-form-item style="width: 100%">
+              <nz-form-label [nzRequired]="item.is_required" class="title">
+                {{ item.name | translate }}
+              </nz-form-label>
+              <nz-form-control style="width: 100%; overflow: auto">
+                <div style="display: flex; flex-direction: row; overflow-x: auto; padding: 4px 0">
+                  <span [title]="it" *ngFor="let it of item.value" class="user-value">
+                    <nz-avatar nzIcon="user" nzSize="small"></nz-avatar>
+                    {{ it }}
+                  </span>
+                </div>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div *ngSwitchCase="'file'">
+            <nz-form-item style="width: 100%">
+              <nz-form-label [nzRequired]="item.is_required" class="title">
+                {{ item.name | translate }}
+              </nz-form-label>
+              <nz-form-control style="width: 100%">
+                <span *ngIf="item.image" class="img-box">
+                  <nz-image-group>
+                    <img
+                      nz-image
+                      [height]="item.rows * 32 - 10"
+                      [width]="item.rows * 32 - 10"
+                      [nzSrc]="file.url"
+                      [alt]="file.name"
+                      *ngFor="let file of item.value"
+                    />
+                  </nz-image-group>
+                </span>
+                <span *ngIf="!item.image" class="file-box">
+                  <span class="value" *ngFor="let file of item.value">
+                    <a [href]="file.url" (click)="$event.stopPropagation()" target="_blank">
+                      {{ file.name }}
+                    </a>
+                  </span>
+                </span>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div *ngSwitchCase="'function'">
+            <nz-form-item style="width: 100%">
+              <nz-form-label [nzRequired]="item.is_required" class="title">
+                {{ item.name | translate }}
+              </nz-form-label>
+              <nz-form-control style="width: 100%">
+                <span class="value">
+                  {{ 'common.text.autoCalculate' | translate }}
+                </span>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div *ngSwitchDefault class="box">
+            <nz-form-item style="width: 100%">
+              <nz-form-label [nzRequired]="item.is_required" class="title">
+                {{ item.name | translate }}
+              </nz-form-label>
+              <nz-form-control style="width: 100%">
+                <span class="value" [title]="item.value">{{ item.value }}</span>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </gridster-item>
+    </gridster>
+  </div>
+</form>
+<ng-template #fileTitle>
+  <i nz-icon nzType="profile"></i>
+  <span>{{ 'page.datastore.detail.info' | translate }} - {{ title }}</span>
+</ng-template>

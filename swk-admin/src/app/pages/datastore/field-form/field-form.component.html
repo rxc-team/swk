@@ -1,0 +1,439 @@
+<form nz-form [formGroup]="fieldForm">
+  <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'common.text.baseInfo' | translate">
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.datastore.field.fieldName' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="fieldName">
+        <input
+          nz-input
+          formControlName="fieldName"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          trim="blur"
+          [placeholder]="
+            'common.placeholder.input' | translate: { label: 'page.datastore.field.fieldName' | translate }
+          "
+        />
+        <ng-template #fieldName let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+
+          <ng-container *ngIf="control.hasError('duplicated')">
+            {{ 'common.validator.fieldDuplicated' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.datastore.field.apiKey' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="fieldID">
+        <input
+          nz-input
+          formControlName="fieldID"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          trim="blur"
+          [placeholder]="'common.placeholder.input' | translate: { label: 'page.datastore.field.apiKey' | translate }"
+          (ngModelChange)="api_key = $event"
+          [readOnly]="status == 'edit' && !fieldForm.get('fieldID').value"
+        />
+        <ng-template #fieldID let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">
+            {{ 'common.validator.apiKey' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('duplicated')">
+            {{ 'common.validator.apiKeyDuplicated' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('systemUseApiKey')">
+            {{ 'common.validator.systemUseApiKey' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.datastore.field.fieldType' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="fieldType">
+        <nz-select
+          formControlName="fieldType"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          nzAllowClear
+          [nzPlaceHolder]="
+            'common.placeholder.input' | translate: { label: 'page.datastore.field.fieldType' | translate }
+          "
+          [nzDisabled]="status === 'edit'"
+          (ngModelChange)="typeChange($event)"
+        >
+          <nz-option
+            nzCustomContent
+            [nzValue]="item.value"
+            [nzLabel]="item.label | translate"
+            *ngFor="let item of fieldTypeList"
+          >
+            <i nz-icon *ngIf="item.icon.substring(0, 4) === 'icon'" [nzIconfont]="item.icon"></i>
+            <i nz-icon *ngIf="item.icon === 'function'" [nzType]="item.icon"></i>
+            {{ item.label | translate }}
+          </nz-option>
+        </nz-select>
+        <ng-template #fieldType let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredSelect' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="fieldForm.get('fieldType').value === 'text'">
+      <nz-form-label nzFor="asTitle">
+        {{ 'page.datastore.field.useAsTitle' | translate }}
+      </nz-form-label>
+      <nz-form-control>
+        <nz-switch formControlName="asTitle" [nzDisabled]="status === 'edit'"></nz-switch>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item
+      *ngIf="
+        (fieldForm.get('fieldType').value === 'text' || fieldForm.get('fieldType').value === 'textarea') &&
+        !fieldForm.get('asTitle').value
+      "
+    >
+      <nz-form-label nzRequired nzFor="minLength">{{ 'page.datastore.field.digit' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="length">
+        <nz-input-number style="width: 145px" formControlName="minLength" [nzStep]="1"></nz-input-number>
+        <span style="display: inline-block; height: 30px; line-height: 30px; width: 10px; text-align: center">~</span>
+        <nz-input-number
+          style="width: 145px"
+          formControlName="maxLength"
+          (ngModelChange)="maxLengthChange()"
+          [nzStep]="1"
+        ></nz-input-number>
+        <ng-template #maxLength let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+        </ng-template>
+        <ng-template #length let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('minLength')">
+            {{ 'common.validator.lengthCompare' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="fieldForm.get('fieldType').value === 'function'">
+      <nz-form-label nzRequired="true">{{ 'page.datastore.field.returnType' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="returnType">
+        <nz-select
+          formControlName="returnType"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          (ngModelChange)="returnTypeChange($event)"
+          nzAllowClear
+          [nzPlaceHolder]="
+            'common.placeholder.select' | translate: { label: 'page.datastore.field.returnType' | translate }
+          "
+        >
+          <nz-option nzCustomContent nzValue="text" [nzLabel]="'common.fieldType.text' | translate">
+            <i nz-icon nzIconfont="icon-text"></i>
+            {{ 'common.fieldType.text' | translate }}
+          </nz-option>
+          <nz-option nzCustomContent nzValue="number" [nzLabel]="'common.fieldType.number' | translate">
+            <i nz-icon nzIconfont="icon-numbers_square"></i>
+            {{ 'common.fieldType.number' | translate }}
+          </nz-option>
+        </nz-select>
+        <ng-template #returnType let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredSelect' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="fieldForm.get('returnType').value">
+      <nz-form-control>
+        <app-func-editor
+          formControlName="formula"
+          [returnType]="fieldForm.get('returnType').value"
+          [apiKey]="api_key"
+        ></app-func-editor>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="fieldForm.get('fieldType').value === 'autonum'">
+      <nz-form-label nzRequired="true">{{ 'page.datastore.field.displayDigits' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="displayDigits">
+        <nz-input-number
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          formControlName="displayDigits"
+          [nzMin]="1"
+          [nzMax]="20"
+          [nzStep]="1"
+          [nzPlaceHolder]="
+            'common.placeholder.input' | translate: { label: 'page.datastore.field.displayDigits' | translate }
+          "
+          (ngModelChange)="displayDigitsChange()"
+        ></nz-input-number>
+        <ng-template #displayDigits let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('block')">
+            {{ 'common.validator.displayDigitsBlock' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="fieldForm.get('fieldType').value === 'autonum'">
+      <nz-form-label>{{ 'page.datastore.field.prefix' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="errorName">
+        <input
+          nz-input
+          formControlName="prefix"
+          [placeholder]="'common.placeholder.input' | translate: { label: 'page.datastore.field.prefix' | translate }"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          trim="blur"
+        />
+        <ng-template #errorName let-control></ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="fieldForm.get('fieldType').value === 'number'">
+      <nz-form-label nzRequired nzFor="minValue">{{ 'page.datastore.field.ranges' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="value">
+        <nz-input-number formControlName="minValue" [nzStep]="1" style="width: 145px"></nz-input-number>
+        <span style="display: inline-block; height: 30px; line-height: 30px; width: 10px; text-align: center">~</span>
+        <nz-input-number
+          formControlName="maxValue"
+          style="width: 145px"
+          (ngModelChange)="maxValueChange()"
+          [nzStep]="1"
+        ></nz-input-number>
+        <ng-template #value let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('minValue')">
+            {{ 'common.validator.valueCompare' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="fieldForm.get('fieldType').value === 'number'">
+      <nz-form-label nzRequired nzFor="precision">{{ 'page.datastore.field.precision' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="precision">
+        <nz-input-number
+          formControlName="precision"
+          style="width: 300px"
+          [nzMin]="0"
+          [nzMax]="9"
+          [nzStep]="1"
+          (ngModelChange)="precisionChange($event)"
+        ></nz-input-number>
+        <ng-template #precision let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <!-- <nz-form-item *ngIf="fieldForm.get('fieldType').value === 'number' && fieldForm.get('precision').value === 0">
+      <nz-form-label nzFor="selfCalculate">{{ 'page.datastore.field.selfCalculate' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select style="width: 300px" formControlName="selfCalculate" nzPlaceHolder="" nzAllowClear>
+          <nz-option [nzLabel]="'page.datastore.field.add' | translate" nzValue="add"></nz-option>
+          <nz-option [nzLabel]="'page.datastore.field.sub' | translate" nzValue="sub"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item> -->
+
+    <nz-form-item *ngIf="fieldForm.get('fieldType').value === 'user'">
+      <nz-form-label nzRequired="true">{{ 'page.datastore.field.selectGroup' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="userGroup">
+        <nz-select
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          formControlName="userGroup"
+          nzAllowClear="true"
+          [nzPlaceHolder]="
+            'common.placeholder.select' | translate: { label: 'page.datastore.field.selectGroup' | translate }
+          "
+        >
+          <nz-option
+            *ngFor="let g of userGroups"
+            [nzValue]="g.group_id"
+            [nzLabel]="g.group_name | translate"
+          ></nz-option>
+        </nz-select>
+        <ng-template #userGroup let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredSelect' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="fieldForm.get('fieldType').value === 'options'">
+      <nz-form-label nzRequired="true">{{ 'page.datastore.field.selectOptionType' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="option">
+        <nz-select
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          formControlName="option"
+          nzAllowClear="true"
+          [nzPlaceHolder]="
+            'common.placeholder.select' | translate: { label: 'page.datastore.field.selectOptionType' | translate }
+          "
+        >
+          <nz-option
+            *ngFor="let o of options"
+            [nzValue]="o.option_id"
+            [nzLabel]="o.option_name | translate"
+          ></nz-option>
+        </nz-select>
+        <ng-template #option let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredSelect' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="fieldForm.get('fieldType').value === 'lookup'">
+      <nz-form-label nzRequired="true">
+        <span>
+          {{ 'page.datastore.field.selectRelatedField' | translate }}
+          <i
+            nz-icon
+            nz-tooltip
+            [nzTooltipTitle]="'page.datastore.field.lookupTips' | translate"
+            nzType="question-circle"
+          ></i>
+        </span>
+      </nz-form-label>
+      <nz-form-control [nzErrorTip]="lookupError">
+        <nz-select
+          style="width: 145px"
+          formControlName="lookupDatastoreId"
+          nzAllowClear="true"
+          [nzPlaceHolder]="'common.fieldType.lookup' | translate"
+          [nzDisabled]="status === 'edit'"
+          (ngModelChange)="datastoreChange($event)"
+        >
+          <nz-option
+            *ngFor="let d of datastores"
+            [nzValue]="d.datastore_id"
+            [nzLabel]="d.datastore_name | translate"
+          ></nz-option>
+        </nz-select>
+        <nz-select
+          [ngStyle]="{ width: '145px', 'margin-left': isSmall ? '0px' : '10px' }"
+          formControlName="lookupFieldId"
+          nzAllowClear="true"
+          [nzPlaceHolder]="
+            'common.placeholder.select' | translate: { label: 'page.datastore.field.selectRelatedField' | translate }
+          "
+        >
+          <nz-option *ngFor="let f of fields" [nzValue]="f.field_id" [nzLabel]="f.field_name | translate"></nz-option>
+        </nz-select>
+        <ng-template #lookupError let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredSelect' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </nz-card>
+  <br />
+  <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'page.datastore.field.rightInfo' | translate">
+    <nz-form-item
+      *ngIf="
+        fieldForm.get('fieldType').value !== 'file' &&
+        fieldForm.get('fieldType').value !== 'switch' &&
+        fieldForm.get('fieldType').value !== 'autonum' &&
+        fieldForm.get('fieldType').value !== 'function' &&
+        !fieldForm.get('asTitle').value
+      "
+    >
+      <nz-form-control style="width: 300px">
+        <nz-form-label nzFor="isRequired">
+          {{ 'page.datastore.field.inputRequired' | translate }}
+        </nz-form-label>
+        <nz-switch
+          formControlName="isRequired"
+          [nzDisabled]="(status === 'edit' && !isRequireOld) || isGroupUniqueKey"
+        ></nz-switch>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="fieldForm.get('fieldType').value == 'text' && !fieldForm.get('asTitle').value">
+      <nz-form-control style="width: 300px">
+        <nz-form-label nzFor="unique">
+          {{ 'page.datastore.field.onlyField' | translate }}
+        </nz-form-label>
+        <nz-switch formControlName="unique" [nzDisabled]="status === 'edit'"></nz-switch>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="fieldForm.get('fieldType').value === 'file'">
+      <nz-form-label nzFor="isImage">{{ 'page.datastore.field.asPic' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-switch
+          formControlName="isImage"
+          [nzDisabled]="status === 'edit' && !fieldForm.get('isImage').value"
+          (ngModelChange)="imageChange($event)"
+        ></nz-switch>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="fieldForm.get('fieldType').value === 'file' && isShowCheckImageOption">
+      <nz-form-label nzFor="isCheckImage">{{ 'page.datastore.field.asCheckPic' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-switch
+          formControlName="isCheckImage"
+          [nzDisabled]="status === 'edit' && !fieldForm.get('isCheckImage').value"
+          (ngModelChange)="checkImageChange($event)"
+        ></nz-switch>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control style="width: 300px">
+        <nz-form-label nzFor="isFixed">
+          {{ 'page.datastore.field.isFixed' | translate }}
+        </nz-form-label>
+        <nz-switch formControlName="isFixed" [nzDisabled]="status === 'edit' && isFixedOld"></nz-switch>
+      </nz-form-control>
+    </nz-form-item>
+  </nz-card>
+  <br />
+  <nz-form-item>
+    <nz-space>
+      <div *nzSpaceItem>
+        <button
+          *ngIf="fieldForm.invalid || (status === 'edit' && isFixedOld)"
+          nz-button
+          nzType="primary"
+          appDebounceClick
+          (click)="submitFieldForm($event, fieldForm.value)"
+          disabled="true"
+        >
+          <i nz-icon [nzType]="status === 'add' ? 'plus' : 'edit'" nzTheme="outline"></i>
+          {{ 'common.button.save' | translate }}
+        </button>
+        <button
+          *ngIf="!(fieldForm.invalid || (status === 'edit' && isFixedOld))"
+          nz-button
+          nzType="primary"
+          appDebounceClick
+          (click)="submitFieldForm($event, fieldForm.value)"
+          disabled="false"
+        >
+          <i nz-icon [nzType]="status === 'add' ? 'plus' : 'edit'" nzTheme="outline"></i>
+          {{ 'common.button.save' | translate }}
+        </button>
+      </div>
+      <div *nzSpaceItem>
+        <button nz-button (click)="reset()" *ngIf="status === 'add'">
+          <i nz-icon nzType="redo" nzTheme="outline"></i>
+          {{ 'common.button.reset' | translate }}
+        </button>
+      </div>
+      <div *nzSpaceItem>
+        <button nz-button (click)="cancel()">
+          <i nz-icon nzType="close" nzTheme="outline"></i>
+          {{ 'common.button.cancel' | translate }}
+        </button>
+      </div>
+    </nz-space>
+  </nz-form-item>
+</form>

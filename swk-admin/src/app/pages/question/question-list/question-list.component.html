@@ -1,0 +1,159 @@
+<nz-collapse [nzBordered]="true">
+  <nz-collapse-panel [nzHeader]="'common.text.search' | translate">
+    <form nz-form [formGroup]="seachForm" nzLayout="inline">
+      <nz-form-item>
+        <nz-form-label nzFor="questionTitle">
+          {{ 'page.question.title' | translate }}
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="errorName">
+          <input
+            nz-input
+            formControlName="questionTitle"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.question.title' | translate }"
+            style="width: 200px"
+            trim="blur"
+          />
+          <ng-template #errorName let-control></ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="questionType">
+          {{ 'page.question.type' | translate }}
+        </nz-form-label>
+        <nz-form-control>
+          <nz-select
+            style="width: 200px"
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.question.type' | translate }"
+            formControlName="questionType"
+            nzAllowClear="true"
+          >
+            <nz-option
+              [nzValue]="type.value"
+              [nzLabel]="type.label | translate"
+              *ngFor="let type of questionTypes"
+            ></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="questionPos">
+          {{ 'page.question.place' | translate }}
+        </nz-form-label>
+        <nz-form-control>
+          <nz-select
+            style="width: 200px"
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.question.place' | translate }"
+            formControlName="questionPos"
+            nzAllowClear="true"
+          >
+            <nz-option-group nzLabel="ADMIN">
+              <nz-option
+                [nzValue]="adminPos.value"
+                [nzLabel]="adminPos.label | translate"
+                *ngFor="let adminPos of questionAdminPositions"
+              ></nz-option>
+            </nz-option-group>
+            <nz-option-group nzLabel="WEB-UI">
+              <nz-option
+                [nzValue]="wedPos.value"
+                [nzLabel]="wedPos.label | translate"
+                *ngFor="let wedPos of questionWebPositions"
+              ></nz-option>
+            </nz-option-group>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="questionStatus">
+          {{ 'page.question.status' | translate }}
+        </nz-form-label>
+        <nz-form-control>
+          <nz-select
+            style="width: 200px"
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.question.status' | translate }"
+            formControlName="questionStatus"
+            nzAllowClear="true"
+          >
+            <nz-option
+              [nzValue]="status.value"
+              [nzLabel]="status.label | translate"
+              *ngFor="let status of questionStatuss"
+            ></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control nzOffset="3">
+          <button nz-button [nzType]="'primary'" (click)="search()">
+            <i nz-icon nzType="search"></i>
+            {{ 'common.button.search' | translate }}
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </nz-collapse-panel>
+</nz-collapse>
+<div style="padding-top: 16px">
+  <button nz-button [nzType]="'primary'" style="margin-right: 16px" (click)="foward()">
+    <i nz-icon nzType="plus"></i>
+    {{ 'common.button.add' | translate }}
+  </button>
+</div>
+<div style="padding-top: 16px">
+  <nz-table
+    #basicTable
+    [nzData]="listOfDataDisplay"
+    nzBordered="true"
+    nzSize="middle"
+    [nzPageSize]="100"
+    [nzTotal]="listOfDataDisplay.length"
+    [nzShowTotal]="rangeTemplate"
+    [nzScroll]="{ y: '300px' }"
+  >
+    <thead>
+      <tr>
+        <th
+          nzWidth="40px"
+          nzLeft="0"
+          nzShowCheckbox
+          [(nzChecked)]="selectAll"
+          (nzCheckedChange)="checkAll($event)"
+        ></th>
+        <ng-container *ngFor="let col of cols">
+          <th
+            *ngIf="col.width"
+            nz-resizable
+            nzBounds="window"
+            [nzWidth]="col.width"
+            [nzMinWidth]="80"
+            (nzResizeEnd)="onResize($event, col.title)"
+          >
+            {{ col.title | translate }}
+            <nz-resize-handle nzDirection="right"></nz-resize-handle>
+          </th>
+          <th *ngIf="!col.width">
+            {{ col.title | translate }}
+          </th>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-template ngFor let-data [ngForOf]="basicTable.data">
+        <tr (click)="goToDetail(data.question_id)">
+          <td nzLeft="0" nzShowCheckbox [(nzChecked)]="data.checked" (nzCheckedChange)="checked($event)"></td>
+          <td>{{ data.title }}</td>
+          <td>{{ getTypeName(data.type) | translate }}</td>
+          <td>{{ getFuncName(data.function) | translate }}</td>
+          <td>{{ getStatusName(data.status) | translate }}</td>
+          <td>{{ data.created_at | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}</td>
+          <td>{{ data.updated_at | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}</td>
+          <td>{{ data.questioner_name }}</td>
+          <td>{{ data.responder_name }}</td>
+        </tr>
+      </ng-template>
+    </tbody>
+  </nz-table>
+  <ng-template #rangeTemplate let-range="range" let-total>
+    {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+  </ng-template>
+</div>

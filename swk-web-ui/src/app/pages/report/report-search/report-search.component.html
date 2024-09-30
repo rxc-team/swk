@@ -1,0 +1,93 @@
+<div class="loading" *ngIf="loading">
+  <div class="spin">
+    <nz-spin [nzTip]="'page.datastore.dataloading' | translate" nzSize="small"></nz-spin>
+  </div>
+</div>
+
+<div *ngIf="!loading">
+  <nz-input-group nzSize="default" [nzPrefix]="searchTpl" style="margin-bottom: 16px">
+    <input
+      nz-input
+      [(ngModel)]="searchValue"
+      (ngModelChange)="search(searchValue)"
+      [placeholder]="'page.datastore.searchValueInput' | translate"
+    />
+    <ng-template #searchTpl>
+      <i nz-icon nzType="search"></i>
+    </ng-template>
+  </nz-input-group>
+
+  <nz-table
+    #basicTable
+    [nzData]="dataSet"
+    nzBordered="true"
+    nzSize="middle"
+    [nzTotal]="total"
+    nzBordered="true"
+    [(nzPageIndex)]="pageIndex"
+    [(nzPageSize)]="pageSize"
+    [nzFrontPagination]="false"
+    nzShowPagination="true"
+    [nzScroll]="{ x: '300px', y: '300px' }"
+    nzHideOnSinglePage="true"
+    (nzPageIndexChange)="searchLookDatabaseItems(searchValue)"
+  >
+    <thead>
+      <tr>
+        <th nzShowCheckbox [nzDisabled]="true" nzWidth="50px"></th>
+        <th *ngFor="let field of fields" nzWidth="100px">{{ field.field_name | translate }}</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of basicTable.data" (click)="check(row[0])" (dblclick)="doubleClick(row[0])">
+        <td nzShowCheckbox="true" [(nzChecked)]="row[1]" (nzCheckedChange)="check(row[0])"></td>
+        <td *ngFor="let col of row.slice(2)">
+          <div [ngSwitch]="col.data_type" class="content">
+            <!--Text-->
+            <div *ngSwitchDefault class="text">
+              <span [title]="col.value">{{ col.value }}</span>
+            </div>
+            <div *ngSwitchCase="'number'" class="text">
+              <div style="padding: 0 2px; text-align: right">
+                {{ col.value | number: '1.0-9' }}
+              </div>
+            </div>
+            <div *ngSwitchCase="'user'" class="text">
+              <span style="padding: 0 2px" [title]="it | user: userList" *ngFor="let it of col.value">
+                {{ it | user: userList }}
+              </span>
+            </div>
+            <div *ngSwitchCase="'file'" class="text">
+              <span style="padding: 0 2px" [title]="it.name" *ngFor="let it of col.value">
+                <a [href]="it.url" (click)="$event.stopPropagation()" target="_blank">{{ it.name }}</a>
+              </span>
+            </div>
+            <div *ngSwitchCase="'options'" class="text">
+              <span [title]="col.value">{{ col.value }}</span>
+            </div>
+            <div *ngSwitchCase="'lookup'" class="text">
+              <span [title]="col.value">
+                {{ col.value }}
+              </span>
+            </div>
+          </div>
+        </td>
+        <td></td>
+      </tr>
+    </tbody>
+  </nz-table>
+  <br />
+  <nz-space [nzAlign]="'end'">
+    <div *nzSpaceItem>
+      <button nz-button nzType="primary" (click)="reflect()">
+        {{ 'common.button.submit' | translate }}
+      </button>
+    </div>
+    <div *nzSpaceItem>
+      <button nz-button (click)="cancel()">
+        {{ 'common.button.cancel' | translate }}
+      </button>
+    </div>
+  </nz-space>
+</div>

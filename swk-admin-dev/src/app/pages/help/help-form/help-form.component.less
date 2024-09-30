@@ -1,0 +1,74 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar {
+  width: 14px;
+  height: 6px;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track {
+  // border-left: thin solid #eeeeee;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+  border-radius: 0;
+  background-color: #cccccc;
+}
+
+.content {
+  background-color: @component-background;
+  min-height: calc(100vh - 285px);
+  padding: 8px;
+}
+.menu {
+  background-color: @component-background;
+  min-height: 100%;
+}
+
+.picture-box {
+  float: left;
+  border: thin solid #eeeeee;
+  margin-right: 2px;
+  margin-bottom: 2px;
+  position: relative;
+
+  label {
+    position: absolute;
+    right: 5px;
+    top: 0;
+    z-index: 10;
+  }
+
+  img {
+    cursor: pointer;
+  }
+
+  .select {
+    opacity: 0.5;
+    border: 2px solid #d1d5da;
+  }
+}
+
+button {
+  margin-right: 1px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
+nz-form-label {
+  width: 120px;
+}
+
+.editor {
+  height: 400px;
+}
+  }
+});

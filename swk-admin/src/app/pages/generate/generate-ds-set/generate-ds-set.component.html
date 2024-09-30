@@ -1,0 +1,96 @@
+<nz-page-header class="site-page-header">
+  <!--title-->
+  <nz-page-header-title>{{ 'page.generage.datastoreSetTitle' | translate }}</nz-page-header-title>
+  <!--extra-->
+  <nz-page-header-extra>
+    <button nz-button (click)="clear()">{{ 'common.button.cancel' | translate }}</button>
+    <button nz-button nzType="primary" (click)="pre()">{{ 'common.button.previous' | translate }}</button>
+    <button nz-button nzType="primary" (click)="next()" [disabled]="form.invalid">
+      {{ 'common.button.next' | translate }}
+    </button>
+  </nz-page-header-extra>
+  <!--content-->
+  <nz-page-header-content>
+    <div nz-row>
+      <div class="content">
+        <p nz-paragraph>{{ 'page.generage.datastoreSetSubTitle' | translate }}.</p>
+      </div>
+    </div>
+  </nz-page-header-content>
+</nz-page-header>
+<form nz-form [formGroup]="form">
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'page.generage.datastore' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        formControlName="datastore"
+        (ngModelChange)="dsChange($event)"
+        [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.generage.datastore' | translate }"
+        nzAllowClear
+        style="width: 300px"
+      >
+        <nz-option
+          *ngFor="let item of datastoreList"
+          [nzLabel]="item.datastore_name | translate"
+          [nzValue]="item.datastore_id"
+        ></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- 台账名称 -->
+  <nz-form-item>
+    <nz-form-label nzRequired="true">{{ 'page.datastore.datastoreName' | translate }}</nz-form-label>
+    <nz-form-control [nzErrorTip]="datastoreName">
+      <input
+        nz-input
+        style="width: 300px"
+        formControlName="datastoreName"
+        trim="blur"
+        [placeholder]="'common.placeholder.input' | translate: { label: 'page.datastore.datastoreName' | translate }"
+      />
+      <ng-template #datastoreName let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredInput' | translate }}
+        </ng-container>
+
+        <ng-container *ngIf="control.hasError('duplicated')">
+          {{ 'common.validator.datastoreDuplicated' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <!-- API-KEY -->
+  <nz-form-item>
+    <nz-form-label nzRequired="true">{{ 'page.datastore.field.apiKey' | translate }}</nz-form-label>
+    <nz-form-control [nzErrorTip]="apiKey">
+      <input
+        nz-input
+        formControlName="apiKey"
+        style="width: 300px"
+        trim="blur"
+        [placeholder]="'common.placeholder.input' | translate: { label: 'page.datastore.field.apiKey' | translate }"
+      />
+      <ng-template #apiKey let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredInput' | translate }}
+        </ng-container>
+        <ng-container *ngIf="control.hasError('pattern')">
+          {{ 'common.validator.apiKey' | translate }}
+        </ng-container>
+        <ng-container *ngIf="control.hasError('duplicated')">
+          {{ 'common.validator.apiKeyDuplicated' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <!-- 是否棚卸台帳 -->
+  <nz-form-item>
+    <nz-form-label>
+      {{ 'page.datastore.checkDatastore' | translate }}
+    </nz-form-label>
+    <nz-form-control>
+      <nz-switch formControlName="canCheck"></nz-switch>
+    </nz-form-control>
+  </nz-form-item>
+</form>

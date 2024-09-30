@@ -1,0 +1,23 @@
+[
+  { "parent": "app", "parent_name": "common.api.group.app" },
+  { "parent": "user", "parent_name": "common.api.group.user" },
+  { "parent": "role", "parent_name": "common.api.group.role" },
+  { "parent": "group", "parent_name": "common.api.group.group" },
+  { "parent": "customer", "parent_name": "common.api.group.customer" },
+  { "parent": "upload", "parent_name": "common.api.group.upload" },
+  { "parent": "file", "parent_name": "common.api.group.file" },
+  { "parent": "folder", "parent_name": "common.api.group.folder" },
+  { "parent": "resource", "parent_name": "common.api.group.resource" },
+  { "parent": "query", "parent_name": "common.api.group.query" },
+  { "parent": "language", "parent_name": "common.api.group.language" },
+  { "parent": "validation", "parent_name": "common.api.group.validation" },
+  { "parent": "option", "parent_name": "common.api.group.option" },
+  { "parent": "history", "parent_name": "common.api.group.history" },
+  { "parent": "datastore", "parent_name": "common.api.group.datastore" },
+  { "parent": "report", "parent_name": "common.api.group.report" },
+  { "parent": "dashboard", "parent_name": "common.api.group.dashboard" },
+  { "parent": "item", "parent_name": "common.api.group.item" },
+  { "parent": "template", "parent_name": "common.api.group.template" },
+  { "parent": "field", "parent_name": "common.api.group.field" },
+  { "parent": "database", "parent_name": "common.api.group.database" }
+]

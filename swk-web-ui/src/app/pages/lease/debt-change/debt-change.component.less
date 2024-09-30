@@ -1,0 +1,28 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    :host ::ng-deep .ant-calendar-picker-input {
+      width: 300px;
+    }
+    
+    nz-form-label {
+      width: 120px;
+      white-space: normal;
+      word-break: keep-all;
+    }
+    
+    
+    .loading {
+      text-align: center;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .container {
+      min-height: 170px;
+    }
+  }
+});

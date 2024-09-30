@@ -1,0 +1,287 @@
+<form nz-form [formGroup]="form">
+  <div style="max-height: 200px; overflow: auto">
+    <div nz-row *ngFor="let control of controls; let i = index" [formGroupName]="getGroupName(i)">
+      <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="3" [nzLg]="3">
+        <nz-form-item style="margin-bottom: 0px">
+          <nz-form-label *ngIf="i == 0">
+            {{ 'page.datastore.searchCondition' | translate }}
+          </nz-form-label>
+          <nz-form-label nzNoColon="true" *ngIf="i >= 1">
+            {{ conditionType ? 'and' : 'or' }}
+          </nz-form-label>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="7" [nzLg]="7">
+        <nz-form-item style="margin-bottom: 0px">
+          <nz-form-control>
+            <nz-select formControlName="field_id" style="width: 100%"
+              [nzPlaceHolder]="'page.datastore.fieldSelect' | translate" nzAllowClear="true"
+              (ngModelChange)="fieldChange($event, i, control)" (nzOpenChange)="openChange()">
+              <nz-option *ngFor="let item of searchFields" [nzLabel]="item.field_name | translate"
+                [nzValue]="item.field_id"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="4" [nzLg]="4">
+        <nz-form-item style="margin-bottom: 0px">
+          <nz-form-control>
+            <nz-select formControlName="operator" (ngModelChange)="operatorChange($event, control)" style="width: 100%"
+              *ngIf="control.field_type === ''" [nzDisabled]="true"></nz-select>
+            <nz-select formControlName="operator" (ngModelChange)="operatorChange($event, control)" style="width: 100%"
+              *ngIf="
+                control.field_type === 'text' ||
+                control.field_type === 'textarea' ||
+                control.field_type === 'lookup' ||
+                control.field_type === 'autonum'
+              ">
+              <nz-option [nzLabel]="'page.datastore.equal' | translate" nzValue="="></nz-option>
+              <nz-option [nzLabel]="'page.datastore.notEqual' | translate" nzValue="<>"></nz-option>
+              <nz-option [nzLabel]="'page.datastore.fuzzyMatch' | translate" nzValue="like"></nz-option>
+            </nz-select>
+            <nz-select formControlName="operator" (ngModelChange)="operatorChange($event, control)" style="width: 100%"
+              *ngIf="
+                control.field_type === 'user' ||
+                control.field_type === 'options' ||
+                control.field_type === 'type' ||
+                control.field_type === 'group'
+              ">
+              <nz-option [nzLabel]="'page.datastore.equal' | translate" nzValue="="></nz-option>
+              <nz-option [nzLabel]="'page.datastore.notEqual' | translate" nzValue="<>"></nz-option>
+              <nz-option [nzLabel]="'page.datastore.exist' | translate" nzValue="in"></nz-option>
+            </nz-select>
+            <nz-select formControlName="operator" style="width: 100%" *ngIf="control.field_type === 'switch'">
+              <nz-option [nzLabel]="'page.datastore.equal' | translate" nzValue="="></nz-option>
+            </nz-select>
+            <nz-select formControlName="operator" style="width: 100%" *ngIf="control.field_type === 'file'">
+              <nz-option [nzLabel]="'page.datastore.fullMatch' | translate" nzValue="="></nz-option>
+            </nz-select>
+            <nz-select formControlName="operator" style="width: 100%" *ngIf="control.field_type === 'check'">
+              <nz-option [nzLabel]="'page.datastore.fullMatch' | translate" nzValue="="></nz-option>
+            </nz-select>
+            <nz-select formControlName="operator" (ngModelChange)="operatorChange($event, control)" style="width: 100%"
+              *ngIf="
+                control.field_type === 'number' ||
+                control.field_type === 'date' ||
+                control.field_type === 'time' ||
+                control.field_type === 'datetime'
+              ">
+              <nz-option [nzLabel]="'page.datastore.equal' | translate" nzValue="="></nz-option>
+              <nz-option [nzLabel]="'page.datastore.greater' | translate" nzValue=">"></nz-option>
+              <nz-option [nzLabel]="'page.datastore.less' | translate" nzValue="<"></nz-option>
+              <nz-option [nzLabel]="'page.datastore.greaterEqual' | translate" nzValue=">="></nz-option>
+              <nz-option [nzLabel]="'page.datastore.lessEqual' | translate" nzValue="<="></nz-option>
+              <nz-option [nzLabel]="'page.datastore.notEqual' | translate" nzValue="<>"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="7" [nzLg]="7">
+        <nz-form-item style="margin-bottom: 0px">
+          <nz-form-control [nzErrorTip]="inputValueTip">
+            <!--文本类型-->
+            <input nz-input style="width: 80%" [placeholder]="'page.datastore.searchValueInput' | translate"
+              formControlName="search_value" (ngModelChange)="searchValueChange($event, control)"
+              *ngIf="control.field_type === 'text' || control.field_type === 'textarea' || control.field_type === ''"
+              trim="blur" />
+            <!--数字类型-->
+            <input nz-input style="width: 80%" [placeholder]="'page.datastore.searchValueInput' | translate"
+              type="number" formControlName="search_value" (ngModelChange)="searchValueChange($event, control)"
+              *ngIf="control.field_type === 'number'" trim="blur" />
+            <!-- 自动采番类型 -->
+            <input nz-input style="width: 80%" *ngIf="control.field_type === 'autonum'"
+              [placeholder]="'page.datastore.searchValueInput' | translate" type="text" formControlName="search_value"
+              (ngModelChange)="searchValueChange($event, control)" trim="blur" />
+            <!--开关类型-->
+            <nz-switch formControlName="search_value" (ngModelChange)="searchValueChange($event, control)"
+              style="width: 80%" *ngIf="control.field_type === 'switch'"></nz-switch>
+            <!--选项类型-->
+            <nz-select formControlName="search_value" (ngModelChange)="searchValueChange($event, control)"
+              style="width: 80%" [nzMode]="control.operator === 'in' ? 'multiple' : 'default'"
+              *ngIf="control.field_type === 'options'" [nzPlaceHolder]="'page.datastore.searchValueSelect' | translate">
+              <nz-option [nzLabel]="item.option_label | translate" [nzValue]="item.option_value"
+                *ngFor="let item of optionArray[control.field_id]"></nz-option>
+            </nz-select>
+            <!--用户类型-->
+            <nz-select formControlName="search_value" (ngModelChange)="searchValueChange($event, control)"
+              style="width: 80%" [nzMode]="control.operator === 'in' ? 'multiple' : 'default'"
+              *ngIf="control.field_type === 'user'" [nzPlaceHolder]="'page.datastore.searchValueSelect' | translate">
+              <nz-option [nzLabel]="item.user_name" [nzValue]="item.user_id"
+                *ngFor="let item of userArray[control.field_id]"></nz-option>
+            </nz-select>
+            <!--文件类型-->
+            <nz-select formControlName="search_value" (ngModelChange)="searchValueChange($event, control)"
+              style="width: 80%" *ngIf="control.field_type === 'file'"
+              [nzPlaceHolder]="'page.datastore.searchValueSelect' | translate">
+              <nz-option [nzLabel]="'page.datastore.fileExist' | translate" [nzValue]="'true'"></nz-option>
+              <nz-option [nzLabel]="'page.datastore.fileNotExist' | translate" [nzValue]="'false'"></nz-option>
+            </nz-select>
+            <!--盘点type-->
+            <nz-select formControlName="search_value" (ngModelChange)="searchValueChange($event, control)"
+              style="width: 60%" [nzMode]="control.operator === 'in' ? 'multiple' : 'default'"
+              *ngIf="control.field_type === 'type'" [nzPlaceHolder]="'page.datastore.searchValueSelect' | translate">
+              <nz-option [nzLabel]="item.label | translate" [nzValue]="item.value"
+                *ngFor="let item of checkTypes"></nz-option>
+            </nz-select>
+            <!--检查状态-->
+            <nz-select formControlName="search_value" (ngModelChange)="searchValueChange($event, control)"
+              style="width: 60%" *ngIf="control.field_type === 'check'"
+              [nzPlaceHolder]="'page.datastore.searchValueSelect' | translate">
+              <nz-option [nzLabel]="item.label | translate" [nzValue]="item.value"
+                *ngFor="let item of checkStatuss"></nz-option>
+            </nz-select>
+            <!--所属组织-->
+            <nz-select formControlName="search_value" (ngModelChange)="searchValueChange($event, control)"
+              style="width: 60%" [nzMode]="control.operator === 'in' ? 'multiple' : 'default'"
+              *ngIf="control.field_type === 'group'" [nzPlaceHolder]="'page.datastore.searchValueSelect' | translate">
+              <nz-option [nzLabel]="item.group_name | translate" [nzValue]="item.access_key"
+                *ngFor="let item of groups"></nz-option>
+            </nz-select>
+            <!--日期-->
+            <nz-date-picker formControlName="search_value" (ngModelChange)="searchValueChange($event, control)"
+              style="width: 80%" *ngIf="control.field_type === 'date'"
+              [nzPlaceHolder]="'page.datastore.searchValueSelect' | translate"></nz-date-picker>
+            <!--时刻-->
+            <nz-time-picker formControlName="search_value" (ngModelChange)="searchValueChange($event, control)"
+              style="width: 80%" *ngIf="control.field_type === 'time'"
+              [nzPlaceHolder]="'page.datastore.searchValueSelect' | translate"></nz-time-picker>
+            <!--日期+时间-->
+            <nz-date-picker formControlName="search_value" (ngModelChange)="searchValueChange($event, control)"
+              *ngIf="control.field_type === 'datetime'" style="width: 60%"
+              [nzPlaceHolder]="'page.datastore.searchValueSelect' | translate"></nz-date-picker>
+            <!--关联字段类型-->
+            <input nz-input [disabled]="true" style="width: 60%"
+              [placeholder]="'page.datastore.searchValueInput' | translate" formControlName="search_value"
+              (ngModelChange)="searchValueChange($event, control)"
+              *ngIf="control.field_type === 'lookup' && (control.operator === '=' || control.operator === '<>')"
+              trim="blur" />
+            <button nz-button nzType="default" nzShape="circle" style="width: 20px"
+              (click)="openLookupModal(i, control.lookup_datastore_id, control.lookup_field_id)"
+              *ngIf="control.field_type === 'lookup' && (control.operator === '=' || control.operator === '<>')">
+              <i nz-icon nzType="search"></i>
+            </button>
+            <input nz-input style="width: 80%" [placeholder]="'page.datastore.searchValueInput' | translate"
+              formControlName="search_value" (ngModelChange)="searchValueChange($event, control)"
+              *ngIf="control.field_type === 'lookup' && control.operator === 'like'" trim="blur" />
+            <button nz-button nzType="default" nzShape="circle" (click)="removeField(control)" *ngIf="i > 0">
+              <i nz-icon nzType="minus"></i>
+            </button>
+            <button nz-button nzType="default" nzShape="circle" (click)="addField()" *ngIf="i == 0">
+              <i nz-icon nzType="plus"></i>
+            </button>
+            <ng-template #inputValueTip let-ctl></ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </div>
+  <nz-form-item style="margin: 16px 0px">
+    <nz-form-control [nzSpan]="24">
+      <nz-space>
+        <div *nzSpaceItem>
+          <!-- 检索 -->
+          <button nz-button nzType="primary" (click)="searchItems()">
+            <i nz-icon nzType="search"></i>
+            {{ 'common.button.search' | translate }}
+          </button>
+        </div>
+        <div *nzSpaceItem>
+          <nz-button-group>
+            <!-- 重置 -->
+            <button nz-button nzType="default" (click)="reset()">
+              <i nz-icon nzType="redo"></i>
+              {{ 'common.button.reset' | translate }}
+            </button>
+            <!-- 快捷方式菜单 -->
+            <button nz-button nzType="default" (click)="showQueryModal()">
+              <i nz-icon nzType="save"></i>
+              {{ 'common.button.saveAsQuery' | translate }}
+            </button>
+          </nz-button-group>
+        </div>
+        <div *nzSpaceItem>
+          <!-- 检索条件连接方式 -->
+          <nz-switch style="margin-left: 4px" [(ngModel)]="conditionType" (ngModelChange)="conditionTypeChange()"
+            nzSize="default" [ngModelOptions]="{ standalone: true }" nzCheckedChildren="and"
+            nzUnCheckedChildren="or"></nz-switch>
+        </div>
+      </nz-space>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<!--关联字段数据-->
+<nz-modal [(nzVisible)]="showLookup" [nzTitle]="'common.text.search' | translate" (nzOnCancel)="cancel()"
+  [nzFooter]="null">
+  <ng-template nzModalContent>
+    <app-item-search [clear]="true" [lookupDatastoreId]="lookupDatastoreId" [userList]="users"
+      (nxReflect)="reflect($event)" [lookField]="lookField" (nxCancel)="cancel()"></app-item-search>
+  </ng-template>
+</nz-modal>
+
+<!--query添加表单-->
+<nz-modal [(nzVisible)]="showQuery" [nzTitle]="'page.datastore.addQuery' | translate" (nzOnCancel)="hiddenQueryModal()"
+  [nzOkLoading]="isOkLoading">
+  <ng-template nzModalContent>
+    <form nz-form [formGroup]="queryForm">
+      <nz-form-item>
+        <nz-form-label nzSpan="5" nzFor="queryName" nzRequired>{{ 'page.datastore.name' | translate }}</nz-form-label>
+        <nz-form-control nzSpan="19" [nzErrorTip]="queryName">
+          <input type="text" nz-input formControlName="queryName"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.datastore.name' | translate }"
+            trim="blur" />
+          <ng-template #queryName let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+
+            <ng-container *ngIf="control.hasError('duplicated')">
+              {{ 'common.validator.queryNameDuplicated' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzSpan="5" nzFor="queryFields" nzRequired>
+          {{ 'page.datastore.field' | translate }}
+        </nz-form-label>
+        <nz-form-control nzSpan="19" [nzErrorTip]="queryFields">
+          <nz-select [nzMaxTagCount]="3" [nzMaxTagPlaceholder]="tagPlaceHolder" nzMode="multiple" nzAllowClear="true"
+            formControlName="queryFields"
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.datastore.field' | translate }"
+            [(ngModel)]="listOfSelectedFields">
+            <nz-option *ngFor="let f of fields" [nzLabel]="f.field_name | translate" [nzValue]="f.field_id"></nz-option>
+          </nz-select>
+          <ng-template #queryFields let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'page.datastore.fieldSelect' | translate }}
+            </ng-container>
+          </ng-template>
+          <ng-template #tagPlaceHolder let-selectedList>and {{ selectedList.length }} more selected</ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzSpan="5" nzFor="description">{{ 'page.datastore.description' | translate }}</nz-form-label>
+        <nz-form-control nzSpan="19">
+          <nz-input-group>
+            <textarea nz-input [placeholder]="
+                'common.placeholder.input' | translate: { label: 'page.datastore.description' | translate }
+              " formControlName="description" [nzAutosize]="{ minRows: 2, maxRows: 6 }" trim="blur"></textarea>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-template>
+  <ng-template nzModalFooter>
+    <nz-space>
+      <div *nzSpaceItem>
+        <button nz-button (click)="handleCancel()" type="reset">{{ 'common.button.cancel' | translate }}</button>
+      </div>
+      <div *nzSpaceItem>
+        <button nz-button nzType="primary" type="submit" (click)="saveQuery()" [disabled]="!queryForm.valid">
+          {{ 'common.button.submit' | translate }}
+        </button>
+      </div>
+    </nz-space>
+  </ng-template>
+</nz-modal>

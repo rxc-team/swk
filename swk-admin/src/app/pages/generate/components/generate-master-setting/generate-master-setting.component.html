@@ -1,0 +1,50 @@
+<form nz-form [formGroup]="form">
+  <nz-form-item>
+    <nz-form-label nzRequired="true">
+      {{ 'common.fieldType.lookup' | translate }}
+    </nz-form-label>
+    <nz-form-control [nzErrorTip]="lookupError">
+      <nz-select
+        style="width: 300px"
+        formControlName="lookupDatastoreId"
+        nzAllowClear="true"
+        [nzPlaceHolder]="'common.fieldType.lookup' | translate"
+        (ngModelChange)="datastoreChange($event)"
+      >
+        <nz-option
+          *ngFor="let d of datastores"
+          [nzValue]="d.datastore_id"
+          [nzLabel]="d.datastore_name | translate"
+        ></nz-option>
+      </nz-select>
+      <ng-template #lookupError let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredSelect' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired="true">
+      {{ 'page.datastore.field.selectRelatedField' | translate }}
+    </nz-form-label>
+    <nz-form-control [nzErrorTip]="lookupError">
+      <nz-select
+        [ngStyle]="{ width: '300px' }"
+        formControlName="lookupFieldId"
+        nzAllowClear="true"
+        [nzPlaceHolder]="
+          'common.placeholder.select' | translate: { label: 'page.datastore.field.selectRelatedField' | translate }
+        "
+      >
+        <nz-option *ngFor="let f of fields" [nzValue]="f.field_id" [nzLabel]="f.field_name | translate"></nz-option>
+      </nz-select>
+
+      <ng-template #lookupError let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredSelect' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+</form>

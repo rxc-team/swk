@@ -1,0 +1,68 @@
+<!-- 文字コード -->
+<nz-form-item>
+  <nz-form-label nzFor="characterCode" style="width: 100px" nzRequired="true">
+    {{ 'page.datastore.fileUploadCharacterCode' | translate }}
+  </nz-form-label>
+  <nz-form-control>
+    <nz-radio-group [(ngModel)]="encoding" nzButtonStyle="solid">
+      <label nz-radio-button nzValue="utf-8">UTF-8</label>
+      <label nz-radio-button nzValue="sjis">Shift-JIS</label>
+    </nz-radio-group>
+  </nz-form-control>
+</nz-form-item>
+<!-- データファイル -->
+<nz-form-item>
+  <nz-form-label nzFor="dataFile" nzRequired style="width: 100px">
+    {{ 'page.datastore.fileUploadDatafile' | translate }}
+  </nz-form-label>
+  <nz-form-control>
+    <nz-upload [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload" nzAccept=".csv">
+      <button nz-button>
+        <i nz-icon nzType="upload"></i>
+        {{ 'common.button.selectFile' | translate }}
+      </button>
+    </nz-upload>
+  </nz-form-control>
+</nz-form-item>
+<!-- KEY字段 -->
+<nz-form-item>
+  <nz-form-label nzFor="mainKeys" nzRequired style="width: 100px">
+    {{ 'common.text.checkMainKeys' | translate }}
+  </nz-form-label>
+  <nz-form-control>
+    <nz-select [(ngModel)]="mainKeys" nzAllowClear="true">
+      <nz-option *ngFor="let sf of canMainkeyFields" [nzLabel]="sf.label" [nzValue]="sf.value"></nz-option>
+    </nz-select>
+  </nz-form-control>
+</nz-form-item>
+<!-- 默认盘点类型 -->
+<nz-form-item>
+  <nz-form-label nzFor="checkType" nzRequired style="width: 100px">
+    {{ 'common.text.checkWay' | translate }}
+  </nz-form-label>
+  <nz-form-control>
+    <nz-select [(ngModel)]="checkType" nzMode="default">
+      <nz-option [nzLabel]="item.label | translate" [nzValue]="item.value" *ngFor="let item of checkTypes"></nz-option>
+    </nz-select>
+  </nz-form-control>
+</nz-form-item>
+<!-- 默认盘点时刻 -->
+<nz-form-item>
+  <nz-form-label nzFor="checkedAt" nzRequired style="width: 100px">
+    {{ 'common.text.checkTime' | translate }}
+  </nz-form-label>
+  <nz-form-control>
+    <nz-date-picker [(ngModel)]="checkedAt" nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss"></nz-date-picker>
+  </nz-form-control>
+</nz-form-item>
+<!-- 默认盘点者 -->
+<nz-form-item>
+  <nz-form-label nzFor="checkedBy" nzRequired style="width: 100px">
+    {{ 'common.text.checkBy' | translate }}
+  </nz-form-label>
+  <nz-form-control>
+    <nz-select [(ngModel)]="checkedBy" nzMode="default">
+      <nz-option [nzLabel]="u.user_name" [nzValue]="u.user_id" *ngFor="let u of canSelUsers"></nz-option>
+    </nz-select>
+  </nz-form-control>
+</nz-form-item>

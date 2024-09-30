@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>ProPlusPit</title>
+    <base href="/" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <style rel="stylesheet">
+      .loading {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100vh;
+      }
+
+      .loader-text {
+        padding-top: 20px;
+        color: #868686;
+      }
+
+      .loader {
+        display: flex;
+        width: 3.5em;
+        height: 3.5em;
+        border: 3px solid transparent;
+        border-top-color: #1e90ff;
+        border-bottom-color: #1e90ff;
+        border-radius: 50%;
+        animation: spin 1.5s linear infinite;
+      }
+
+      .loader:before {
+        content: '';
+        display: block;
+        margin: auto;
+        width: 0.75em;
+        height: 0.75em;
+        border: 3px solid #1e90ff;
+        border-radius: 50%;
+        animation: pulse 1s alternate ease-in-out infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes pulse {
+        from {
+          transform: scale(0.5);
+        }
+
+        to {
+          transform: scale(1);
+        }
+
+        100% {
+          -webkit-transform: rotate(-360deg);
+          transform: rotate(-360deg);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <app-root>
+      <div class="loading">
+        <div class="loader"></div>
+        <h4 class="loader-text">loading...</h4>
+      </div>
+    </app-root>
+  </body>
+</html>

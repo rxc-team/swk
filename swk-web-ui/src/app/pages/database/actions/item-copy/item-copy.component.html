@@ -1,0 +1,5 @@
+<div style="padding: 16px 0px 0px 0px">
+  <app-datatype-form *ngIf="!loading" [controlArray]="controlArray" [fieldsInfo]="fieldsInfo" [isUpdate]="false"
+    (nxCancel)="cancel()" [userList]="userList" (nxSubmit)="submit($event)"
+    (nxChange)="change($event)"></app-datatype-form>
+</div>

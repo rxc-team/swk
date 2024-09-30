@@ -1,0 +1,16 @@
+<span style="display: inline-flex; flex-direction: column; width: 100%" nz-popover [nzPopoverContent]="switch">
+  <ng-content></ng-content>
+</span>
+<ng-template #switch>
+  <div style="display: inline-flex; flex-direction: row" *ngIf="item.hasChange">
+    <nz-card [nzTitle]="'page.approve.beforeChange' | translate" style="flex: 1" nzType="inner" nzSize="small">
+      <nz-switch [(ngModel)]="item.oldValue" nzDisabled></nz-switch>
+    </nz-card>
+    <nz-card [nzTitle]="'page.approve.afterChange' | translate" style="flex: 1" nzType="inner" nzSize="small">
+      <nz-switch [(ngModel)]="item.value" nzDisabled></nz-switch>
+    </nz-card>
+  </div>
+  <div *ngIf="!item.hasChange">
+    <nz-switch [(ngModel)]="item.value" nzDisabled></nz-switch>
+  </div>
+</ng-template>

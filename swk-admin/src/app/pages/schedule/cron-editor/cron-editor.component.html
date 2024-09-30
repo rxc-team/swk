@@ -1,0 +1,38 @@
+<div [ngStyle]="{ width: isSmall ? '220px' : '300px' }" (click)="$event.stopPropagation()">
+  <div>
+    <nz-radio-group [(ngModel)]="frequency" (ngModelChange)="change()">
+      <label nz-radio nzValue="day">{{ 'page.schedule.dayEach' | translate }}</label>
+      <label nz-radio nzValue="week">{{ 'page.schedule.weekEach' | translate }}</label>
+      <label nz-radio nzValue="month">{{ 'page.schedule.monthEach' | translate }}</label>
+    </nz-radio-group>
+  </div>
+  <div style="margin-top: 8px; display: flex; flex-direction: column" *ngIf="frequency == 'week'">
+    <span>{{ 'page.schedule.chooseWeek' | translate }}</span>
+    <nz-checkbox-group [(ngModel)]="weeks" (ngModelChange)="change()"></nz-checkbox-group>
+  </div>
+  <div style="margin-top: 8px; display: flex; flex-direction: column" *ngIf="frequency == 'month'">
+    <span>{{ 'page.schedule.chooseDay' | translate }}</span>
+    <div>
+      {{ 'page.schedule.month' | translate }}
+      <nz-select [(ngModel)]="monthDay" style="width: 80px" (ngModelChange)="change()">
+        <nz-option
+          *ngFor="let item of monthDays; let i = index"
+          [nzLabel]="(i + 1).toString()"
+          [nzValue]="(i + 1).toString()"
+        ></nz-option>
+      </nz-select>
+      {{ 'page.schedule.day' | translate }}
+    </div>
+  </div>
+  <div style="margin-top: 8px; display: flex; flex-direction: column">
+    <span>{{ 'page.schedule.chooseTime' | translate }}</span>
+    <nz-time-picker
+      [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+      [(ngModel)]="time"
+      nzFormat="HH:mm"
+      (ngModelChange)="change()"
+      appDisableTimePicker
+      [(nzOpen)]="isOpen"
+    ></nz-time-picker>
+  </div>
+</div>

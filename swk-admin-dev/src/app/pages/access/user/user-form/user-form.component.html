@@ -1,0 +1,231 @@
+<form nz-form [formGroup]="userForm">
+  <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'common.text.baseInfo' | translate">
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.user.userName' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="user_name">
+        <input
+          nz-input
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          formControlName="user_name"
+          trim="blur"
+          [placeholder]="'common.placeholder.input' | translate: { label: 'page.user.userName' | translate }"
+        />
+        <ng-template #user_name let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+
+          <ng-container *ngIf="control.hasError('duplicated')">
+            {{ 'common.validator.userNameDuplicated' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.user.noticeEmailLabel' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="noticeEmail">
+        <input
+          nz-input
+          formControlName="notice_email"
+          type="email"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          [placeholder]="'common.placeholder.input' | translate: { label: 'page.user.noticeEmailLabel' | translate }"
+          trim="blur"
+        />
+        <ng-template #noticeEmail let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('email')">
+            {{ 'common.validator.email' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>
+        <span>
+          {{ 'page.user.avatar' | translate }}
+          <i nz-icon nz-tooltip [nzTooltipTitle]="t" nzType="question-circle" nzTheme="outline"></i>
+          <ng-template #t>
+            <span>
+              {{ 'common.text.supportFile' | translate }}
+              <div>
+                <span style="margin-right: 4px; color: red" *ngFor="let suffix of supportFile">{{ suffix }}</span>
+              </div>
+            </span>
+          </ng-template>
+        </span>
+      </nz-form-label>
+      <nz-form-control>
+        <nz-upload
+          class="avatar-uploader"
+          nzListType="picture-card"
+          nzAction="/file/header/upload"
+          nzName="avatar"
+          [nzCustomRequest]="customReq"
+          [nzFileList]="fileList"
+          (nzChange)="handleChange($event)"
+          [nzBeforeUpload]="beforeUploadPic"
+          nzShowUploadList="false"
+        >
+          <br />
+          <ng-container *ngIf="!avatar">
+            <div
+              style="
+                height: 50px;
+                width: 50px;
+                line-height: 50px;
+                border: 1px solid #eeeeee;
+                border-radius: 50px;
+                text-align: center;
+              "
+            >
+              <i nz-icon nzType="user"></i>
+            </div>
+          </ng-container>
+          <nz-avatar *ngIf="avatar" nzIcon="user" [nzSize]="50" [nzSrc]="avatar"></nz-avatar>
+        </nz-upload>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.user.email' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="email">
+        <nz-input-group [nzAddOnAfter]="domainTpl" [ngStyle]="{ width: isSmall ? '220px' : '300px' }">
+          <input
+            nz-input
+            formControlName="email"
+            trim="blur"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.user.email' | translate }"
+            type="email"
+          />
+        </nz-input-group>
+        <ng-template #domainTpl>
+          <span>@{{ domain }}</span>
+        </ng-template>
+        <ng-template #email let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">
+            {{ 'common.validator.emailPrefix' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('duplicated')">
+            {{ 'common.validator.emailDuplicated' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.user.timeZone' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="timezone">
+        <nz-select
+          formControlName="timezone"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          nzShowSearch="true"
+          [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.user.timeZone' | translate }"
+          nzAllowClear
+        >
+          <nz-option
+            *ngFor="let item of timezones"
+            [nzLabel]="item.code | translate"
+            [nzValue]="item.value"
+            nzCustomContent="true"
+          >
+            <span [title]="item.code | translate">{{ item.code | translate }}</span>
+          </nz-option>
+        </nz-select>
+        <ng-template #timezone let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredSelect' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.user.language' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="language">
+        <nz-select
+          formControlName="language"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.user.language' | translate }"
+          nzAllowClear
+        >
+          <nz-option [nzValue]="lang.code" [nzLabel]="lang.text" *ngFor="let lang of langOptions"></nz-option>
+        </nz-select>
+        <ng-template #language let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredSelect' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>{{ 'page.user.signature' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="errorName">
+        <textarea
+          formControlName="signature"
+          nz-input
+          rows="4"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          trim="blur"
+          [placeholder]="'common.placeholder.input' | translate: { label: 'page.user.signature' | translate }"
+        ></textarea>
+        <ng-template #errorName let-control></ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </nz-card>
+  <br />
+  <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'page.user.rightInfo' | translate">
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.user.userRole' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="roles">
+        <nz-select
+          formControlName="roles"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          nzAllowClear
+          [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.user.userRole' | translate }"
+          nzMode="multiple"
+        >
+          <nz-option [nzValue]="role.role_id" [nzLabel]="role.role_name" *ngFor="let role of roleOptions"></nz-option>
+        </nz-select>
+        <ng-template #roles let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredSelect' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </nz-card>
+  <br />
+  <nz-form-item>
+    <nz-space>
+      <div *nzSpaceItem>
+        <button
+          nz-button
+          nzType="primary"
+          (click)="submitUserForm($event, userForm.value)"
+          appDebounceClick
+          [disabled]="!userForm.valid"
+        >
+          <i nz-icon [nzType]="'save'" nzTheme="outline"></i>
+          {{ 'common.button.save' | translate }}
+        </button>
+      </div>
+      <div *nzSpaceItem>
+        <button nz-button nzType="default" (click)="reset()" *ngIf="status === 'add'">
+          <i nz-icon nzType="redo" nzTheme="outline"></i>
+          {{ 'common.button.reset' | translate }}
+        </button>
+      </div>
+      <div *nzSpaceItem>
+        <button nz-button nzType="default" (click)="cancel()">
+          <i nz-icon nzType="close" nzTheme="outline"></i>
+          {{ 'common.button.cancel' | translate }}
+        </button>
+      </div>
+    </nz-space>
+  </nz-form-item>
+</form>

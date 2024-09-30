@@ -1,0 +1,43 @@
+<div style="display: flex">
+  <div style="flex: 1">
+    <h3>{{ 'page.update.data' | translate }}</h3>
+    <nz-code-editor
+      class="data-editor solid_border"
+      [nzEditorOption]="dataEditorOptions"
+      [(ngModel)]="data"
+      (nzEditorInitialized)="onDataEditorInit($event)"
+    ></nz-code-editor>
+    <h3>{{ 'page.update.script' | translate }}</h3>
+    <nz-code-editor
+      class="editor solid_border"
+      [nzEditorOption]="editorOptions"
+      [(ngModel)]="script"
+      (nzEditorInitialized)="onEditorInit($event)"
+    ></nz-code-editor>
+  </div>
+  <div style="width: 2px; height: 100%"></div>
+  <div style="flex: 1">
+    <div style="display: flex; align-items: center">
+      <h3 style="flex: 1">{{ 'page.update.log' | translate }}</h3>
+      <div>
+        <button nz-button nzType="primary" (click)="run()">RUN</button>
+      </div>
+    </div>
+    <div style="height: 430px; overflow-y: auto" class="solid_border">
+      <div style="padding: 16px">
+        <div *ngFor="let item of logs">
+          <h3>{{ item.time }}</h3>
+          <div class="log-script dashed_border">{{ item.script }}</div>
+          <div class="log-result dashed_border">
+            <ng-container *ngIf="item.type === 'log'; else elseTemplate">
+              {{ item.log }}
+            </ng-container>
+            <ng-template #elseTemplate>
+              <span style="color: red">{{ item.log }}</span>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

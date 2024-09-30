@@ -1,0 +1,297 @@
+<button nz-button nzType="primary" (click)="show()" *ngIf="!showText">
+  <i nz-icon nzType="printer" nzTheme="outline"></i>
+  {{ 'common.button.labelPrint' | translate }}
+</button>
+<li nz-menu-item (click)="show()" *ngIf="showText">
+  <i nz-icon nzType="printer" nzTheme="outline"></i>
+  {{ 'common.button.labelPrint' | translate }}
+</li>
+
+<nz-modal
+  [nzTitle]="'page.print.title' | translate"
+  [(nzVisible)]="visible"
+  nzClosable="true"
+  nzMaskClosable="false"
+  [nzWidth]="830"
+  (nzOnCancel)="visible = false"
+  [nzFooter]="null"
+>
+  <ng-template nzModalContent>
+    <div id="print-section" hidden>
+      <div
+        style="display: flex; align-items: center; page-break-after: always; height: 100%; margin-top: 8px"
+        *ngFor="let item of dataSet"
+      >
+        <qrcode
+          [qrdata]="qr(item.items)"
+          [allowEmptyString]="true"
+          [width]="60"
+          [errorCorrectionLevel]="'Q'"
+          [elementType]="'svg'"
+        ></qrcode>
+        <div style="font-size: 12px">
+          <div style="margin-bottom: 1px; height: 20px">
+            <app-item-view
+              [label]="label1"
+              [value]="field1 ? item.items[field1]?.value : ''"
+              [type]="field1 ? item.items[field1]?.data_type : ''"
+            ></app-item-view>
+          </div>
+          <div style="margin-bottom: 1px; height: 20px">
+            <app-item-view
+              [label]="label2"
+              [value]="field2 ? item.items[field2]?.value : ''"
+              [type]="field2 ? item.items[field2]?.data_type : ''"
+            ></app-item-view>
+          </div>
+          <div style="margin-bottom: 1px; height: 20px">
+            <app-item-view
+              [label]="label3"
+              [value]="field3 ? item.items[field3]?.value : ''"
+              [type]="field3 ? item.items[field3]?.data_type : ''"
+            ></app-item-view>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="print-section-a4-10" hidden>
+      <div *ngFor="let a of pages; let i = index">
+        <div style="page-break-after: always; overflow: hidden">
+          <div
+            *ngFor="let item of dataSet.slice(i * 10, (i + 1) * 10)"
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              width: 365px;
+              margin-right: 9px;
+              height: 168px;
+              float: left;
+            "
+          >
+            <qrcode
+              [qrdata]="qr(item.items)"
+              [allowEmptyString]="true"
+              [width]="60"
+              [errorCorrectionLevel]="'Q'"
+              [elementType]="'svg'"
+            ></qrcode>
+            <div style="font-size: 12px">
+              <div style="margin-bottom: 1px; height: 20px">
+                <app-item-view
+                  [label]="label1"
+                  [value]="field1 ? item.items[field1]?.value : ''"
+                  [type]="field1 ? item.items[field1]?.data_type : ''"
+                ></app-item-view>
+              </div>
+              <div style="margin-bottom: 1px; height: 20px">
+                <app-item-view
+                  [label]="label2"
+                  [value]="field2 ? item.items[field2]?.value : ''"
+                  [type]="field2 ? item.items[field2]?.data_type : ''"
+                ></app-item-view>
+              </div>
+              <div style="margin-bottom: 1px; height: 20px">
+                <app-item-view
+                  [label]="label3"
+                  [value]="field3 ? item.items[field3]?.value : ''"
+                  [type]="field3 ? item.items[field3]?.data_type : ''"
+                ></app-item-view>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <form nz-form [formGroup]="form">
+        <nz-form-item>
+          <nz-form-label nzRequired style="width: 100px">
+            {{ 'page.print.printType' | translate }}
+          </nz-form-label>
+          <nz-form-control>
+            <nz-space>
+              <div *nzSpaceItem>
+                <nz-select formControlName="pritnType" style="width: 300px">
+                  <nz-option [nzLabel]="'page.print.printTypeLabel' | translate" nzValue="label"></nz-option>
+                  <nz-option [nzLabel]="'page.print.printTypeA410' | translate" nzValue="A4-10"></nz-option>
+                </nz-select>
+              </div>
+              <div *nzSpaceItem>
+                <button
+                  nz-button
+                  nzType="primary"
+                  (click)="printLabel($event)"
+                  *ngIf="form.get('pritnType').value === 'label'"
+                  [disabled]="!form.valid || !qrFields"
+                >
+                  <i nz-icon nzType="printer" nzTheme="outline"></i>
+                  {{ 'common.button.print' | translate }}
+                </button>
+              </div>
+              <div *nzSpaceItem>
+                <button
+                  nz-button
+                  nzType="primary"
+                  (click)="printA410()"
+                  *ngIf="form.get('pritnType').value === 'A4-10'"
+                  [disabled]="!form.valid || !qrFields"
+                >
+                  <i nz-icon nzType="printer" nzTheme="outline"></i>
+                  {{ 'common.button.print' | translate }}
+                </button>
+              </div>
+            </nz-space>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </div>
+
+    <nz-card
+      [nzTitle]="title"
+      *ngIf="form.get('pritnType').value === 'label'"
+      [nzBodyStyle]="{ padding: '0' }"
+      nzType="inner"
+      nzSize="small"
+    >
+      <ng-template #title>
+        {{ 'page.print.totalTips' | translate: { total: dataSet.length, prview: 5 } }}
+      </ng-template>
+      <div style="display: flex; flex-direction: column; height: 350px; overflow: auto">
+        <div
+          style="display: flex; justify-content: left; align-items: center; flex: 1"
+          *ngFor="let item of dataSet.slice(0, 5)"
+        >
+          <ng-container *ngIf="qr(item.items) as qrdata">
+            <ng-container *ngIf="qrdata === 'noSet'; then thenTemplate; else elseTemplate"></ng-container>
+            <ng-template #thenTemplate>
+              <img src="assets/images/qr-invalid.png" width="60" style="padding: 20px" />
+            </ng-template>
+            <ng-template #elseTemplate>
+              <qrcode
+                [qrdata]="qrdata"
+                [allowEmptyString]="true"
+                [width]="60"
+                [errorCorrectionLevel]="'Q'"
+                [elementType]="'svg'"
+              ></qrcode>
+            </ng-template>
+          </ng-container>
+
+          <div style="font-size: 12px">
+            <div style="margin-bottom: 1px; height: 20px">
+              <app-item-view
+                [label]="label1"
+                [value]="field1 ? item.items[field1]?.value : ''"
+                [type]="field1 ? item.items[field1]?.data_type : ''"
+              ></app-item-view>
+            </div>
+            <div style="margin-bottom: 1px; height: 20px">
+              <app-item-view
+                [label]="label2"
+                [value]="field2 ? item.items[field2]?.value : ''"
+                [type]="field2 ? item.items[field2]?.data_type : ''"
+              ></app-item-view>
+            </div>
+            <div style="margin-bottom: 1px; height: 20px">
+              <app-item-view
+                [label]="label3"
+                [value]="field3 ? item.items[field3]?.value : ''"
+                [type]="field3 ? item.items[field3]?.data_type : ''"
+              ></app-item-view>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nz-card>
+    <nz-card
+      [nzTitle]="title"
+      *ngIf="form.get('pritnType').value === 'A4-10'"
+      [nzBodyStyle]="{ padding: '0' }"
+      nzType="inner"
+      nzSize="small"
+    >
+      <ng-template #title>
+        {{ 'page.print.totalTips' | translate: { total: dataSet.length, prview: 10 } }}
+      </ng-template>
+      <div
+        style="display: flex; flex-direction: row"
+        [style.width]="mmConvertPx(210) + 'px'"
+        [style.height]="mmConvertPx(297) + 'px'"
+        class="solid_border"
+      >
+        <div
+          [style.width]="mmConvertPx(7) + 'px'"
+          style="font-size: 12px; display: flex; justify-content: center; align-items: center"
+          class="solid_border"
+        >
+          <div style="text-align: center">7mm</div>
+        </div>
+        <div style="display: flex; flex-direction: column">
+          <div
+            [style.height]="mmConvertPx(23.3) + 'px'"
+            style="text-align: center; display: flex; justify-content: center; align-items: center"
+            class="solid_border"
+          >
+            23.3mm
+          </div>
+          <div style="page-break-after: always; overflow: hidden; height: 100%" class="solid_border">
+            <div
+              *ngFor="let item of dataSet.slice(0, 10)"
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 365px;
+                margin-right: 9px;
+                margin-bottom: 1px;
+                height: 168px;
+                float: left;
+                background-color: #eeeeee;
+              "
+            >
+              <ng-container *ngIf="qr(item.items) as qrdata">
+                <ng-container *ngIf="qrdata === 'noSet'; then thenTemplate; else elseTemplate"></ng-container>
+                <ng-template #thenTemplate>
+                  <img src="assets/images/qr-invalid.png" width="60" style="padding: 20px" />
+                </ng-template>
+                <ng-template #elseTemplate>
+                  <qrcode
+                    [qrdata]="qrdata"
+                    [allowEmptyString]="true"
+                    [width]="60"
+                    [errorCorrectionLevel]="'Q'"
+                    [elementType]="'svg'"
+                  ></qrcode>
+                </ng-template>
+              </ng-container>
+              <div style="font-size: 12px">
+                <div style="margin-bottom: 1px; height: 20px">
+                  <app-item-view
+                    [label]="label1"
+                    [value]="field1 ? item.items[field1]?.value : ''"
+                    [type]="field1 ? item.items[field1]?.data_type : ''"
+                  ></app-item-view>
+                </div>
+                <div style="margin-bottom: 1px; height: 20px">
+                  <app-item-view
+                    [label]="label2"
+                    [value]="field2 ? item.items[field2]?.value : ''"
+                    [type]="field2 ? item.items[field2]?.data_type : ''"
+                  ></app-item-view>
+                </div>
+                <div style="margin-bottom: 1px; height: 20px">
+                  <app-item-view
+                    [label]="label3"
+                    [value]="field3 ? item.items[field3]?.value : ''"
+                    [type]="field3 ? item.items[field3]?.data_type : ''"
+                  ></app-item-view>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nz-card>
+  </ng-template>
+</nz-modal>

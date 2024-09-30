@@ -1,0 +1,32 @@
+<div style="display: flex; justify-content: space-between">
+  <span style="font-weight: bold; font-size: 16px; vertical-align: middle">
+    {{ 'common.button.widthSet' | translate }}
+  </span>
+  <button nz-button nzType="primary" style="margin-left: 16px" (click)="save()">
+    <i nz-icon nzType="save"></i>
+    {{ 'common.button.save' | translate }}
+  </button>
+</div>
+<div cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)" class="list">
+  <span
+    cdkDrag
+    class="box"
+    *ngFor="let f of fields; let i = index"
+    nz-resizable
+    (nzResize)="onResize($event, i, f.field_id)"
+    [style.height.px]="50"
+    [nzMaxWidth]="1000"
+    [nzMinWidth]="100"
+    [style.width.px]="f.width"
+  >
+    <div cdkDragHandle>
+      <div>{{ f.field_name | translate }}</div>
+      <div>{{ f.width + ('page.datastore.field.pixel' | translate) }}</div>
+    </div>
+    <nz-resize-handle nzDirection="right">
+      <div class="right-wrap">
+        <i class="right" nz-icon nzType="more" nzTheme="outline"></i>
+      </div>
+    </nz-resize-handle>
+  </span>
+</div>

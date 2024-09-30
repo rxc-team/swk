@@ -1,0 +1,21 @@
+<nz-tabset [nzTabPosition]="'top'" [nzType]="'line'" nzLinkRouter>
+  <nz-tab>
+    <a *nzTabLink nz-tab-link [routerLink]="['/profile/base']">
+      <i nz-icon nzType="profile"></i>
+      {{ 'page.userCenter.baseSetting' | translate }}
+    </a>
+  </nz-tab>
+  <nz-tab>
+    <a *nzTabLink nz-tab-link [routerLink]="['/profile/safe']">
+      <i nz-icon nzType="safety"></i>
+      {{ 'page.userCenter.safeSetting' | translate }}
+    </a>
+  </nz-tab>
+  <nz-tab>
+    <a *nzTabLink nz-tab-link [routerLink]="['/profile/mail']">
+      <i nz-icon nzType="mail"></i>
+      {{ 'page.userCenter.emailSetting' | translate }}
+    </a>
+  </nz-tab>
+</nz-tabset>
+<router-outlet></router-outlet>

@@ -1,0 +1,188 @@
+<button nz-button nzType="primary" (click)="show()" *ngIf="!showText">
+  <i nz-icon nzType="cloud-sync" nzTheme="outline"></i>
+  {{ 'common.button.mapping' | translate }}
+</button>
+<li nz-menu-item (click)="show()" *ngIf="showText">
+  <i nz-icon nzType="cloud-sync" nzTheme="outline"></i>
+  {{ 'common.button.mapping' | translate }}
+</li>
+
+<nz-modal
+  [nzTitle]="'page.mapping.title' | translate"
+  [(nzVisible)]="visible"
+  nzClosable="true"
+  [nzWidth]="800"
+  (nzOnCancel)="visible = false; files = []; selectMapping = {}; selectMp = ''"
+  [nzFooter]="null"
+>
+  <ng-template nzModalContent>
+    <nz-tabset>
+      <nz-tab [nzTitle]="upload">
+        <nz-form-item>
+          <nz-form-label nzRequired>{{ 'page.mapping.mappingSelect' | translate }}</nz-form-label>
+          <nz-form-control>
+            <nz-select
+              [(ngModel)]="selectMp"
+              (ngModelChange)="select($event)"
+              [nzPlaceHolder]="'page.mapping.mappingSelect' | translate"
+              nzAllowClear
+              style="width: 300px"
+            >
+              <nz-option
+                *ngFor="let item of mappings"
+                [nzLabel]="item.mapping_name | translate"
+                [nzValue]="item.mapping_id"
+              ></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzFor="wordflow" style="width: 100px" nzRequired>
+            {{ 'page.datastore.emptyHandle' | translate }}
+          </nz-form-label>
+          <nz-form-control>
+            <nz-radio-group [(ngModel)]="emptyChange">
+              <label nz-radio nzValue="false">
+                {{ 'page.datastore.emptyNotUpdate' | translate }}
+              </label>
+              <label nz-radio nzValue="true">{{ 'page.datastore.emptyUpadte' | translate }}</label>
+            </nz-radio-group>
+          </nz-form-control>
+        </nz-form-item>
+        <div style="color: red">{{ selectMapping.mapping_type | mt | translate }}</div>
+        <div style="height: 180px; overflow-y: auto; padding: 8px" class="solid_border">
+          <div
+            *ngFor="let fm of selectMapping.mapping_rule"
+            style="margin: 0 4px; line-height: 20px; border-bottom: 1px dashed #ddd"
+            [ngStyle]="{ 'background-color': fm.primary_key ? '#ff000015' : '' }"
+          >
+            <ng-container *ngIf="fm.is_required; else empty">
+              <span style="color: red">*</span>
+            </ng-container>
+            <ng-template #empty>
+              <span style="visibility: hidden">*</span>
+            </ng-template>
+
+            <span style="display: inline-block; min-width: 80px; width: 200px">
+              <a style="margin: 0 4px" *ngIf="fm.from_key">
+                <i nz-icon nzType="key" nzTheme="outline"></i>
+                {{ 'apps.' + appId + '.fields.' + datastoreId + '_' + fm.from_key | translate }}
+              </a>
+              <a style="margin: 0 4px" *ngIf="!fm.from_key">
+                <i nz-icon nzType="key" nzTheme="outline"></i>
+              </a>
+            </span>
+            <i nz-icon nzType="arrow-right" nzTheme="outline"></i>
+            <span style="display: inline-block; min-width: 80px; width: 200px">
+              <a style="margin: 0 4px">{{ fm.to_key }}</a>
+            </span>
+          </div>
+          <div *ngIf="!selectMapping.mapping_id">
+            <nz-empty></nz-empty>
+          </div>
+        </div>
+        <br />
+
+        <div>
+          <nz-upload
+            nzType="drag"
+            [nzMultiple]="true"
+            [nzBeforeUpload]="beforeUpload"
+            nzLimit="1"
+            nzAccept=".csv"
+            nzAction="/import/datastore/csv"
+            [(nzFileList)]="files"
+            nzShowUploadList="true"
+            [nzDisabled]="!selectMapping.mapping_id"
+          >
+            <p class="ant-upload-drag-icon">
+              <i nz-icon nzType="inbox"></i>
+            </p>
+            <p class="ant-upload-text">{{ 'common.button.uploadDrag' | translate }}</p>
+            <p class="ant-upload-hint">
+              {{ 'page.mapping.uploadTips' | translate }}
+            </p>
+          </nz-upload>
+          <div style="margin-top: 16px; text-align: center">
+            <button
+              nz-button
+              [nzType]="'primary'"
+              (click)="handleUpload()"
+              [disabled]="!selectMapping.mapping_id || files.length === 0 || !canUpload"
+            >
+              <i nz-icon nzType="upload" nzTheme="outline"></i>
+              {{ 'common.button.uploadStart' | translate }}
+            </button>
+          </div>
+        </div>
+      </nz-tab>
+      <nz-tab [nzTitle]="download">
+        <nz-form-item>
+          <nz-form-label nzRequired>{{ 'page.mapping.mappingSelect' | translate }}</nz-form-label>
+          <nz-form-control>
+            <nz-select
+              [(ngModel)]="selectMp"
+              (ngModelChange)="select($event)"
+              [nzPlaceHolder]="'page.mapping.mappingSelect' | translate"
+              nzAllowClear
+              style="width: 300px"
+            >
+              <nz-option
+                *ngFor="let item of mappings"
+                [nzLabel]="item.mapping_name | translate"
+                [nzValue]="item.mapping_id"
+              ></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <div style="color: red">{{ selectMapping.mapping_type | mt | translate }}</div>
+        <div style="height: 180px; overflow-y: auto; padding: 8px" class="solid_border">
+          <div
+            *ngFor="let fm of selectMapping.mapping_rule"
+            style="margin: 0 4px; line-height: 20px; border-bottom: 1px dashed #ddd"
+            [ngStyle]="{ 'background-color': fm.primary_key ? '#ff000015' : '' }"
+          >
+            <ng-container *ngIf="fm.is_required; else empty">
+              <span style="color: red">*</span>
+            </ng-container>
+            <ng-template #empty>
+              <span style="visibility: hidden">*</span>
+            </ng-template>
+
+            <span style="display: inline-block; min-width: 80px; width: 200px">
+              <a style="margin: 0 4px" *ngIf="fm.from_key">
+                <i nz-icon nzType="key" nzTheme="outline"></i>
+                {{ 'apps.' + appId + '.fields.' + datastoreId + '_' + fm.from_key | translate }}
+              </a>
+              <a style="margin: 0 4px" *ngIf="!fm.from_key">
+                <i nz-icon nzType="key" nzTheme="outline"></i>
+              </a>
+            </span>
+            <i nz-icon nzType="arrow-right" nzTheme="outline"></i>
+            <span style="display: inline-block; min-width: 80px; width: 200px">
+              <a style="margin: 0 4px">{{ fm.to_key }}</a>
+            </span>
+          </div>
+        </div>
+        <br />
+
+        <div>
+          <div style="text-align: center">
+            <button nz-button [nzType]="'primary'" (click)="downloadCsv()" [disabled]="!selectMapping.mapping_id">
+              <i nz-icon nzType="download" nzTheme="outline"></i>
+              {{ 'common.button.downloadStart' | translate }}
+            </button>
+          </div>
+        </div>
+      </nz-tab>
+      <ng-template #upload>
+        <i nz-icon nzType="upload" nzTheme="outline"></i>
+        {{ 'common.button.fileUpload' | translate }}
+      </ng-template>
+      <ng-template #download>
+        <i nz-icon nzType="download" nzTheme="outline"></i>
+        {{ 'common.button.fileDownload' | translate }}
+      </ng-template>
+    </nz-tabset>
+  </ng-template>
+</nz-modal>

@@ -1,0 +1,35 @@
+<nz-form-item>
+  <nz-form-label nzFor="wordflow" style="width: 100px" nzRequired="true">
+    {{ 'page.user.fileCharCode' | translate }}
+  </nz-form-label>
+  <nz-form-control>
+    <nz-radio-group [(ngModel)]="encoding" nzButtonStyle="solid">
+      <label nz-radio-button nzValue="utf-8">UTF-8</label>
+      <label nz-radio-button nzValue="sjis">Shift-JIS</label>
+    </nz-radio-group>
+  </nz-form-control>
+</nz-form-item>
+<nz-form-item>
+  <nz-form-label nzFor="flie" nzRequired style="width: 100px">
+    {{ 'page.user.csvFile' | translate }}
+  </nz-form-label>
+  <nz-form-control>
+    <nz-upload [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload" nzAccept=".csv,.xlsx,.xlsm">
+      <button nz-button>
+        <i nz-icon nzType="upload"></i>
+        {{ 'common.button.selectFile' | translate }}
+      </button>
+    </nz-upload>
+  </nz-form-control>
+</nz-form-item>
+<nz-form-item>
+  <nz-form-label nzRequired style="width: 100px">
+    {{ 'page.user.mailverify' | translate }}
+  </nz-form-label>
+  <nz-form-control>
+    <nz-radio-group [(ngModel)]="mailverify">
+      <label nz-radio nzValue="1">{{ 'page.user.noauthenticated' | translate }}</label>
+      <label nz-radio nzValue="2">{{ 'page.user.authenticate' | translate }}</label>
+    </nz-radio-group>
+  </nz-form-control>
+</nz-form-item>

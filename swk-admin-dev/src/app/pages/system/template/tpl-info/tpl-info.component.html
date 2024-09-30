@@ -1,0 +1,83 @@
+<nz-descriptions [nzTitle]="'common.text.baseInfo' | translate" nzSize="middle" [nzColumn]="1">
+  <nz-descriptions-item [nzTitle]="'page.template.tplName' | translate">
+    {{ tplData.backup_name }}
+  </nz-descriptions-item>
+  <nz-descriptions-item [nzTitle]="'page.template.customer' | translate">
+    {{ getCustomerName(tplData.customer_id) }}
+  </nz-descriptions-item>
+  <nz-descriptions-item [nzTitle]="'page.template.application' | translate">
+    {{ getAppName(tplData.app_id) | translate }}
+  </nz-descriptions-item>
+  <nz-descriptions-item [nzTitle]="'page.template.applicationType' | translate">
+    {{ (tplData.app_type ? 'page.template.' + tplData.app_type : 'page.template.check') | translate }}
+  </nz-descriptions-item>
+  <nz-descriptions-item [nzTitle]="'page.template.dataHandle' | translate">
+    <label>{{ (tplData.has_data ? 'page.template.exist' : 'page.template.empty') | translate }}</label>
+  </nz-descriptions-item>
+  <nz-descriptions-item [nzTitle]="'page.template.createdTime' | translate">
+    {{ tplData.created_at | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}
+  </nz-descriptions-item>
+  <nz-descriptions-item [nzTitle]="'page.template.size' | translate">
+    <span style="color: red">{{ tplData.size | nzBytes }}</span>
+  </nz-descriptions-item>
+</nz-descriptions>
+<nz-table
+  #nzTable
+  [nzTitle]="'page.template.objectInfo' | translate"
+  nzSize="middle"
+  nzBordered
+  [nzData]="tplData.copy_info_list"
+  [nzTotal]="tplData.copy_info_list.length"
+  [nzShowTotal]="rangeTemplate"
+  [nzScroll]="{ y: '300px' }"
+>
+  <thead>
+    <tr>
+      <ng-container *ngFor="let col of cols">
+        <th
+          *ngIf="col.width"
+          nz-resizable
+          nzBounds="window"
+          [nzWidth]="col.width"
+          [nzMinWidth]="60"
+          (nzResizeEnd)="onResize($event, col.title)"
+        >
+          {{ col.title | translate }}
+          <nz-resize-handle nzDirection="right"></nz-resize-handle>
+        </th>
+        <th *ngIf="!col.width">
+          {{ col.title | translate }}
+        </th>
+      </ng-container>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let i of nzTable.data">
+      <td>
+        <span [ngSwitch]="i.copy_type">
+          <span *ngSwitchCase="'apps'">
+            {{ 'page.template.app' | translate }}
+          </span>
+          <span *ngSwitchCase="'data_stores'">
+            {{ 'page.template.datastore' | translate }}
+          </span>
+          <span *ngSwitchCase="'reports'">
+            {{ 'page.template.report' | translate }}
+          </span>
+          <span *ngSwitchCase="'dashboards'">
+            {{ 'page.template.dashboard' | translate }}
+          </span>
+          <span *ngSwitchCase="'languages'">
+            {{ 'page.template.language' | translate }}
+          </span>
+        </span>
+      </td>
+      <td *ngIf="i.copy_type !== 'languages'">{{ i.source | translate }}</td>
+      <td *ngIf="i.copy_type === 'languages'">{{ i.source }}</td>
+      <td>{{ i.count ? i.count : '-' }}</td>
+    </tr>
+  </tbody>
+</nz-table>
+<ng-template #rangeTemplate let-range="range" let-total>
+  {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+</ng-template>

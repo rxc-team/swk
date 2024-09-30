@@ -1,0 +1,320 @@
+<form nz-form [formGroup]="validateForm">
+  <nz-tabset>
+    <nz-tab [nzTitle]="'common.text.baseInfo' | translate">
+      <nz-form-item>
+        <nz-form-label nzFor="customerName" nzRequired>
+          {{ 'page.customer.name' | translate }}
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="errorCustomerName">
+          <input
+            nz-input
+            formControlName="customerName"
+            [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.customer.name' | translate }"
+            trim="blur"
+          />
+          <ng-template #errorCustomerName let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+
+            <ng-container *ngIf="control.hasError('duplicated')">
+              {{ 'common.validator.customerNameDuplicated' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          <span>
+            {{ 'LOGO' }}
+            <i nz-icon nz-tooltip [nzTooltipTitle]="t" nzType="question-circle" theme="outline"></i>
+            <ng-template #t>
+              <span>
+                {{ 'common.text.supportFile' | translate }}
+                <div>
+                  <span style="margin-right: 4px; color: red" *ngFor="let suffix of supportFile">{{ suffix }}</span>
+                </div>
+              </span>
+            </ng-template>
+          </span>
+        </nz-form-label>
+        <nz-form-control>
+          <nz-upload
+            class="avatar-uploader"
+            nzListType="picture-card"
+            nzAction="file/header/upload"
+            nzAccept=".jpg,.png,.jpeg"
+            [nzBeforeUpload]="beforeUploadPic"
+            [nzCustomRequest]="customReq"
+            [nzFileList]="fileList"
+            (nzChange)="handleChange($event)"
+            nzShowUploadList="false"
+          >
+            <ng-container *ngIf="!logo">
+              <div style="height: 60px; width: 200px; line-height: 60px; text-align: center">
+                <i nz-icon nzType="picture" style="font-size: 24px"></i>
+              </div>
+            </ng-container>
+            <img *ngIf="logo" width="198" height="58" [src]="logo" />
+          </nz-upload>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="domain" nzRequired>
+          {{ 'page.customer.domain' | translate }}
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="errorDomain">
+          <input
+            nz-input
+            formControlName="domain"
+            [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.customer.domain' | translate }"
+            [readOnly]="status === 'edit'"
+            trim="blur"
+          />
+          <ng-template #errorDomain let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.hasError('domain')">
+              {{ 'common.validator.domain' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">
+              {{ 'common.validator.domainLetter' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.hasError('duplicated')">
+              {{ 'common.validator.domainDuplicated' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="defaultUser" nzRequired>
+          {{ 'page.customer.admin' | translate }}
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="errorDefaultUser">
+          <input
+            nz-input
+            formControlName="defaultUser"
+            [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+            [readOnly]="status == 'edit'"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.customer.admin' | translate }"
+            trim="blur"
+          />
+          <ng-template #errorDefaultUser let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.hasError('halfAlphaNumber')">
+              {{ 'common.validator.halfAlphaNumber' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <!-- 默认管理员邮箱 -->
+      <nz-form-item>
+        <nz-form-label nzFor="defaultUserEmail" nzRequired>
+          {{ 'page.customer.email' | translate }}
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="errorUserEmail">
+          <input
+            nz-input
+            formControlName="defaultUserEmail"
+            [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.customer.email' | translate }"
+            trim="blur"
+          />
+          <ng-template #errorUserEmail let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.hasError('email')">
+              {{ 'common.validator.email' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzRequired="true">{{ 'page.customer.timeZone' | translate }}</nz-form-label>
+        <nz-form-control [nzErrorTip]="timezone">
+          <nz-select
+            formControlName="timezone"
+            [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+            nzShowSearch="true"
+            [nzDisabled]="status == 'edit'"
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.customer.timeZone' | translate }"
+            nzAllowClear
+          >
+            <nz-option
+              *ngFor="let item of timezones"
+              [nzLabel]="item.code | translate"
+              [nzValue]="item.value"
+              nzCustomContent="true"
+            >
+              <span [title]="item.code | translate">{{ item.code | translate }}</span>
+            </nz-option>
+          </nz-select>
+          <ng-template #timezone let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredSelect' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired="true">{{ 'page.customer.lang' | translate }}</nz-form-label>
+        <nz-form-control [nzErrorTip]="language">
+          <nz-select
+            formControlName="language"
+            [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+            [nzDisabled]="status == 'edit'"
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.customer.lang' | translate }"
+            nzAllowClear
+          >
+            <nz-option [nzValue]="lang.code" [nzLabel]="lang.text" *ngFor="let lang of langOptions"></nz-option>
+          </nz-select>
+          <ng-template #language let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredSelect' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-tab>
+    <nz-tab [nzTitle]="'page.customer.setting' | translate">
+      <!-- 二次验证开关 -->
+      <nz-form-item>
+        <nz-form-label nzFor="secondCheck">{{ 'page.customer.secondCheck' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-switch formControlName="secondCheck"></nz-switch>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired="true">{{ 'page.customer.level' | translate }}</nz-form-label>
+        <nz-form-control [nzErrorTip]="level">
+          <nz-select
+            formControlName="level"
+            [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.customer.level' | translate }"
+            nzAllowClear
+          >
+            <nz-option [nzValue]="item.level_id" [nzLabel]="item.level_name" *ngFor="let item of levels"></nz-option>
+          </nz-select>
+          <ng-template #level let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredSelect' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired="true">{{ 'page.customer.maxUsers' | translate }}</nz-form-label>
+        <nz-form-control [nzErrorTip]="maxUsers">
+          <nz-input-number
+            formControlName="maxUsers"
+            [nzMin]="1"
+            [nzMax]="9999"
+            [nzStep]="1"
+            [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          ></nz-input-number>
+          <ng-template #maxUsers let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired="true">{{ 'page.customer.maxSize' | translate }}</nz-form-label>
+        <nz-form-control [nzErrorTip]="maxSize">
+          <nz-input-group [ngStyle]="{ width: isSmall ? '220px' : '300px' }" nzAddOnAfter="GB">
+            <nz-input-number
+              formControlName="maxSize"
+              [nzMin]="1"
+              [nzMax]="9999"
+              [nzStep]="1"
+              [ngStyle]="{ width: isSmall ? '189px' : '269px' }"
+            ></nz-input-number>
+          </nz-input-group>
+          <ng-template #maxSize let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired="true">{{ 'page.customer.maxDataSize' | translate }}</nz-form-label>
+        <nz-form-control [nzErrorTip]="maxDataSize">
+          <nz-input-group [ngStyle]="{ width: isSmall ? '220px' : '300px' }" nzAddOnAfter="GB">
+            <nz-input-number
+              formControlName="maxDataSize"
+              [nzMin]="1"
+              [nzMax]="9999"
+              [nzStep]="1"
+              [ngStyle]="{ width: isSmall ? '189px' : '269px' }"
+            ></nz-input-number>
+          </nz-input-group>
+          <ng-template #maxDataSize let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired="true">{{ 'page.customer.uploadFileSize' | translate }}</nz-form-label>
+        <nz-form-control [nzErrorTip]="uploadFileSize">
+          <nz-input-group [ngStyle]="{ width: isSmall ? '220px' : '300px' }" nzAddOnAfter="MB">
+            <nz-input-number
+              formControlName="uploadFileSize"
+              [nzMin]="1"
+              [nzMax]="2048"
+              [nzStep]="10"
+              [ngStyle]="{ width: isSmall ? '189px' : '269px' }"
+            ></nz-input-number>
+          </nz-input-group>
+          <ng-template #uploadFileSize let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-tab>
+  </nz-tabset>
+  <br />
+  <nz-form-item>
+    <nz-form-control>
+      <nz-space>
+        <ng-template nzSpaceItem>
+          <button
+            nz-button
+            nzType="primary"
+            type="submit"
+            [disabled]="!validateForm.valid"
+            (click)="submitForm()"
+            appDebounceClick
+          >
+            <i nz-icon [nzType]="status === 'edit' ? 'edit' : 'plus'" nzTheme="outline"></i>
+            {{ 'common.button.save' | translate }}
+          </button>
+        </ng-template>
+        <ng-template nzSpaceItem>
+          <button nz-button *ngIf="status === 'add'" (click)="reset()">
+            <i nz-icon nzType="redo" nzTheme="outline"></i>
+            {{ 'common.button.reset' | translate }}
+          </button>
+        </ng-template>
+        <ng-template nzSpaceItem>
+          <button nz-button (click)="cancel()">
+            <i nz-icon nzType="close" nzTheme="outline"></i>
+            {{ 'common.button.cancel' | translate }}
+          </button>
+        </ng-template>
+      </nz-space>
+    </nz-form-control>
+  </nz-form-item>
+</form>

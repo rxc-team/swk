@@ -1,0 +1,56 @@
+<div *ngIf="!isSetParam">
+  <h3>{{ 'page.datastore.formula.list' | translate }}</h3>
+  <nz-card>
+    <div
+      nz-card-grid
+      [ngStyle]="gridStyle"
+      *ngFor="let item of typeList"
+      [ngClass]="{ active: selectType === item.value }"
+      (click)="selectType = item.value"
+    >
+      {{ item.label | translate }}
+    </div>
+  </nz-card>
+  <div style="height: 200px; overflow: auto; padding: 2px" class="solid_border">
+    <ul nz-menu nzMode="inline">
+      <ng-container *ngFor="let item of options.get(selectType)">
+        <li nz-menu-item [nzSelected]="select.func === item.func" (click)="select = deepClone(item)">
+          {{ item.name }}
+        </li>
+      </ng-container>
+    </ul>
+  </div>
+  <h3>{{ 'page.datastore.formula.detail' | translate }}</h3>
+  <div style="height: 100px; overflow: auto; padding: 2px; margin-top: 2px" class="solid_border">
+    <div>
+      <i nz-icon nzType="function" nzTheme="outline" style="font-size: 2em; color: blue"></i>
+      <span style="color: red">{{ select.func }}</span>
+    </div>
+    {{ select.tip | translate }}
+  </div>
+</div>
+<div *ngIf="isSetParam">
+  <h3>{{ 'page.datastore.formula.paramSet' | translate }}</h3>
+  <div style="padding: 2px; margin-top: 2px" class="solid_border">
+    <div>{{ select.name }}</div>
+    <div *ngFor="let item of select.params; let i = index">
+      <nz-form-label>PARAM {{ i + 1 }}</nz-form-label>
+      <nz-input-group nzSearch [nzSuffix]="aTpl">
+        <input nz-input [(ngModel)]="item.value" placeholder="" />
+        <ng-template #aTpl>
+          <button nz-button nzType="primary" nzSize="small" nzSearch (click)="showParamModal(item)">
+            <i nz-icon nzType="search" nzTheme="outline"></i>
+          </button>
+        </ng-template>
+      </nz-input-group>
+    </div>
+  </div>
+  <h3>{{ 'page.datastore.formula.detail' | translate }}</h3>
+  <div style="height: 100px; overflow: auto; padding: 2px; margin-top: 2px" class="solid_border">
+    <div>
+      <i nz-icon nzType="function" nzTheme="outline" style="font-size: 2em; color: blue"></i>
+      <span style="color: red">{{ select.func }}</span>
+    </div>
+    {{ select.tip | translate }}
+  </div>
+</div>

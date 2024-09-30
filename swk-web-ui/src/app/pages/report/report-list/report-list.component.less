@@ -1,0 +1,22 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    .content {
+      position: relative;
+      height: 18px;
+    }
+
+    .update{
+      color: @text-color-secondary;
+    }
+    
+    .text {
+      width: 100%;
+      position: absolute;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+});

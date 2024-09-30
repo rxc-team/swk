@@ -1,0 +1,26 @@
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+
+import { JobListComponent } from './job-list/job-list.component';
+
+const routes: Routes = [
+  {
+    path: 'job',
+    children: [
+      {
+        path: 'list',
+        component: JobListComponent,
+        data: {
+          title: 'route.jobList',
+          breadcrumb: 'route.jobList'
+        }
+      }
+    ]
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class ScheduleRoutingModule {}

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout android:id="@+id/linearLayout_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+        <TextView android:id="@+id/log_txt_1"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:textSize="17sp"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:text="@string/log_txt_1"/>
+        <Button android:id="@+id/btn_log_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/ic_menu_forward"
+            android:drawableEnd="@drawable/ic_menu_forward"
+            android:text="@string/btn_log_clear"/>
+    </LinearLayout>
+
+    <ListView android:id="@+id/list_log"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/linearLayout_header"
+        android:layout_above="@+id/linearLayout_footer" />
+
+    <LinearLayout android:id="@+id/linearLayout_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" >
+        <Button android:id="@+id/btn_disconnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_menu_stop"
+            android:drawableStart="@drawable/ic_menu_stop"
+            android:text="@string/btn_disconnect"/>
+        <Button android:id="@+id/btn_connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableEnd="@drawable/ic_menu_play_clip"
+            android:drawableRight="@drawable/ic_menu_play_clip"
+            android:text="@string/btn_connect"/>
+    </LinearLayout>
+</RelativeLayout>

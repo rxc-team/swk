@@ -1,0 +1,18 @@
+<div class="exception">
+  <div class="exception-body">
+    <div nz-row nzJustify="space-around">
+      <div nz-col nzSpan="11" style="text-align: right">
+        <div class="exception-body-img" [ngStyle]="{ 'background-image': 'url(' + _img + ')' }"></div>
+      </div>
+      <div nz-col nzSpan="11" style="text-align: left">
+        <div class="exception-body-desc">
+          <h1 [innerHTML]="_title"></h1>
+          <h4 [innerHTML]="_desc"></h4>
+          <a nz-button nzType="primary" [routerLink]="['/home']">
+            {{ 'common.button.returnHome' | translate }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

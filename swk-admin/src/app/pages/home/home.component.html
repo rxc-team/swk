@@ -1,0 +1,223 @@
+<div nz-row nzJustify="space-between" nzAlign="top">
+  <h2>{{ userinfo.name + '(' + userinfo.customer_name + ')' }}</h2>
+  <button nz-button nzType="primary" (click)="refreshAll()" nzSize="small" style="margin-top: 8px; margin-right: 16px">
+    <i nz-icon nzType="reload" nzTheme="outline"></i>
+  </button>
+</div>
+<div nz-row nzJustify="space-around" nzAlign="top" [nzGutter]="[16, 16]">
+  <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="6">
+    <nz-card nzHoverable="true" nzType="inner">
+      <div nz-row nzJustify="start" nzAlign="top">
+        <div nz-col nzSpan="16">
+          <nz-statistic
+            [nzValue]="databaseNumber"
+            [nzTitle]="dsTitle"
+            [nzPrefix]="dsPrefix"
+            [nzSuffix]="'page.home.unit.data' | translate"
+            [nzValueStyle]="{ color: '#3F8600' }"
+          ></nz-statistic>
+          <ng-template #dsTitle>
+            <h3 style="color: #888888">{{ 'page.home.datastore' | translate }}</h3>
+          </ng-template>
+          <ng-template #dsPrefix><i nz-icon nzType="arrow-up"></i></ng-template>
+        </div>
+        <div nz-col nzSpan="8" style="text-align: right">
+          <div
+            style="
+              text-align: center;
+              background-color: #f5365c;
+              border-radius: 50%;
+              padding: 8px;
+              width: 60px;
+              height: 60px;
+              line-height: 60px;
+            "
+            class="pull-right"
+          >
+            <i nz-icon nzType="database" style="font-size: 3em; color: white"></i>
+          </div>
+        </div>
+        <div nz-col nzSpan="24" style="margin: 4px 0; border-top: 1px solid #eeeeee">
+          <p style="line-height: 1em; margin: 0; padding-top: 8px">
+            <i nz-icon nzType="clock-circle" nzTheme="outline"></i>
+            <i>{{ 'page.home.updateTime' | translate }} {{ time }}</i>
+          </p>
+        </div>
+      </div>
+    </nz-card>
+  </div>
+  <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="6">
+    <nz-card nzHoverable="true" nzType="inner">
+      <div nz-row nzJustify="start" nzAlign="top">
+        <div nz-col nzSpan="16">
+          <nz-statistic
+            [nzValue]="reportNumber"
+            [nzTitle]="reportTitle"
+            [nzPrefix]="reportPrefix"
+            [nzSuffix]="'page.home.unit.piece' | translate"
+            [nzValueStyle]="{ color: '#FB6340' }"
+          ></nz-statistic>
+          <ng-template #reportTitle>
+            <h3 style="color: #888888">{{ 'page.home.report' | translate }}</h3>
+          </ng-template>
+          <ng-template #reportPrefix>
+            <i nz-icon nzType="filter" nzTheme="outline"></i>
+          </ng-template>
+        </div>
+        <div nz-col nzSpan="8" style="text-align: right">
+          <div
+            style="
+              text-align: center;
+              background-color: #fb6340;
+              border-radius: 50%;
+              padding: 8px;
+              width: 60px;
+              height: 60px;
+              line-height: 60px;
+            "
+            class="pull-right"
+          >
+            <i nz-icon nzType="area-chart" style="font-size: 3em; color: white"></i>
+          </div>
+        </div>
+        <div nz-col nzSpan="24" style="margin: 4px 0; border-top: 1px solid #eeeeee">
+          <p style="line-height: 1em; margin: 0; padding-top: 8px">
+            <i nz-icon nzType="clock-circle" nzTheme="outline"></i>
+            <i>{{ 'page.home.updateTime' | translate }} {{ time }}</i>
+          </p>
+        </div>
+      </div>
+    </nz-card>
+  </div>
+  <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="6">
+    <nz-card nzHoverable="true" nzType="inner">
+      <div nz-row nzJustify="start" nzAlign="top">
+        <div nz-col nzSpan="16">
+          <nz-statistic
+            [nzValue]="optionNumber"
+            [nzTitle]="docTitle"
+            [nzPrefix]="docPrefix"
+            [nzSuffix]="'page.home.unit.item' | translate"
+            [nzValueStyle]="{ color: '#6E68E4' }"
+          ></nz-statistic>
+          <ng-template #docTitle>
+            <h3 style="color: #888888">{{ 'page.home.option' | translate }}</h3>
+          </ng-template>
+          <ng-template #docPrefix>
+            <i nz-icon nzType="file" nzTheme="outline"></i>
+          </ng-template>
+        </div>
+        <div nz-col nzSpan="8" style="text-align: right">
+          <div
+            style="
+              text-align: center;
+              background-color: #6e68e4;
+              border-radius: 50%;
+              padding: 8px;
+              width: 60px;
+              height: 60px;
+              line-height: 60px;
+            "
+            class="pull-right"
+          >
+            <i nz-icon nzType="file-search" style="font-size: 3em; color: white"></i>
+          </div>
+        </div>
+        <div nz-col nzSpan="24" style="margin: 4px 0; border-top: 1px solid #eeeeee">
+          <p style="line-height: 1em; margin: 0; padding-top: 8px">
+            <i nz-icon nzType="clock-circle" nzTheme="outline"></i>
+            <i>{{ 'page.home.updateTime' | translate }} {{ time }}</i>
+          </p>
+        </div>
+      </div>
+    </nz-card>
+  </div>
+  <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="6">
+    <nz-card nzHoverable="true" nzType="inner">
+      <div nz-row nzJustify="start" nzAlign="top">
+        <div nz-col nzSpan="16">
+          <nz-statistic
+            [nzValue]="(unReadmessages$ | async).length"
+            [nzTitle]="noTitle"
+            [nzPrefix]="noPrefix"
+            [nzSuffix]="'page.home.unit.unread' | translate"
+            [nzValueStyle]="{ color: '#11CDEF' }"
+          ></nz-statistic>
+          <ng-template #noTitle>
+            <h3 style="color: #888888">{{ 'page.home.notice' | translate }}</h3>
+          </ng-template>
+          <ng-template #noPrefix><i nz-icon nzType="message"></i></ng-template>
+        </div>
+        <div nz-col nzSpan="8" style="text-align: right">
+          <div
+            style="
+              text-align: center;
+              background-color: #11cdef;
+              border-radius: 50%;
+              padding: 8px;
+              width: 60px;
+              height: 60px;
+              line-height: 60px;
+            "
+            class="pull-right"
+          >
+            <i nz-icon nzType="bell" style="font-size: 3em; color: white"></i>
+          </div>
+        </div>
+        <div nz-col nzSpan="24" style="margin: 4px 0; border-top: 1px solid #eeeeee">
+          <p style="line-height: 1em; margin: 0; padding-top: 8px">
+            <i nz-icon nzType="clock-circle" nzTheme="outline"></i>
+            <i>{{ 'page.home.updateTime' | translate }} {{ time }}</i>
+          </p>
+        </div>
+      </div>
+    </nz-card>
+  </div>
+</div>
+<div nz-row nzJustify="space-around" nzAlign="top" [nzGutter]="[16, 16]">
+  <div nz-col nzXs="24" nzSm="24" nzMd="16">
+    <nz-card [nzTitle]="'page.home.dashboard' | translate" [nzExtra]="extra" nzType="inner" nzSize="small">
+      <nz-tabset>
+        <nz-tab [nzTitle]="item.chartName | translate" *ngFor="let item of dashboardDatas; let i = index">
+          <ng-template nz-tab>
+            <div *ngIf="!item.empty">
+              <app-chart [options]="item.options" (ready)="item.ready($event)"></app-chart>
+            </div>
+            <div *ngIf="item.empty">
+              <nz-empty></nz-empty>
+            </div>
+          </ng-template>
+        </nz-tab>
+      </nz-tabset>
+      <ng-template #extra>
+        <button nz-button nzType="primary" class="pull-right" (click)="getDashboardData()" nzSize="small">
+          <i nz-icon nzType="reload" nzTheme="outline"></i>
+        </button>
+      </ng-template>
+    </nz-card>
+  </div>
+  <div nz-col nzXs="24" nzSm="24" nzMd="8">
+    <nz-card [nzTitle]="'page.home.notice' | translate" nzType="inner" nzSize="small">
+      <nz-alert
+        [nzMessage]="message"
+        (nzOnClose)="changeStatus(item.message_id)"
+        nzCloseable
+        *ngFor="let item of (unReadmessages$ | async).slice(0, 5)"
+        [nzDescription]="content"
+        style="margin-bottom: 8px"
+      >
+        <ng-template #message>
+          <div style="display: flex; flex-direction: column">
+            <span>{{ item.sender }}</span>
+            <span style="font-size: 12px">{{ item.send_time | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}</span>
+          </div>
+        </ng-template>
+        <ng-template #content>
+          <span *ngIf="!item.code">{{ item.content }}</span>
+          <span *ngIf="item.code">{{ 'common.message.info.' + item.code | translate }}</span>
+        </ng-template>
+      </nz-alert>
+      <nz-empty *ngIf="(unReadmessages$ | async).length == 0"></nz-empty>
+    </nz-card>
+  </div>
+</div>

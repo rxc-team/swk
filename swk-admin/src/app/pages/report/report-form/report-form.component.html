@@ -1,0 +1,696 @@
+<div style="min-height: 420px; padding: 4px">
+  <form nz-form [formGroup]="validateForm">
+    <nz-tabset [(nzSelectedIndex)]="selectedIndex">
+      <!-- 基本设定 -->
+      <nz-tab [nzTitle]="'page.report.baseSet' | translate">
+        <nz-form-item>
+          <nz-form-label nzRequired class="lable">{{ 'page.report.reportName' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="reportName">
+            <input
+              nz-input
+              formControlName="reportName"
+              [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+              trim="blur"
+              [placeholder]="'common.placeholder.input' | translate: { label: 'page.report.reportName' | translate }"
+            />
+            <ng-template #reportName let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.reportDuplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzRequired class="lable">
+            {{ 'page.report.outDatastore' | translate }}
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="datastoreID">
+            <nz-select
+              [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+              formControlName="datastoreID"
+              nzAllowClear="true"
+              [nzPlaceHolder]="
+                'common.placeholder.select' | translate: { label: 'page.report.outDatastore' | translate }
+              "
+              (ngModelChange)="datastoreChange($event)"
+            >
+              <nz-option
+                *ngFor="let item of datastores"
+                [nzLabel]="item.datastore_name | translate"
+                [nzValue]="item.datastore_id"
+              ></nz-option>
+            </nz-select>
+            <ng-template #datastoreID let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredSelect' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item *ngIf="selectDatastoreID">
+          <nz-form-label nzRequired class="lable">
+            {{ 'page.report.searchType' | translate }}
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="datastoreID">
+            <nz-radio-group formControlName="conditionType" nzButtonStyle="solid">
+              <label nz-radio-button nzValue="and" style="width: 50px; text-align: center">AND</label>
+              <label nz-radio-button nzValue="or" style="width: 50px; text-align: center">OR</label>
+            </nz-radio-group>
+            <ng-template #datastoreID let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredSelect' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item *ngIf="selectDatastoreID">
+          <nz-form-label class="lable">{{ 'page.report.searchCondition' | translate }}</nz-form-label>
+          <nz-form-control>
+            <div style="height: 180px; overflow: auto">
+              <div *ngFor="let control of controlArray; let i = index">
+                <nz-select
+                  [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+                  [(ngModel)]="control.field_id"
+                  [nzPlaceHolder]="'page.report.fieldSelect' | translate"
+                  nzAllowClear="true"
+                  [ngModelOptions]="{ standalone: true }"
+                  (ngModelChange)="fieldChange($event, control, false)"
+                >
+                  <nz-option
+                    *ngFor="let item of searchFields"
+                    [nzLabel]="item.field_name | translate"
+                    [nzValue]="item.field_id"
+                  ></nz-option>
+                </nz-select>
+                <nz-select
+                  [ngStyle]="{ width: isSmall ? '60px' : '120px' }"
+                  [(ngModel)]="control.operator"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="control.field_type === ''"
+                  [nzDisabled]="true"
+                ></nz-select>
+                <nz-select
+                  [ngStyle]="{ width: isSmall ? '60px' : '120px' }"
+                  [(ngModel)]="control.operator"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="
+                    control.field_type === 'text' ||
+                    control.field_type === 'textarea' ||
+                    control.field_type === 'lookup' ||
+                    control.field_type === 'autonum'
+                  "
+                >
+                  <nz-option [nzLabel]="'page.report.equal' | translate" nzValue="="></nz-option>
+                  <nz-option [nzLabel]="'page.report.notEqual' | translate" nzValue="<>"></nz-option>
+                  <nz-option [nzLabel]="'page.report.fuzzyMatch' | translate" nzValue="like"></nz-option>
+                </nz-select>
+                <nz-select
+                  [ngStyle]="{ width: isSmall ? '60px' : '120px' }"
+                  [(ngModel)]="control.operator"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="
+                    control.field_type === 'user' || control.field_type === 'options' || control.field_type === 'type'
+                  "
+                >
+                  <nz-option [nzLabel]="'page.report.equal' | translate" nzValue="="></nz-option>
+                  <nz-option [nzLabel]="'page.report.notEqual' | translate" nzValue="<>"></nz-option>
+                  <nz-option [nzLabel]="'page.report.exist' | translate" nzValue="in"></nz-option>
+                </nz-select>
+                <nz-select
+                  [ngStyle]="{ width: isSmall ? '60px' : '120px' }"
+                  [(ngModel)]="control.operator"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="control.field_type === 'switch'"
+                >
+                  <nz-option [nzLabel]="'page.report.equal' | translate" nzValue="="></nz-option>
+                </nz-select>
+                <nz-select
+                  [ngStyle]="{ width: isSmall ? '60px' : '120px' }"
+                  [(ngModel)]="control.operator"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="control.field_type === 'file'"
+                >
+                  <nz-option [nzLabel]="'page.report.fullMatch' | translate" nzValue="="></nz-option>
+                </nz-select>
+                <nz-select
+                  [ngStyle]="{ width: isSmall ? '60px' : '120px' }"
+                  [(ngModel)]="control.operator"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="control.field_type === 'check'"
+                >
+                  <nz-option [nzLabel]="'page.report.fullMatch' | translate" nzValue="="></nz-option>
+                </nz-select>
+                <nz-select
+                  [ngStyle]="{ width: isSmall ? '60px' : '120px' }"
+                  [(ngModel)]="control.operator"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="
+                    control.field_type === 'number' ||
+                    control.field_type === 'date' ||
+                    control.field_type === 'datetime' ||
+                    control.field_type === 'time'
+                  "
+                >
+                  <nz-option [nzLabel]="'page.report.equal' | translate" nzValue="="></nz-option>
+                  <nz-option [nzLabel]="'page.report.greater' | translate" nzValue=">"></nz-option>
+                  <nz-option [nzLabel]="'page.report.Less' | translate" nzValue="<"></nz-option>
+                  <nz-option [nzLabel]="'page.report.greaterEqual' | translate" nzValue=">="></nz-option>
+                  <nz-option [nzLabel]="'page.report.lessEqual' | translate" nzValue="<="></nz-option>
+                  <nz-option [nzLabel]="'page.report.notEqual' | translate" nzValue="<>"></nz-option>
+                </nz-select>
+                <!--文本类型-->
+                <input
+                  nz-input
+                  [ngStyle]="{ width: isSmall ? '220px' : '300px', 'margin-right': '8px' }"
+                  trim="blur"
+                  [placeholder]="'page.report.inputValue' | translate"
+                  [attr.id]="control.id"
+                  [(ngModel)]="control.search_value"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="
+                    control.field_type === 'text' || control.field_type === 'textarea' || control.field_type === ''
+                  "
+                />
+                <!--数字类型-->
+                <input
+                  nz-input
+                  [ngStyle]="{ width: isSmall ? '220px' : '300px', 'margin-right': '8px' }"
+                  [placeholder]="'page.report.inputValue' | translate"
+                  type="number"
+                  [attr.id]="control.id"
+                  [(ngModel)]="control.search_value"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="control.field_type === 'number'"
+                />
+                <!-- 自动采番类型 -->
+                <input
+                  nz-input
+                  [ngStyle]="{ width: isSmall ? '220px' : '300px', 'margin-right': '8px' }"
+                  *ngIf="control.field_type === 'autonum'"
+                  [placeholder]="'page.report.inputValue' | translate"
+                  type="text"
+                  [attr.id]="control.id"
+                  [(ngModel)]="control.search_value"
+                  [ngModelOptions]="{ standalone: true }"
+                  trim="blur"
+                />
+                <!--开关类型-->
+                <nz-switch
+                  [(ngModel)]="control.search_value"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="control.field_type === 'switch'"
+                ></nz-switch>
+                <!--选项类型-->
+                <nz-select
+                  [ngStyle]="{ width: isSmall ? '220px' : '300px', 'margin-right': '8px' }"
+                  [(ngModel)]="control.search_value"
+                  [nzMode]="control.operator === 'in' ? 'multiple' : 'default'"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="control.field_type === 'options'"
+                  [nzPlaceHolder]="'page.report.selectValue' | translate"
+                >
+                  <nz-option
+                    [nzLabel]="item.option_label | translate"
+                    [nzValue]="item.option_value"
+                    *ngFor="let item of optionArray[control.field_id]"
+                  ></nz-option>
+                </nz-select>
+                <!--用户类型-->
+                <nz-select
+                  [ngStyle]="{ width: isSmall ? '220px' : '300px', 'margin-right': '8px' }"
+                  [(ngModel)]="control.search_value"
+                  [nzMode]="control.operator === 'in' ? 'multiple' : 'default'"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="control.field_type === 'user'"
+                  [nzPlaceHolder]="'page.report.selectValue' | translate"
+                >
+                  <nz-option
+                    [nzLabel]="item.user_name"
+                    [nzValue]="item.user_id"
+                    *ngFor="let item of userArray[control.field_id]"
+                  ></nz-option>
+                </nz-select>
+                <!--盘点type-->
+                <nz-select
+                  [ngStyle]="{ width: isSmall ? '220px' : '300px', 'margin-right': '8px' }"
+                  [(ngModel)]="control.search_value"
+                  [nzMode]="control.operator === 'in' ? 'multiple' : 'default'"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="control.field_type === 'type'"
+                  [nzPlaceHolder]="'page.report.selectValue' | translate"
+                >
+                  <nz-option
+                    [nzLabel]="item.label | translate"
+                    [nzValue]="item.value"
+                    *ngFor="let item of checkTypes"
+                  ></nz-option>
+                </nz-select>
+                <!--检查状态-->
+                <nz-select
+                  [ngStyle]="{ width: isSmall ? '220px' : '300px', 'margin-right': '8px' }"
+                  [(ngModel)]="control.search_value"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="control.field_type === 'check'"
+                  [nzPlaceHolder]="'page.report.selectValue' | translate"
+                >
+                  <nz-option
+                    [nzLabel]="item.label | translate"
+                    [nzValue]="item.value"
+                    *ngFor="let item of checkStatuss"
+                  ></nz-option>
+                </nz-select>
+                <!--日期-->
+                <nz-radio-group
+                  [(ngModel)]="control.status"
+                  *ngIf="control.field_type === 'date' || control.field_type === 'datetime'"
+                  [ngModelOptions]="{ standalone: true }"
+                  nzButtonStyle="solid"
+                  (ngModelChange)="openChange($event, control.field_id)"
+                >
+                  <label style="width: 120px; text-align: center" nz-radio-button nzValue="none">
+                    {{ 'page.report.none' | translate }}
+                  </label>
+                  <label style="width: 120px; text-align: center" nz-radio-button nzValue="system">
+                    {{ 'page.report.system' | translate }}
+                  </label>
+                </nz-radio-group>
+                <nz-select
+                  [ngStyle]="{ width: isSmall ? '220px' : '140px', 'margin-right': '8px' }"
+                  [(ngModel)]="control.search_value"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="
+                    (control.field_type === 'date' || control.field_type === 'datetime') && control.status === 'system'
+                  "
+                  [nzPlaceHolder]="'page.report.selectValue' | translate"
+                >
+                  <nz-option
+                    *ngIf="isLeaseSystem"
+                    [nzLabel]="'page.report.handleMonth' | translate"
+                    nzValue="handleMonth"
+                  ></nz-option>
+                  <nz-option [nzLabel]="'page.report.now' | translate" nzValue="now"></nz-option>
+                </nz-select>
+                <nz-date-picker
+                  [ngStyle]="{ width: isSmall ? '220px' : '140px', 'margin-right': '8px' }"
+                  [(ngModel)]="control.search_value"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="control.field_type === 'date' && control.status !== 'system'"
+                  [nzPlaceHolder]="'page.report.selectValue' | translate"
+                ></nz-date-picker>
+                <!--日期+时间-->
+                <nz-date-picker
+                  [ngStyle]="{ width: isSmall ? '220px' : '140px', 'margin-right': '8px' }"
+                  [(ngModel)]="control.search_value"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="control.field_type === 'datetime' && control.status !== 'system'"
+                  [nzPlaceHolder]="'page.report.selectValue' | translate"
+                ></nz-date-picker>
+                <!--时刻-->
+                <nz-time-picker
+                  [ngStyle]="{ width: isSmall ? '220px' : '300px', 'margin-right': '8px' }"
+                  [(ngModel)]="control.search_value"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="control.field_type === 'time'"
+                  [nzPlaceHolder]="'page.report.selectValue' | translate"
+                ></nz-time-picker>
+                <!--文件类型-->
+                <nz-select
+                  [ngStyle]="{ width: isSmall ? '220px' : '300px', 'margin-right': '8px' }"
+                  [(ngModel)]="control.search_value"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="control.field_type === 'file'"
+                  [nzPlaceHolder]="'page.report.selectValue' | translate"
+                >
+                  <nz-option [nzLabel]="'page.report.fileExist' | translate" [nzValue]="'true'"></nz-option>
+                  <nz-option [nzLabel]="'page.report.fileNotExist' | translate" [nzValue]="'false'"></nz-option>
+                </nz-select>
+                <!--关联字段类型-->
+                <input
+                  nz-input
+                  [ngStyle]="{ width: isSmall ? '220px' : '300px', 'margin-right': '8px' }"
+                  [disabled]="true"
+                  [placeholder]="'page.report.selectValue' | translate"
+                  [attr.id]="control.id"
+                  [ngModel]="control.search_value"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="control.field_type === 'lookup' && (control.operator === '=' || control.operator === '<>')"
+                />
+                <button
+                  nz-button
+                  nzType="default"
+                  nzShape="circle"
+                  [ngStyle]="{ 'margin-right': '8px' }"
+                  (click)="openLookupModal(i, control.lookup_datastore_id, control.lookup_field_id)"
+                  *ngIf="control.field_type === 'lookup' && (control.operator === '=' || control.operator === '<>')"
+                >
+                  <i nz-icon nzType="search"></i>
+                </button>
+                <input
+                  nz-input
+                  [ngStyle]="{ width: isSmall ? '220px' : '300px', 'margin-right': '8px' }"
+                  [placeholder]="'page.report.selectValue' | translate"
+                  [attr.id]="control.id"
+                  [(ngModel)]="control.search_value"
+                  [ngModelOptions]="{ standalone: true }"
+                  *ngIf="control.field_type === 'lookup' && control.operator === 'like'"
+                />
+                <button
+                  nz-button
+                  nzType="default"
+                  style="margin-right: 4px"
+                  nzShape="circle"
+                  (click)="removeField(control, $event)"
+                >
+                  <i nz-icon nzType="minus"></i>
+                </button>
+                <button
+                  nz-button
+                  nzType="default"
+                  nzShape="circle"
+                  [disabled]="controlArray.length >= searchFields.length"
+                  (click)="addField($event)"
+                >
+                  <i nz-icon nzType="plus"></i>
+                </button>
+              </div>
+            </div>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-tab>
+      <!-- 报表出力设定 -->
+      <nz-tab [nzTitle]="'page.report.reportOutSet' | translate" [nzDisabled]="!selectDatastoreID">
+        <div nz-row nzJustify="start" nzAlign="top">
+          <!-- 集计 -->
+          <div nz-col nzSpan="24" style="padding-top: 8px; padding: 2px">
+            <label nz-checkbox style="padding: 0 4px" formControlName="useGroup">
+              {{ 'page.report.grouping' | translate }}
+            </label>
+            <label
+              nz-checkbox
+              style="padding: 0 4px"
+              formControlName="showCount"
+              [nzDisabled]="!getForm('useGroup').value"
+            >
+              {{ 'page.report.displayNum' | translate }}
+            </label>
+            <!-- <div style="color: #888888;padding: 4px 0;" *ngIf="getForm('useGroup').value">
+              {{ 'page.report.defaultGroup' | translate }} </div> -->
+          </div>
+        </div>
+        <div nz-row nzJustify="space-around" nzAlign="top">
+          <!-- 出力台账 -->
+          <div nz-col [nzXs]="24" [nzMd]="8" class="solid_border" style="padding: 4px; height: 360px">
+            <div>
+              <nz-form-label>{{ 'page.report.canSelectField' | translate }}</nz-form-label>
+              <div
+                class="select-field"
+                style="height: 320px; overflow-y: auto; overflow-x: hidden; padding-right: 10px"
+              >
+                <nz-empty *ngIf="outputFields.length === 0"></nz-empty>
+                <ul nz-menu nzMode="inline">
+                  <ng-container *ngFor="let item of outputFields">
+                    <ng-container *ngIf="item.children; else elseTemplate">
+                      <li nz-submenu [nzTitle]="lookup" class="solid_border" style="margin-top: 2px; padding: 2px">
+                        <ul>
+                          <li
+                            nz-menu-item
+                            *ngFor="let it of item.children"
+                            class="solid_border"
+                            style="margin-top: 2px"
+                            [nzDisabled]="it.disabled"
+                            (click)="showField(it)"
+                          >
+                            <ng-container *ngIf="it.disabled; else elseTemplate">
+                              <i nz-icon nzType="star" nzTheme="fill"></i>
+                            </ng-container>
+                            <ng-template #elseTemplate>
+                              <i nz-icon nzType="star" nzTheme="outline"></i>
+                            </ng-template>
+
+                            {{ it.field_name | translate }}
+                          </li>
+                        </ul>
+                      </li>
+                      <ng-template #lookup>
+                        <i nz-icon nzType="block" nzTheme="outline"></i>
+                        {{ item.field_name | translate }}
+                      </ng-template>
+                    </ng-container>
+                    <ng-template #elseTemplate>
+                      <li
+                        nz-menu-item
+                        class="solid_border"
+                        style="margin-top: 2px"
+                        (click)="showField(item)"
+                        [nzDisabled]="item.disabled"
+                      >
+                        <ng-container *ngIf="item.disabled; else elseTemplate">
+                          <i nz-icon nzType="star" nzTheme="fill"></i>
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                          <i nz-icon nzType="star" nzTheme="outline"></i>
+                        </ng-template>
+
+                        {{ item.field_name | translate }}
+                      </li>
+                    </ng-template>
+                  </ng-container>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!-- 已选字段 -->
+          <div nz-col [nzXs]="24" [nzMd]="16" class="solid_border" style="padding: 4px; min-height: 360px" #sortList>
+            <nz-form-label>{{ 'page.report.selectedField' | translate }}</nz-form-label>
+            <nz-table
+              [nzData]="selectedFields"
+              [nzFrontPagination]="false"
+              [nzShowPagination]="false"
+              nzBordered="true"
+              [nzPageSize]="100"
+              [nzScroll]="{ x: '800px', y: '290px' }"
+              nzSize="small"
+            >
+              <thead>
+                <tr>
+                  <ng-container *ngFor="let col of colsWithGroup">
+                    <th
+                      *ngIf="col.width"
+                      nz-resizable
+                      nzBounds="window"
+                      [nzWidth]="col.width"
+                      [nzMinWidth]="80"
+                      (nzResizeEnd)="onResize($event, col.title)"
+                    >
+                      {{ col.title | translate }}
+                      <nz-resize-handle nzDirection="right"></nz-resize-handle>
+                    </th>
+                    <th *ngIf="!col.width">
+                      {{ col.title | translate }}
+                    </th>
+                  </ng-container>
+                </tr>
+              </thead>
+              <tbody cdkDropList (cdkDropListDropped)="drop($event)">
+                <tr *ngFor="let item of selectedFields" cdkDrag>
+                  <td>{{ item.order }}</td>
+                  <td>{{ getDatastoreName(item.datastore_id) | translate }}</td>
+                  <td>{{ item.field_name | translate }}</td>
+                  <td>{{ item.field_type }}</td>
+                  <td>{{ item.sort }}</td>
+                  <td>{{ item.aggre_type }}</td>
+                  <td>{{ item.alias_name }}</td>
+                  <td>
+                    <button nz-button nzSize="small" nzType="text" (click)="editField(item)">
+                      <i nz-icon nzType="edit" nzTheme="outline"></i>
+                      {{ 'common.button.edit' | translate }}
+                    </button>
+                    <button
+                      nz-button
+                      nzDanger
+                      nzSize="small"
+                      nzType="text"
+                      (click)="delete(item.field_id, item.datastore_id)"
+                    >
+                      <i nz-icon nzType="delete" nzTheme="outline"></i>
+                      {{ 'common.button.delete' | translate }}
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </nz-table>
+          </div>
+        </div>
+      </nz-tab>
+    </nz-tabset>
+  </form>
+</div>
+<div style="margin-bottom: 12px; position: relative; bottom: 0; left: 0; padding: 16px 0" class="footer">
+  <button
+    nz-button
+    nzType="primary"
+    (click)="submitForm()"
+    appDebounceClick
+    [disabled]="validateForm.invalid || selectedFields.length === 0"
+  >
+    <i nz-icon [nzType]="status === 'add' ? 'plus' : 'edit'" nzTheme="outline"></i>
+    {{ 'common.button.save' | translate }}
+  </button>
+  <button nz-button (click)="cancel()">
+    <i nz-icon nzType="close" nzTheme="outline"></i>
+    {{ 'common.button.cancel' | translate }}
+  </button>
+</div>
+<nz-modal
+  [(nzVisible)]="isLookupVisible"
+  [nzTitle]="'common.text.search' | translate"
+  (nzOnCancel)="hidde()"
+  [nzFooter]="null"
+>
+  <ng-template nzModalContent>
+    <app-item-search
+      [index]="lookIndex"
+      [clear]="true"
+      [lookupDatastoreId]="lookupDatastoreId"
+      (nxReflect)="reflect($event)"
+      [lookField]="lookField"
+      (nxCancel)="hidde()"
+    ></app-item-search>
+  </ng-template>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="showFieldSetting"
+  [nzTitle]="'page.report.fieldSet' | translate"
+  [nzWidth]="400"
+  (nzOnCancel)="showFieldSetting = false"
+>
+  <ng-template nzModalContent>
+    <div nz-row nzJustify="start" nzAlign="top">
+      <div nz-col nzSpan="24">
+        <div nz-row nzJustify="start" nzAlign="top">
+          <div nz-col nzSpan="15">
+            <div nz-row nzJustify="start" nzAlign="top">
+              <div nz-col nzSpan="24" style="padding: 8px 0">
+                <strong>{{ selectField.field_name | translate }}</strong>
+              </div>
+              <br />
+              <div nz-col nzSpan="24" style="padding: 8px 0">
+                <i nz-icon nzType="rocket"></i>
+                {{ selectField.field_type }}
+              </div>
+            </div>
+          </div>
+          <div nz-col nzSpan="8" style="text-align: right">
+            <button
+              nz-button
+              nz-dropdown
+              nzType="text"
+              [nzDropdownMenu]="menu"
+              [disabled]="selectField.field_type === 'user' && selectField.is_dynamic === true"
+            >
+              {{
+                (selectField.sort === 'ascend'
+                  ? 'page.report.ascending'
+                  : selectField.sort === 'dscend'
+                  ? 'page.report.descending'
+                  : 'page.report.notSorting'
+                ) | translate
+              }}
+              <i nz-icon nzType="align-left" nzTheme="outline" style="color: #888888"></i>
+            </button>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+              <ul nz-menu nzSelectable>
+                <li nz-menu-item nzSelected>
+                  <a (click)="selectField.sort = 'ascend'">
+                    <i nz-icon nzType="sort-ascending" nzTheme="outline"></i>
+                    {{ 'page.report.ascending' | translate }}
+                  </a>
+                </li>
+                <li nz-menu-item>
+                  <a (click)="selectField.sort = 'dscend'">
+                    <i nz-icon nzType="sort-descending" nzTheme="outline"></i>
+                    {{ 'page.report.descending' | translate }}
+                  </a>
+                </li>
+                <li nz-menu-item>
+                  <a (click)="selectField.sort = ''">{{ 'page.report.notSorting' | translate }}</a>
+                </li>
+              </ul>
+            </nz-dropdown-menu>
+          </div>
+          <div
+            nz-col
+            nzSpan="1"
+            style="text-align: right"
+            *ngIf="selectField.field_type === 'user' && selectField.is_dynamic === true"
+          >
+            <span>
+              <i nz-icon nz-tooltip [nzTooltipTitle]="title" nzType="question-circle" nzTheme="outline"></i>
+              <ng-template #title>
+                <span style="margin-right: 4px; color: red">
+                  Sorting is not currently supported for the user type field
+                </span>
+              </ng-template>
+            </span>
+          </div>
+        </div>
+      </div>
+      <br />
+      <div nz-col nzSpan="24" style="padding: 8px 0">
+        <i nz-icon nzType="database" nzTheme="outline"></i>
+        {{ getDatastoreName(selectField.datastore_id) | translate }}
+      </div>
+      <div nz-col nzSpan="24">
+        <nz-form-item>
+          <nz-form-label>{{ 'page.report.fieldAlias' | translate }}</nz-form-label>
+          <nz-form-control>
+            <input
+              nz-input
+              trim="blur"
+              [(ngModel)]="selectField.alias_name"
+              [disabled]="!selectField.is_dynamic"
+              [ngModelOptions]="{ standalone: true }"
+              [placeholder]="'common.placeholder.input' | translate: { label: 'page.report.fieldAlias' | translate }"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="24">
+        <nz-form-item *ngIf="getForm('useGroup').value && selectField.aggre_type">
+          <nz-form-label>{{ 'page.report.aggregatefunc' | translate }}</nz-form-label>
+          <nz-form-control>
+            <nz-select
+              [(ngModel)]="selectField.aggre_type"
+              [ngModelOptions]="{ standalone: true }"
+              [nzPlaceHolder]="
+                'common.placeholder.select' | translate: { label: 'page.report.aggregatefunc' | translate }
+              "
+              nzAllowClear
+            >
+              <nz-option [nzLabel]="'page.report.summation' | translate" nzValue="sum"></nz-option>
+              <nz-option [nzLabel]="'page.report.average' | translate" nzValue="avg"></nz-option>
+              <nz-option [nzLabel]="'page.report.maximum' | translate" nzValue="max"></nz-option>
+              <nz-option [nzLabel]="'page.report.minimum' | translate" nzValue="min"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </ng-template>
+  <div style="text-align: right" *nzModalFooter>
+    <button
+      nz-button
+      nzType="primary"
+      [disabled]="!selectField.field_id"
+      (click)="save(selectField.field_id, selectField.datastore_id)"
+    >
+      <i nz-icon nzType="plus" nzTheme="outline"></i>
+      {{ 'common.button.save' | translate }}
+    </button>
+  </div>
+</nz-modal>

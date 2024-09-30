@@ -1,0 +1,1407 @@
+[
+  { "id": "A0009", "type": "internal", "parent": "app", "method": "GET", "url": "/internal/api/v1/app/apps", "name": "common.api.A0009" },
+  {
+    "id": "A0010",
+    "type": "internal",
+    "parent": "app",
+    "method": "GET",
+    "url": "/internal/api/v1/app/apps/:a_id",
+    "name": "common.api.A0010"
+  },
+  {
+    "id": "A0011",
+    "type": "internal",
+    "parent": "app",
+    "method": "GET",
+    "url": "/internal/api/v1/app/user/apps",
+    "name": "common.api.A0011"
+  },
+  { "id": "A0012", "type": "internal", "parent": "app", "method": "POST", "url": "/internal/api/v1/app/apps", "name": "common.api.A0012" },
+  {
+    "id": "A0013",
+    "type": "internal",
+    "parent": "app",
+    "method": "PUT",
+    "url": "/internal/api/v1/app/apps/:a_id",
+    "name": "common.api.A0013"
+  },
+  {
+    "id": "A0014",
+    "type": "internal",
+    "parent": "app",
+    "method": "PATCH",
+    "url": "/internal/api/v1/app/apps/sort",
+    "name": "common.api.A0014"
+  },
+  {
+    "id": "A0015",
+    "type": "internal",
+    "parent": "app",
+    "method": "DELETE",
+    "url": "/internal/api/v1/app/apps/:a_id",
+    "name": "common.api.A0015"
+  },
+  {
+    "id": "A0016",
+    "type": "internal",
+    "parent": "app",
+    "method": "DELETE",
+    "url": "/internal/api/v1/app/apps",
+    "name": "common.api.A0016"
+  },
+  {
+    "id": "A0017",
+    "type": "internal",
+    "parent": "app",
+    "method": "DELETE",
+    "url": "/internal/api/v1/app/phydel/apps",
+    "name": "common.api.A0017"
+  },
+  {
+    "id": "A0018",
+    "type": "internal",
+    "parent": "app",
+    "method": "PUT",
+    "url": "/internal/api/v1/app/recover/apps",
+    "name": "common.api.A0018"
+  },
+  {
+    "id": "A0019",
+    "type": "internal",
+    "parent": "user",
+    "method": "GET",
+    "url": "/internal/api/v1/user/users",
+    "name": "common.api.A0019"
+  },
+  {
+    "id": "A0020",
+    "type": "internal",
+    "parent": "user",
+    "method": "GET",
+    "url": "/internal/api/v1/user/users/:user_id",
+    "name": "common.api.A0020"
+  },
+  {
+    "id": "A0021",
+    "type": "internal",
+    "parent": "user",
+    "method": "POST",
+    "url": "/internal/api/v1/user/users",
+    "name": "common.api.A0021"
+  },
+  {
+    "id": "A0022",
+    "type": "internal",
+    "parent": "user",
+    "method": "PUT",
+    "url": "/internal/api/v1/user/users/:user_id",
+    "name": "common.api.A0022"
+  },
+  {
+    "id": "A0023",
+    "type": "internal",
+    "parent": "user",
+    "method": "DELETE",
+    "url": "/internal/api/v1/user/users/:user_id",
+    "name": "common.api.A0023"
+  },
+  {
+    "id": "A0024",
+    "type": "internal",
+    "parent": "user",
+    "method": "DELETE",
+    "url": "/internal/api/v1/user/users",
+    "name": "common.api.A0024"
+  },
+  {
+    "id": "A0025",
+    "type": "internal",
+    "parent": "user",
+    "method": "DELETE",
+    "url": "/internal/api/v1/user/phydel/users",
+    "name": "common.api.A0025"
+  },
+  {
+    "id": "A0026",
+    "type": "internal",
+    "parent": "user",
+    "method": "PUT",
+    "url": "/internal/api/v1/user/recover/users",
+    "name": "common.api.A0026"
+  },
+  {
+    "id": "A0027",
+    "type": "internal",
+    "parent": "role",
+    "method": "GET",
+    "url": "/internal/api/v1/role/roles",
+    "name": "common.api.A0027"
+  },
+  {
+    "id": "A0028",
+    "type": "internal",
+    "parent": "role",
+    "method": "GET",
+    "url": "/internal/api/v1/role/roles_with_resources",
+    "name": "common.api.A0028"
+  },
+  {
+    "id": "A0029",
+    "type": "internal",
+    "parent": "role",
+    "method": "GET",
+    "url": "/internal/api/v1/role/roles/:role_id",
+    "name": "common.api.A0029"
+  },
+  {
+    "id": "A0030",
+    "type": "internal",
+    "parent": "role",
+    "method": "POST",
+    "url": "/internal/api/v1/role/roles",
+    "name": "common.api.A0030"
+  },
+  {
+    "id": "A0031",
+    "type": "internal",
+    "parent": "role",
+    "method": "PUT",
+    "url": "/internal/api/v1/role/roles/:role_id",
+    "name": "common.api.A0031"
+  },
+  {
+    "id": "A0032",
+    "type": "internal",
+    "parent": "role",
+    "method": "DELETE",
+    "url": "/internal/api/v1/role/roles/:role_id",
+    "name": "common.api.A0032"
+  },
+  {
+    "id": "A0033",
+    "type": "internal",
+    "parent": "role",
+    "method": "DELETE",
+    "url": "/internal/api/v1/role/roles",
+    "name": "common.api.A0033"
+  },
+  {
+    "id": "A0034",
+    "type": "internal",
+    "parent": "role",
+    "method": "DELETE",
+    "url": "/internal/api/v1/role/phydel/roles",
+    "name": "common.api.A0034"
+  },
+  {
+    "id": "A0035",
+    "type": "internal",
+    "parent": "role",
+    "method": "PUT",
+    "url": "/internal/api/v1/role/recover/roles",
+    "name": "common.api.A0035"
+  },
+  {
+    "id": "A0036",
+    "type": "internal",
+    "parent": "group",
+    "method": "GET",
+    "url": "/internal/api/v1/group/groups",
+    "name": "common.api.A0036"
+  },
+  {
+    "id": "A0037",
+    "type": "internal",
+    "parent": "group",
+    "method": "GET",
+    "url": "/internal/api/v1/group/groups/:group_id",
+    "name": "common.api.A0037"
+  },
+  {
+    "id": "A0038",
+    "type": "internal",
+    "parent": "group",
+    "method": "POST",
+    "url": "/internal/api/v1/group/groups",
+    "name": "common.api.A0038"
+  },
+  {
+    "id": "A0039",
+    "type": "internal",
+    "parent": "group",
+    "method": "PUT",
+    "url": "/internal/api/v1/group/groups/:group_id",
+    "name": "common.api.A0039"
+  },
+  {
+    "id": "A0040",
+    "type": "internal",
+    "parent": "group",
+    "method": "DELETE",
+    "url": "/internal/api/v1/group/groups/:group_id",
+    "name": "common.api.A0040"
+  },
+  {
+    "id": "A0041",
+    "type": "internal",
+    "parent": "group",
+    "method": "DELETE",
+    "url": "/internal/api/v1/group/groups",
+    "name": "common.api.A0041"
+  },
+  {
+    "id": "A0042",
+    "type": "internal",
+    "parent": "group",
+    "method": "DELETE",
+    "url": "/internal/api/v1/group/phydel/groups",
+    "name": "common.api.A0042"
+  },
+  {
+    "id": "A0043",
+    "type": "internal",
+    "parent": "group",
+    "method": "PUT",
+    "url": "/internal/api/v1/group/recover/groups",
+    "name": "common.api.A0043"
+  },
+  {
+    "id": "A0044",
+    "type": "internal",
+    "parent": "customer",
+    "method": "GET",
+    "url": "/internal/api/v1/customer/customers",
+    "name": "common.api.A0044"
+  },
+  {
+    "id": "A0045",
+    "type": "internal",
+    "parent": "customer",
+    "method": "GET",
+    "url": "/internal/api/v1/customer/customers/:customer_id",
+    "name": "common.api.A0045"
+  },
+  {
+    "id": "A0046",
+    "type": "internal",
+    "parent": "customer",
+    "method": "POST",
+    "url": "/internal/api/v1/customer/customers",
+    "name": "common.api.A0046"
+  },
+  {
+    "id": "A0047",
+    "type": "internal",
+    "parent": "customer",
+    "method": "PUT",
+    "url": "/internal/api/v1/customer/customers/:customer_id",
+    "name": "common.api.A0047"
+  },
+  {
+    "id": "A0048",
+    "type": "internal",
+    "parent": "customer",
+    "method": "DELETE",
+    "url": "/internal/api/v1/customer/customers/:customer_id",
+    "name": "common.api.A0048"
+  },
+  {
+    "id": "A0049",
+    "type": "internal",
+    "parent": "customer",
+    "method": "DELETE",
+    "url": "/internal/api/v1/customer/customers",
+    "name": "common.api.A0049"
+  },
+  {
+    "id": "A0050",
+    "type": "internal",
+    "parent": "customer",
+    "method": "DELETE",
+    "url": "/internal/api/v1/customer/phydel/customers",
+    "name": "common.api.A0050"
+  },
+  {
+    "id": "A0051",
+    "type": "internal",
+    "parent": "customer",
+    "method": "PUT",
+    "url": "/internal/api/v1/customer/recover/customers",
+    "name": "common.api.A0051"
+  },
+  {
+    "id": "A0052",
+    "type": "internal",
+    "parent": "file",
+    "method": "POST",
+    "url": "/internal/api/v1/file/upload",
+    "name": "common.api.A0052"
+  },
+  {
+    "id": "A0053",
+    "type": "internal",
+    "parent": "file",
+    "method": "POST",
+    "url": "/internal/api/v1/file/mutil/upload",
+    "name": "common.api.A0053"
+  },
+  {
+    "id": "A0054",
+    "type": "internal",
+    "parent": "file",
+    "method": "POST",
+    "url": "/internal/api/v1/file/item/upload",
+    "name": "common.api.A0054"
+  },
+  {
+    "id": "A0055",
+    "type": "internal",
+    "parent": "file",
+    "method": "POST",
+    "url": "/internal/api/v1/file/header/upload",
+    "name": "common.api.A0055"
+  },
+  {
+    "id": "A0056",
+    "type": "internal",
+    "parent": "file",
+    "method": "GET",
+    "url": "/internal/api/v1/file/files/:file_id",
+    "name": "common.api.A0056"
+  },
+  {
+    "id": "A0057",
+    "type": "internal",
+    "parent": "file",
+    "method": "GET",
+    "url": "/internal/api/v1/file/download/files/:file_id",
+    "name": "common.api.A0057"
+  },
+  {
+    "id": "A0058",
+    "type": "internal",
+    "parent": "file",
+    "method": "GET",
+    "url": "/internal/api/v1/file/files",
+    "name": "common.api.A0058"
+  },
+  {
+    "id": "A0059",
+    "type": "internal",
+    "parent": "file",
+    "method": "DELETE",
+    "url": "/internal/api/v1/file/files/:file_id",
+    "name": "common.api.A0059"
+  },
+  {
+    "id": "A0060",
+    "type": "internal",
+    "parent": "file",
+    "method": "DELETE",
+    "url": "/internal/api/v1/file/files",
+    "name": "common.api.A0060"
+  },
+  {
+    "id": "A0061",
+    "type": "internal",
+    "parent": "file",
+    "method": "DELETE",
+    "url": "/internal/api/v1/file/phydel/files",
+    "name": "common.api.A0061"
+  },
+  {
+    "id": "A0062",
+    "type": "internal",
+    "parent": "file",
+    "method": "PUT",
+    "url": "/internal/api/v1/file/recover/files",
+    "name": "common.api.A0062"
+  },
+  {
+    "id": "A0063",
+    "type": "internal",
+    "parent": "file",
+    "method": "PUT",
+    "url": "/internal/api/v1/file/recover/folders/:folder_id",
+    "name": "common.api.A0063"
+  },
+  {
+    "id": "A0064",
+    "type": "internal",
+    "parent": "folder",
+    "method": "GET",
+    "url": "/internal/api/v1/folder/folders",
+    "name": "common.api.A0064"
+  },
+  {
+    "id": "A0065",
+    "type": "internal",
+    "parent": "folder",
+    "method": "GET",
+    "url": "/internal/api/v1/folder/folders/:f_id",
+    "name": "common.api.A0065"
+  },
+  {
+    "id": "A0066",
+    "type": "internal",
+    "parent": "folder",
+    "method": "POST",
+    "url": "/internal/api/v1/folder/folders",
+    "name": "common.api.A0066"
+  },
+  {
+    "id": "A0067",
+    "type": "internal",
+    "parent": "folder",
+    "method": "DELETE",
+    "url": "/internal/api/v1/folder/folders/:f_id",
+    "name": "common.api.A0067"
+  },
+  {
+    "id": "A0068",
+    "type": "internal",
+    "parent": "folder",
+    "method": "DELETE",
+    "url": "/internal/api/v1/folder/folders",
+    "name": "common.api.A0068"
+  },
+  {
+    "id": "A0069",
+    "type": "internal",
+    "parent": "folder",
+    "method": "DELETE",
+    "url": "/internal/api/v1/folder/phydel/folders",
+    "name": "common.api.A0069"
+  },
+  {
+    "id": "A0070",
+    "type": "internal",
+    "parent": "folder",
+    "method": "PUT",
+    "url": "/internal/api/v1/folder/recover/folders",
+    "name": "common.api.A0070"
+  },
+  {
+    "id": "A0071",
+    "type": "internal",
+    "parent": "resource",
+    "method": "GET",
+    "url": "/internal/api/v1/resource/resources",
+    "name": "common.api.A0071"
+  },
+  {
+    "id": "A0072",
+    "type": "internal",
+    "parent": "resource",
+    "method": "POST",
+    "url": "/internal/api/v1/resource/resources",
+    "name": "common.api.A0072"
+  },
+  {
+    "id": "A0073",
+    "type": "internal",
+    "parent": "resource",
+    "method": "PUT",
+    "url": "/internal/api/v1/resource/resources/:key",
+    "name": "common.api.A0073"
+  },
+  {
+    "id": "A0074",
+    "type": "internal",
+    "parent": "resource",
+    "method": "DELETE",
+    "url": "/internal/api/v1/resource/resources/:key",
+    "name": "common.api.A0074"
+  },
+  {
+    "id": "A0075",
+    "type": "internal",
+    "parent": "resource",
+    "method": "DELETE",
+    "url": "/internal/api/v1/resource/resources",
+    "name": "common.api.A0075"
+  },
+  {
+    "id": "A0076",
+    "type": "internal",
+    "parent": "resource",
+    "method": "DELETE",
+    "url": "/internal/api/v1/resource/phydel/resources",
+    "name": "common.api.A0076"
+  },
+  {
+    "id": "A0077",
+    "type": "internal",
+    "parent": "resource",
+    "method": "PUT",
+    "url": "/internal/api/v1/resource/recover/resources",
+    "name": "common.api.A0077"
+  },
+  {
+    "id": "A0078",
+    "type": "internal",
+    "parent": "query",
+    "method": "GET",
+    "url": "/internal/api/v1/query/queries",
+    "name": "common.api.A0078"
+  },
+  {
+    "id": "A0079",
+    "type": "internal",
+    "parent": "query",
+    "method": "GET",
+    "url": "/internal/api/v1/query/queries/:q_id",
+    "name": "common.api.A0079"
+  },
+  {
+    "id": "A0080",
+    "type": "internal",
+    "parent": "query",
+    "method": "POST",
+    "url": "/internal/api/v1/query/queries",
+    "name": "common.api.A0080"
+  },
+  {
+    "id": "A0081",
+    "type": "internal",
+    "parent": "query",
+    "method": "DELETE",
+    "url": "/internal/api/v1/query/queries/:q_id",
+    "name": "common.api.A0081"
+  },
+  {
+    "id": "A0082",
+    "type": "internal",
+    "parent": "query",
+    "method": "DELETE",
+    "url": "/internal/api/v1/query/queries",
+    "name": "common.api.A0082"
+  },
+  {
+    "id": "A0083",
+    "type": "internal",
+    "parent": "query",
+    "method": "DELETE",
+    "url": "/internal/api/v1/query/phydel/queries",
+    "name": "common.api.A0083"
+  },
+  {
+    "id": "A0084",
+    "type": "internal",
+    "parent": "language",
+    "method": "GET",
+    "url": "/internal/api/v1/language/languages/search",
+    "name": "common.api.A0084"
+  },
+  {
+    "id": "A0085",
+    "type": "internal",
+    "parent": "language",
+    "method": "POST",
+    "url": "/internal/api/v1/language/apps/:a_id/languages/:lang_cd",
+    "name": "common.api.A0085"
+  },
+  {
+    "id": "A0086",
+    "type": "internal",
+    "parent": "language",
+    "method": "POST",
+    "url": "/internal/api/v1/language/languages/:lang_cd",
+    "name": "common.api.A0086"
+  },
+  {
+    "id": "A0087",
+    "type": "internal",
+    "parent": "language",
+    "method": "POST",
+    "url": "/internal/api/v1/language/groups/:group_id/languages/:lang_cd",
+    "name": "common.api.A0087"
+  },
+  {
+    "id": "A0088",
+    "type": "internal",
+    "parent": "language",
+    "method": "DELETE",
+    "url": "/internal/api/v1/language/groups/:group_id/languages",
+    "name": "common.api.A0088"
+  },
+  {
+    "id": "A0089",
+    "type": "internal",
+    "parent": "language",
+    "method": "DELETE",
+    "url": "/internal/api/v1/language/languages/types/:type/keys/:key",
+    "name": "common.api.A0089"
+  },
+  {
+    "id": "A0090",
+    "type": "internal",
+    "parent": "language",
+    "method": "DELETE",
+    "url": "/internal/api/v1/language/apps/:a_id/languages",
+    "name": "common.api.A0090"
+  },
+  {
+    "id": "A0091",
+    "type": "internal",
+    "parent": "validation",
+    "method": "POST",
+    "url": "/internal/api/v1/validation/password",
+    "name": "common.api.A0091"
+  },
+  {
+    "id": "A0092",
+    "type": "internal",
+    "parent": "validation",
+    "method": "POST",
+    "url": "/internal/api/v1/validation/unique",
+    "name": "common.api.A0092"
+  },
+  {
+    "id": "A0093",
+    "type": "internal",
+    "parent": "validation",
+    "method": "GET",
+    "url": "/internal/api/v1/validation/datastores/:id/relation",
+    "name": "common.api.A0093"
+  },
+  {
+    "id": "A0094",
+    "type": "internal",
+    "parent": "validation",
+    "method": "GET",
+    "url": "/internal/api/v1/validation/datastores/:id/fields/:f_id/relation",
+    "name": "common.api.A0094"
+  },
+  {
+    "id": "A0095",
+    "type": "internal",
+    "parent": "validation",
+    "method": "GET",
+    "url": "/internal/api/v1/validation/reports/:id/relation",
+    "name": "common.api.A0095"
+  },
+  {
+    "id": "A0096",
+    "type": "internal",
+    "parent": "option",
+    "method": "GET",
+    "url": "/internal/api/v1/option/options",
+    "name": "common.api.A0096"
+  },
+  {
+    "id": "A0097",
+    "type": "internal",
+    "parent": "option",
+    "method": "GET",
+    "url": "/internal/api/v1/option/label/options",
+    "name": "common.api.A0097"
+  },
+  {
+    "id": "A0098",
+    "type": "internal",
+    "parent": "option",
+    "method": "GET",
+    "url": "/internal/api/v1/option/options/:o_id",
+    "name": "common.api.A0098"
+  },
+  {
+    "id": "A0099",
+    "type": "internal",
+    "parent": "option",
+    "method": "GET",
+    "url": "/internal/api/v1/option/option/order",
+    "name": "common.api.A0099"
+  },
+  {
+    "id": "A0100",
+    "type": "internal",
+    "parent": "option",
+    "method": "POST",
+    "url": "/internal/api/v1/option/options",
+    "name": "common.api.A0100"
+  },
+  {
+    "id": "A0101",
+    "type": "internal",
+    "parent": "option",
+    "method": "DELETE",
+    "url": "/internal/api/v1/option/options/:o_id",
+    "name": "common.api.A0101"
+  },
+  {
+    "id": "A0102",
+    "type": "internal",
+    "parent": "option",
+    "method": "DELETE",
+    "url": "/internal/api/v1/option/options",
+    "name": "common.api.A0102"
+  },
+  {
+    "id": "A0103",
+    "type": "internal",
+    "parent": "option",
+    "method": "DELETE",
+    "url": "/internal/api/v1/option/phydel/options",
+    "name": "common.api.A0103"
+  },
+  {
+    "id": "A0104",
+    "type": "internal",
+    "parent": "option",
+    "method": "DELETE",
+    "url": "/internal/api/v1/option/options/:o_id/values/:value",
+    "name": "common.api.A0104"
+  },
+  {
+    "id": "A0105",
+    "type": "internal",
+    "parent": "option",
+    "method": "DELETE",
+    "url": "/internal/api/v1/option/phydel/options/:o_id/values/:value",
+    "name": "common.api.A0105"
+  },
+  {
+    "id": "A0106",
+    "type": "internal",
+    "parent": "option",
+    "method": "PUT",
+    "url": "/internal/api/v1/option/recover/options",
+    "name": "common.api.A0106"
+  },
+  {
+    "id": "A0107",
+    "type": "internal",
+    "parent": "option",
+    "method": "PUT",
+    "url": "/internal/api/v1/option/recover/options/:o_id/values/:value",
+    "name": "common.api.A0107"
+  },
+  {
+    "id": "A0108",
+    "type": "internal",
+    "parent": "history",
+    "method": "GET",
+    "url": "/internal/api/v1/history/histories",
+    "name": "common.api.A0108"
+  },
+  {
+    "id": "A0109",
+    "type": "internal",
+    "parent": "history",
+    "method": "GET",
+    "url": "/internal/api/v1/history/histories/:h_id",
+    "name": "common.api.A0109"
+  },
+  {
+    "id": "A0110",
+    "type": "internal",
+    "parent": "history",
+    "method": "DELETE",
+    "url": "/internal/api/v1/history/phydel/histories",
+    "name": "common.api.A0110"
+  },
+  {
+    "id": "A0111",
+    "type": "internal",
+    "parent": "datastore",
+    "method": "GET",
+    "url": "/internal/api/v1/datastore/datastores",
+    "name": "common.api.A0111"
+  },
+  {
+    "id": "A0112",
+    "type": "internal",
+    "parent": "datastore",
+    "method": "GET",
+    "url": "/internal/api/v1/datastore/datastores/:d_id",
+    "name": "common.api.A0112"
+  },
+  {
+    "id": "A0113",
+    "type": "internal",
+    "parent": "datastore",
+    "method": "POST",
+    "url": "/internal/api/v1/datastore/datastores",
+    "name": "common.api.A0113"
+  },
+  {
+    "id": "A0114",
+    "type": "internal",
+    "parent": "datastore",
+    "method": "PUT",
+    "url": "/internal/api/v1/datastore/datastores/:d_id",
+    "name": "common.api.A0114"
+  },
+  {
+    "id": "A0115",
+    "type": "internal",
+    "parent": "datastore",
+    "method": "DELETE",
+    "url": "/internal/api/v1/datastore/datastores/:d_id",
+    "name": "common.api.A0115"
+  },
+  {
+    "id": "A0116",
+    "type": "internal",
+    "parent": "datastore",
+    "method": "DELETE",
+    "url": "/internal/api/v1/datastore/datastores",
+    "name": "common.api.A0116"
+  },
+  {
+    "id": "A0117",
+    "type": "internal",
+    "parent": "datastore",
+    "method": "DELETE",
+    "url": "/internal/api/v1/datastore/phydel/datastores",
+    "name": "common.api.A0117"
+  },
+  {
+    "id": "A0118",
+    "type": "internal",
+    "parent": "report",
+    "method": "GET",
+    "url": "/internal/api/v1/report/reports",
+    "name": "common.api.A0118"
+  },
+  {
+    "id": "A0119",
+    "type": "internal",
+    "parent": "report",
+    "method": "GET",
+    "url": "/internal/api/v1/report/reports/:rp_id",
+    "name": "common.api.A0119"
+  },
+  {
+    "id": "A0120",
+    "type": "internal",
+    "parent": "report",
+    "method": "GET",
+    "url": "/internal/api/v1/report/reports/:rp_id/data",
+    "name": "common.api.A0120"
+  },
+  {
+    "id": "A0121",
+    "type": "internal",
+    "parent": "report",
+    "method": "POST",
+    "url": "/internal/api/v1/report/reports",
+    "name": "common.api.A0121"
+  },
+  {
+    "id": "A0122",
+    "type": "internal",
+    "parent": "report",
+    "method": "PUT",
+    "url": "/internal/api/v1/report/reports/:rp_id",
+    "name": "common.api.A0122"
+  },
+  {
+    "id": "A0123",
+    "type": "internal",
+    "parent": "report",
+    "method": "DELETE",
+    "url": "/internal/api/v1/report/reports/:rp_id",
+    "name": "common.api.A0123"
+  },
+  {
+    "id": "A0124",
+    "type": "internal",
+    "parent": "report",
+    "method": "DELETE",
+    "url": "/internal/api/v1/report/reports",
+    "name": "common.api.A0124"
+  },
+  {
+    "id": "A0125",
+    "type": "internal",
+    "parent": "report",
+    "method": "DELETE",
+    "url": "/internal/api/v1/report/phydel/reports",
+    "name": "common.api.A0125"
+  },
+  {
+    "id": "A0126",
+    "type": "internal",
+    "parent": "report",
+    "method": "PUT",
+    "url": "/internal/api/v1/report/recover/reports",
+    "name": "common.api.A0126"
+  },
+  {
+    "id": "A0127",
+    "type": "internal",
+    "parent": "dashboard",
+    "method": "GET",
+    "url": "/internal/api/v1/dashboard/dashboards",
+    "name": "common.api.A0127"
+  },
+  {
+    "id": "A0128",
+    "type": "internal",
+    "parent": "dashboard",
+    "method": "GET",
+    "url": "/internal/api/v1/dashboard/dashboards/:dash_id",
+    "name": "common.api.A0128"
+  },
+  {
+    "id": "A0129",
+    "type": "internal",
+    "parent": "dashboard",
+    "method": "GET",
+    "url": "/internal/api/v1/dashboard/dashboards/:dash_id/data",
+    "name": "common.api.A0129"
+  },
+  {
+    "id": "A0130",
+    "type": "internal",
+    "parent": "dashboard",
+    "method": "POST",
+    "url": "/internal/api/v1/dashboard/dashboards",
+    "name": "common.api.A0130"
+  },
+  {
+    "id": "A0131",
+    "type": "internal",
+    "parent": "dashboard",
+    "method": "PUT",
+    "url": "/internal/api/v1/dashboard/dashboards/:dash_id",
+    "name": "common.api.A0131"
+  },
+  {
+    "id": "A0132",
+    "type": "internal",
+    "parent": "dashboard",
+    "method": "DELETE",
+    "url": "/internal/api/v1/dashboard/dashboards/:dash_id",
+    "name": "common.api.A0132"
+  },
+  {
+    "id": "A0133",
+    "type": "internal",
+    "parent": "dashboard",
+    "method": "DELETE",
+    "url": "/internal/api/v1/dashboard/dashboards",
+    "name": "common.api.A0133"
+  },
+  {
+    "id": "A0134",
+    "type": "internal",
+    "parent": "dashboard",
+    "method": "DELETE",
+    "url": "/internal/api/v1/dashboard/phydel/dashboards",
+    "name": "common.api.A0134"
+  },
+  {
+    "id": "A0135",
+    "type": "internal",
+    "parent": "dashboard",
+    "method": "PUT",
+    "url": "/internal/api/v1/dashboard/recover/dashboards",
+    "name": "common.api.A0135"
+  },
+  {
+    "id": "A0136",
+    "type": "internal",
+    "parent": "item",
+    "method": "POST",
+    "url": "/internal/api/v1/item/datastores/:d_id/items/search",
+    "name": "common.api.A0136"
+  },
+  {
+    "id": "A0137",
+    "type": "internal",
+    "parent": "item",
+    "method": "POST",
+    "url": "/internal/api/v1/item/datastores/:d_id/items/download",
+    "name": "common.api.A0137"
+  },
+  {
+    "id": "A0138",
+    "type": "internal",
+    "parent": "item",
+    "method": "GET",
+    "url": "/internal/api/v1/item/datastores/:d_id/items/:i_id",
+    "name": "common.api.A0138"
+  },
+  {
+    "id": "A0139",
+    "type": "internal",
+    "parent": "item",
+    "method": "POST",
+    "url": "/internal/api/v1/item/datastores/:d_id/items",
+    "name": "common.api.A0139"
+  },
+  {
+    "id": "A0140",
+    "type": "internal",
+    "parent": "item",
+    "method": "POST",
+    "url": "/internal/api/v1/item/import/datastores/:d_id/items",
+    "name": "common.api.A0140"
+  },
+  {
+    "id": "A0141",
+    "type": "internal",
+    "parent": "item",
+    "method": "POST",
+    "url": "/internal/api/v1/item/import/csv/datastores/:d_id/items",
+    "name": "common.api.A0141"
+  },
+  {
+    "id": "A0142",
+    "type": "internal",
+    "parent": "item",
+    "method": "PUT",
+    "url": "/internal/api/v1/item/datastores/:d_id/items/:i_id",
+    "name": "common.api.A0142"
+  },
+  {
+    "id": "A0143",
+    "type": "internal",
+    "parent": "item",
+    "method": "PUT",
+    "url": "/internal/api/v1/item/datastores/:d_id/items",
+    "name": "common.api.A0143"
+  },
+  {
+    "id": "A0144",
+    "type": "internal",
+    "parent": "item",
+    "method": "PATCH",
+    "url": "/internal/api/v1/item/datastores/:d_id/items/:i_id",
+    "name": "common.api.A0144"
+  },
+  {
+    "id": "A0145",
+    "type": "internal",
+    "parent": "item",
+    "method": "PATCH",
+    "url": "/internal/api/v1/item/datastores/:d_id/items",
+    "name": "common.api.A0145"
+  },
+  {
+    "id": "A0146",
+    "type": "internal",
+    "parent": "item",
+    "method": "PATCH",
+    "url": "/internal/api/v1/item/datastores/:d_id/items/:i_id/mutil",
+    "name": "common.api.A0146"
+  },
+  {
+    "id": "A0147",
+    "type": "internal",
+    "parent": "item",
+    "method": "DELETE",
+    "url": "/internal/api/v1/item/datastores/:d_id/items/:i_id",
+    "name": "common.api.A0147"
+  },
+  {
+    "id": "A0148",
+    "type": "internal",
+    "parent": "item",
+    "method": "DELETE",
+    "url": "/internal/api/v1/item/datastores/:d_id/items",
+    "name": "common.api.A0148"
+  },
+  {
+    "id": "A0149",
+    "type": "internal",
+    "parent": "item",
+    "method": "DELETE",
+    "url": "/internal/api/v1/item/phydel/datastores/:d_id/items",
+    "name": "common.api.A0149"
+  },
+  {
+    "id": "A0150",
+    "type": "internal",
+    "parent": "template",
+    "method": "GET",
+    "url": "/internal/api/v1/template/templates",
+    "name": "common.api.A0150"
+  },
+  {
+    "id": "A0151",
+    "type": "internal",
+    "parent": "template",
+    "method": "GET",
+    "url": "/internal/api/v1/template/templates/:item_id",
+    "name": "common.api.A0151"
+  },
+  {
+    "id": "A0152",
+    "type": "internal",
+    "parent": "template",
+    "method": "POST",
+    "url": "/internal/api/v1/template/templates/:item_id",
+    "name": "common.api.A0152"
+  },
+  {
+    "id": "A0153",
+    "type": "internal",
+    "parent": "template",
+    "method": "DELETE",
+    "url": "/internal/api/v1/template/templates/:item_id",
+    "name": "common.api.A0153"
+  },
+  {
+    "id": "A0154",
+    "type": "internal",
+    "parent": "field",
+    "method": "GET",
+    "url": "/internal/api/v1/field/datastores/:d_id/fields",
+    "name": "common.api.A0154"
+  },
+  {
+    "id": "A0155",
+    "type": "internal",
+    "parent": "field",
+    "method": "GET",
+    "url": "/internal/api/v1/field/fields/:f_id",
+    "name": "common.api.A0155"
+  },
+  {
+    "id": "A0156",
+    "type": "internal",
+    "parent": "field",
+    "method": "POST",
+    "url": "/internal/api/v1/field/datastores/:d_id/fields",
+    "name": "common.api.A0156"
+  },
+  {
+    "id": "A0157",
+    "type": "internal",
+    "parent": "field",
+    "method": "POST",
+    "url": "/internal/api/v1/field/fields/bluk",
+    "name": "common.api.A0157"
+  },
+  {
+    "id": "A0158",
+    "type": "internal",
+    "parent": "field",
+    "method": "PUT",
+    "url": "/internal/api/v1/field/fields/:f_id",
+    "name": "common.api.A0158"
+  },
+  {
+    "id": "A0159",
+    "type": "internal",
+    "parent": "field",
+    "method": "DELETE",
+    "url": "/internal/api/v1/field/fields/:f_id",
+    "name": "common.api.A0159"
+  },
+  {
+    "id": "A0160",
+    "type": "internal",
+    "parent": "field",
+    "method": "DELETE",
+    "url": "/internal/api/v1/field/fields",
+    "name": "common.api.A0160"
+  },
+  {
+    "id": "A0161",
+    "type": "internal",
+    "parent": "field",
+    "method": "DELETE",
+    "url": "/internal/api/v1/field/phydel/datastores/:d_id/fields",
+    "name": "common.api.A0161"
+  },
+  {
+    "id": "A0162",
+    "type": "internal",
+    "parent": "field",
+    "method": "DELETE",
+    "url": "/internal/api/v1/field/datastores/:d_id/fields",
+    "name": "common.api.A0162"
+  },
+  {
+    "id": "A0163",
+    "type": "internal",
+    "parent": "field",
+    "method": "PUT",
+    "url": "/internal/api/v1/field/recover/fields",
+    "name": "common.api.A0163"
+  },
+  {
+    "id": "A0164",
+    "type": "internal",
+    "parent": "database",
+    "method": "POST",
+    "url": "/internal/api/v1/database/apps/:a_id/database",
+    "name": "common.api.A0164"
+  },
+  {
+    "id": "A0165",
+    "type": "internal",
+    "parent": "database",
+    "method": "DELETE",
+    "url": "/internal/api/v1/database/apps/:a_id/database/:d_id",
+    "name": "common.api.A0165"
+  },
+  { "id": "A0168", "type": "outer", "parent": "app", "method": "GET", "url": "/outer/api/v1/app/user/apps", "name": "common.api.A0168" },
+  { "id": "A0169", "type": "outer", "parent": "user", "method": "GET", "url": "/outer/api/v1/user/users", "name": "common.api.A0169" },
+  {
+    "id": "A0170",
+    "type": "outer",
+    "parent": "user",
+    "method": "GET",
+    "url": "/outer/api/v1/user/users/:user_id",
+    "name": "common.api.A0170"
+  },
+  {
+    "id": "A0171",
+    "type": "outer",
+    "parent": "user",
+    "method": "PUT",
+    "url": "/outer/api/v1/user/users/:user_id",
+    "name": "common.api.A0171"
+  },
+  { "id": "A0172", "type": "outer", "parent": "group", "method": "GET", "url": "/outer/api/v1/group/groups", "name": "common.api.A0172" },
+  {
+    "id": "A0173",
+    "type": "outer",
+    "parent": "group",
+    "method": "GET",
+    "url": "/outer/api/v1/group/groups/:group_id",
+    "name": "common.api.A0173"
+  },
+  {
+    "id": "A0174",
+    "type": "outer",
+    "parent": "file",
+    "method": "POST",
+    "url": "/outer/api/v1/file/item/upload",
+    "name": "common.api.A0174"
+  },
+  {
+    "id": "A0175",
+    "type": "outer",
+    "parent": "file",
+    "method": "POST",
+    "url": "/outer/api/v1/file/header/upload",
+    "name": "common.api.A0175"
+  },
+  {
+    "id": "A0176",
+    "type": "outer",
+    "parent": "language",
+    "method": "GET",
+    "url": "/outer/api/v1/language/languages/search",
+    "name": "common.api.A0176"
+  },
+  {
+    "id": "A0177",
+    "type": "outer",
+    "parent": "option",
+    "method": "GET",
+    "url": "/outer/api/v1/option/options",
+    "name": "common.api.A0177"
+  },
+  {
+    "id": "A0178",
+    "type": "outer",
+    "parent": "option",
+    "method": "GET",
+    "url": "/outer/api/v1/option/label/options",
+    "name": "common.api.A0178"
+  },
+  {
+    "id": "A0179",
+    "type": "outer",
+    "parent": "option",
+    "method": "GET",
+    "url": "/outer/api/v1/option/options/:o_id",
+    "name": "common.api.A0179"
+  },
+  {
+    "id": "A0180",
+    "type": "outer",
+    "parent": "datastore",
+    "method": "GET",
+    "url": "/outer/api/v1/datastore/datastores",
+    "name": "common.api.A0180"
+  },
+  {
+    "id": "A0181",
+    "type": "outer",
+    "parent": "datastore",
+    "method": "GET",
+    "url": "/outer/api/v1/datastore/datastores/:d_id",
+    "name": "common.api.A0181"
+  },
+  {
+    "id": "A0182",
+    "type": "outer",
+    "parent": "item",
+    "method": "POST",
+    "url": "/outer/api/v1/item/datastores/:d_id/items/search",
+    "name": "common.api.A0182"
+  },
+  {
+    "id": "A0183",
+    "type": "outer",
+    "parent": "item",
+    "method": "GET",
+    "url": "/outer/api/v1/item/datastores/:d_id/items/:i_id",
+    "name": "common.api.A0183"
+  },
+  {
+    "id": "A0184",
+    "type": "outer",
+    "parent": "item",
+    "method": "POST",
+    "url": "/outer/api/v1/item/datastores/:d_id/items",
+    "name": "common.api.A0184"
+  },
+  {
+    "id": "A0185",
+    "type": "outer",
+    "parent": "item",
+    "method": "PUT",
+    "url": "/outer/api/v1/item/datastores/:d_id/items/:i_id",
+    "name": "common.api.A0185"
+  },
+  {
+    "id": "A0186",
+    "type": "outer",
+    "parent": "item",
+    "method": "PATCH",
+    "url": "/outer/api/v1/item/datastores/:d_id/items/:i_id",
+    "name": "common.api.A0186"
+  },
+  {
+    "id": "A0187",
+    "type": "outer",
+    "parent": "item",
+    "method": "PATCH",
+    "url": "/outer/api/v1/item/datastores/:d_id/items",
+    "name": "common.api.A0187"
+  },
+  {
+    "id": "A0188",
+    "type": "outer",
+    "parent": "item",
+    "method": "DELETE",
+    "url": "/outer/api/v1/item/datastores/:d_id/items/:i_id",
+    "name": "common.api.A0188"
+  },
+  {
+    "id": "A0189",
+    "type": "outer",
+    "parent": "template",
+    "method": "POST",
+    "url": "/outer/api/v1/template/templates",
+    "name": "common.api.A0189"
+  },
+  {
+    "id": "A0190",
+    "type": "outer",
+    "parent": "field",
+    "method": "GET",
+    "url": "/outer/api/v1/field/datastores/:d_id/fields",
+    "name": "common.api.A0190"
+  }
+]

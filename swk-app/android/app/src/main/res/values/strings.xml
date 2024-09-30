@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="config">リーダー設定</string>
+    <string name="bt_config">デバイス選択</string>
+    <string name="scanner">メモリ一括読取り</string>
+    <string name="app_name_short">BLE_EPC一括読取</string>
+    <string name="device_txt_1">Bluetooth接続に使用するデバイスを指定します。（必須）</string>
+    <string name="option_txt_1">リーダーから取得する基本情報に追加して取得する情報を選択します。（省略可能）</string>
+    <string name="chk_no_repeat">同一EPCタグの読取りをスキップ</string>
+    <string name="chk_date_time">タグの読取り日時を取得</string>
+    <string name="chk_radio_power">タグからの受信電波強度を取得</string>
+    <string name="chk_mask_select">読取り対象タグを制限します</string>
+    <string name="mask_txt_1">対象メモリ</string>
+    <string name="mask_txt_2">オフセット</string>
+    <string name="mask_txt_3">マスク長</string>
+    <string name="mask_txt_4">ビット</string>
+    <string name="mask_txt_5">マスクデータ（16進数形式で指定）</string>
+    <string name="log_txt_1">ログ</string>
+    <string name="btn_back">前へ</string>
+    <string name="btn_log_clear">棚卸</string>
+    <string name="btn_disconnect">切断</string>
+    <string name="btn_connect">接続</string>
+    <string name="btn_scan">デバイス検索</string>
+    <string name="btn_forward">次へ</string>
+
+    <string name="alertDialog_title_permission">パーミッションの追加説明</string>
+    <string name="alertDialog_message_permission">リーダーを使用するにはパーミッションが必要です</string>
+    <string name="alertDialog_message_permission_location">リーダーを使用するには低精度の位置情報取得へのパーミッションが必要です</string>
+
+    <string name="info_device">Bluetooth接続に使用するデバイスを指定します。（必須）</string>
+    <string name="txt_BatteryLevel">バッテリー残量</string>
+    <string name="txt_Buzzer">リーダーのブザー音量を設定します。</string>
+    <string name="txt_flush">フラッシュメモリ内に設定を保持する</string>
+    <string name="btn_setting">設定</string>
+    <string name="txt_power">リーダーが無操作の時、自動で電源OFFするまでの時間を設定します。（設定できる値は０～７２００です。０の場合は自動電源OFFを行ないません）\n※DOTR-900Jシリーズのみ設定できます。</string>
+    <string name="txt_radio_1">リーダーの電源出力強度を設定します。（テスト目的で使用してください）</string>
+    <string name="txt_radio_2">最大出力</string>
+    <string name="txt_radio_3">現在出力</string>
+    <string name="txt_radio_4">減衰量設定（０で最大出力）</string>
+    <string name="txt_radio_5">出力テスト</string>
+    <string name="btn_radio_start">テスト開始</string>
+    <string name="btn_radio_stop">テスト終了</string>
+    <string name="btn_dev_forward">接続して次へ</string>
+    <string name="txt_channel_1">リーダーが使用するチャネルを設定します。（テスト目的で使用してください）</string>
+    <string name="txt_channel_2">CH5 916.8MHz</string>
+    <string name="txt_channel_3">CH11 918.0MHz</string>
+    <string name="txt_channel_4">CH17 919.2MHz</string>
+    <string name="txt_channel_5">CH23 920.4MHz </string>
+    <string name="txt_channel_6">CH24 920.6MHz</string>
+    <string name="txt_channel_7">CH25 920.8MHz</string>
+
+    <string name="btn_connect_forward">接続して次へ</string>
+    <string name="txt_firm">ファームウェア</string>
+    <string name="txt_read_mode_1">電波照射時間（40 ～ 200msec）</string>
+    <string name="txt_read_mode_2">使用セッション</string>
+
+    <string-array name="spinner_sessions"><item >Session0</item>
+        <item >Session1</item>
+        <item >Session2</item>
+        <item >Session3</item>
+
+    </string-array>
+    <string name="txt_read_mode_3">読み取りモード</string>
+    <string-array name="spinner_modes"><item >FlagAのみ読み取る</item>
+        <item >FlagBのみ読み取る</item>
+        <item >FlagA,B共に読み取る</item>
+
+    </string-array>
+    <string name="txt_spinner_notselect">選択してください</string>
+    <string name="txt_read_mode_4">読み取りテスト</string>
+    <string name="btn_read_start">テスト開始</string>
+    <string name="btn_read_end">テスト終了</string>
+
+    <string name="textView_fragment1">This is first fragment.</string>
+    <string name="textView_fragment2">This is second fragment.</string>
+    <string name="textView_fragment3">This is third fragment.</string>
+    <string name="textView_fragment4">This is fourth fragment.</string>
+    <string name="textView_fragment5">This is fifth fragment.</string>
+</resources>

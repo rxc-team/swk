@@ -1,0 +1,154 @@
+<div nz-row nzJustify="start" nzAlign="top">
+  <div nz-col nzSpan="24">
+    <nz-collapse [nzBordered]="true">
+      <nz-collapse-panel nzActive="true" [nzHeader]="'common.text.search' | translate">
+        <app-search-view
+          *ngIf="searchFields"
+          [controls]="controlArray"
+          [fields]="searchFields"
+          (search)="search()"
+          (queryChange)="queryChange($event)"
+        ></app-search-view>
+      </nz-collapse-panel>
+    </nz-collapse>
+  </div>
+  <div nz-col nzSpan="24" style="padding-top: 16px">
+    <button nz-button [nzType]="'primary'" style="margin-right: 16px" (click)="refresh()">
+      <i nz-icon nzType="sync"></i>
+      {{ 'common.button.refresh' | translate }}
+    </button>
+    <!-- <button nz-button nzType="primary" nzDanger (click)="delete()" [disabled]="selectData.length === 0">
+      <i nz-icon nzType="delete"></i>
+      {{ 'common.button.delete' | translate }}
+    </button> -->
+    <button nz-button nzType="primary" (click)="download()">
+      <i nz-icon nzType="download"></i>
+      {{ 'common.button.fileDownload' | translate }}
+    </button>
+  </div>
+  <div nz-col nzSpan="24" style="padding-top: 16px">
+    <nz-table
+      #basicTable
+      nzShowSizeChanger
+      [nzData]="displayDataSet"
+      nzBordered="true"
+      [nzTotal]="total"
+      nzSize="middle"
+      [nzFrontPagination]="false"
+      [(nzPageIndex)]="pageIndex"
+      [(nzPageSize)]="pageSize"
+      [nzPageSizeOptions]="[10, 20, 30]"
+      [nzScroll]="{ x: '1200px', y: '300px' }"
+      [nzShowTotal]="rangeTemplate"
+    >
+      <thead>
+        <tr>
+          <th
+            nzWidth="40px"
+            nzLeft="0"
+            nzShowCheckbox
+            [(nzChecked)]="selectAll"
+            (nzCheckedChange)="checkAll($event)"
+          ></th>
+          <ng-container *ngFor="let col of cols">
+            <th
+              *ngIf="col.width"
+              nz-resizable
+              nzBounds="window"
+              [nzWidth]="col.width"
+              [nzMinWidth]="60"
+              (nzResizeEnd)="onResize($event, col.title)"
+            >
+              {{ col.title | translate }}
+              <nz-resize-handle nzDirection="right"></nz-resize-handle>
+            </th>
+            <th *ngIf="!col.width">
+              {{ col.title | translate }}
+            </th>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of basicTable.data" (click)="toInfoPage(row.example_id, row.datastore_id)">
+          <td
+            nzLeft="0"
+            nzShowCheckbox
+            [(nzChecked)]="row.checked"
+            (nzCheckedChange)="checked($event)"
+            [nzDisabled]="disableCheck(row.applicant, row.approve_status)"
+          ></td>
+          <td nzAlign="center">
+            <span [ngSwitch]="row.approve_status">
+              <nz-tag [nzColor]="'lightskyblue'" *ngSwitchCase="1">
+                {{ 'page.approve.statusApproval' | translate }}
+              </nz-tag>
+              <nz-tag [nzColor]="'green'" *ngSwitchCase="2">
+                {{ 'page.approve.statusAdmitted' | translate }}
+              </nz-tag>
+              <nz-tag [nzColor]="'red'" *ngSwitchDefault>
+                {{ 'page.approve.statusRejected' | translate }}
+              </nz-tag>
+            </span>
+          </td>
+          <td>
+            <div class="content">
+              <div class="autoscroll">
+                <div *ngFor="let item of row.current | keyvalue">
+                  <ng-container *ngIf="item.key | field: changeFields">
+                    <div style="padding: 4px 0; height: 28px">
+                      <app-history-item [item]="item" [fields]="changeFields" [userList]="userList"></app-history-item>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="content">
+              <div class="autoscroll">
+                <div *ngFor="let item of row.history | keyvalue">
+                  <ng-container *ngIf="item.key | field: fields">
+                    <div style="padding: 4px 0; height: 28px">
+                      <app-history-item [item]="item" [fields]="fields" [userList]="userList"></app-history-item>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td>
+            {{ row.applicant | user: userList }}
+          </td>
+          <td>
+            {{ row.node.node_name }}
+            <div>
+              <span *ngFor="let item of row.node.assignees">
+                <ng-container *ngIf="item.startsWith('u_'); else elseTemplate">
+                  <span *ngIf="item.substring(2) as user">
+                    <nz-avatar nzSize="small" nzIcon="user"></nz-avatar>
+                    {{ user | user: userList }}
+                  </span>
+                </ng-container>
+                <ng-template #elseTemplate>
+                  <span *ngIf="item.substring(2) as role">
+                    <nz-avatar nzSize="small" nzShape="square" nzText="R"></nz-avatar>
+                    {{ [role] | role | async }}
+                  </span>
+                </ng-template>
+              </span>
+            </div>
+          </td>
+          <td>
+            {{ row.approver | user: userList }}
+          </td>
+          <td>
+            {{ row.created_at | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <ng-template #rangeTemplate let-range="range" let-total>
+      {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+    </ng-template>
+  </div>
+</div>

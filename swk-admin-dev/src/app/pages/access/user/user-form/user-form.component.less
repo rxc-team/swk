@@ -1,0 +1,18 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+     ::ng-deep .ant-upload {
+      height: 50px !important;
+      width: 50px !important;
+      line-height: 0.5 !important;
+      text-align: center;
+      padding: 0;
+      margin: 0;
+    }
+    
+    nz-form-label {
+      width: 120px;
+    }
+  }
+});

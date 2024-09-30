@@ -1,0 +1,200 @@
+<div nz-row nzJustify="start" class="base-setting">
+  <div nz-col nzSpan="24" class="base-setting-left">
+    <form nz-form [formGroup]="userForm" (ngSubmit)="submitUserForm($event)">
+      <nz-form-item>
+        <nz-form-label nzSpan="3" nzRequired="true">{{ 'page.userCenter.loginId' | translate }}</nz-form-label>
+        <nz-form-control nzSpan="16" [nzErrorTip]="errorTplEmail">
+          <input
+            nz-input
+            formControlName="email"
+            type="email"
+            trim="blur"
+            [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          />
+          <ng-template #errorTplEmail let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.hasError('email')">
+              {{ 'common.validator.loginId' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzSpan="3">{{ 'page.userCenter.email' | translate }}</nz-form-label>
+        <nz-form-control nzSpan="16" [nzErrorTip]="noticeEmail">
+          <input
+            nz-input
+            formControlName="noticeEmail"
+            type="email"
+            style="width: 300px"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.userCenter.email' | translate }"
+            trim="blur"
+            (ngModelChange)="ngModelChange($event)"
+          />
+          <ng-template #noticeEmail let-control>
+            <ng-container *ngIf="control.hasError('email')">
+              {{ 'common.validator.email' | translate }}
+            </ng-container>
+          </ng-template>
+          <span *ngIf="noticeEmailStatus === 'UnVerified'" style="margin-left: 4px; color: #ff0000">
+            <i nz-icon nzType="exclamation-circle" [nzTheme]="'twotone'" [nzTwotoneColor]="'#ff0000'"></i>
+            {{ 'page.userCenter.noticeEmailUnVerified' | translate }}
+          </span>
+          <span *ngIf="noticeEmailStatus === 'Verifying'" style="margin-left: 4px; color: #1e90ff">
+            <i nz-icon [nzType]="'clock-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#1e90ff'"></i>
+            {{ 'page.userCenter.noticeEmailVerifying' | translate }}
+          </span>
+          <span *ngIf="noticeEmailStatus === 'Verified'" style="margin-left: 4px; color: #52c41a">
+            <i nz-icon nzType="check-circle" [nzTheme]="'twotone'" [nzTwotoneColor]="'#52c41a'"></i>
+            {{ 'page.userCenter.noticeEmailVerified' | translate }}
+          </span>
+
+          <ng-container *ngIf="noticeEmailStatus === 'Verifying'; else elseTemplate">
+            <button
+              nz-button
+              [disabled]="
+                userForm.get('noticeEmail')?.errors ||
+                !userForm.get('noticeEmail').value ||
+                noticeEmailStatus === 'Verified'
+              "
+              style="margin-left: 8px"
+              (click)="noticeEmailUp()"
+            >
+              {{ 'page.userCenter.revalidate' | translate }}
+            </button>
+          </ng-container>
+          <ng-template #elseTemplate>
+            <button
+              nz-button
+              [disabled]="
+                userForm.get('noticeEmail')?.errors ||
+                !userForm.get('noticeEmail').value ||
+                noticeEmailStatus === 'Verified'
+              "
+              style="margin-left: 8px"
+              (click)="noticeEmailUp()"
+            >
+              {{ 'page.userCenter.verify' | translate }}
+            </button>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzSpan="3">
+          <span>
+            {{ 'page.userCenter.avatar' | translate }}
+            <i nz-icon nz-tooltip [nzTooltipTitle]="tip" nzType="question-circle" theme="outline"></i>
+            <ng-template #tip>
+              <span>
+                {{ 'common.text.supportFile' | translate }}
+                <div>
+                  <span style="margin-right: 4px; color: red" *ngFor="let suffix of supportFile">{{ suffix }}</span>
+                </div>
+              </span>
+            </ng-template>
+          </span>
+        </nz-form-label>
+        <nz-form-control nzSpan="16">
+          <nz-upload
+            class="avatar-uploader"
+            nzListType="picture-card"
+            nzAction="/file/header/upload"
+            nzName="avatar"
+            [nzBeforeUpload]="beforeUploadPic"
+            [nzCustomRequest]="customReq"
+            [nzFileList]="fileList"
+            (nzChange)="handleChange($event)"
+            nzShowUploadList="false"
+          >
+            <br />
+            <ng-container *ngIf="!avatar">
+              <div
+                style="
+                  height: 50px;
+                  width: 50px;
+                  line-height: 50px;
+                  border: 1px solid #eeeeee;
+                  border-radius: 50px;
+                  text-align: center;
+                "
+              >
+                <i nz-icon nzType="user"></i>
+              </div>
+            </ng-container>
+            <nz-avatar *ngIf="avatar" nzIcon="user" [nzSize]="50" [nzSrc]="avatar"></nz-avatar>
+          </nz-upload>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzSpan="3" nzRequired="true">{{ 'page.userCenter.nickName' | translate }}</nz-form-label>
+        <nz-form-control nzSpan="16" [nzErrorTip]="errorTplName">
+          <input
+            nz-input
+            formControlName="name"
+            [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.userCenter.nickName' | translate }"
+            trim="blur"
+          />
+          <ng-template #errorTplName let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzSpan="3" nzRequired="true">{{ 'page.userCenter.timeZone' | translate }}</nz-form-label>
+        <nz-form-control nzSpan="16" [nzErrorTip]="errorTpl">
+          <nz-select
+            formControlName="timezone"
+            [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+            nzShowSearch="true"
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.userCenter.timeZone' | translate }"
+            nzAllowClear
+          >
+            <nz-option
+              *ngFor="let item of timezones"
+              [nzLabel]="item.code | translate"
+              [nzValue]="item.value"
+              nzCustomContent="true"
+            >
+              <span [title]="item.code | translate">{{ item.code | translate }}</span>
+            </nz-option>
+          </nz-select>
+          <ng-template #errorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredSelect' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzSpan="3">{{ 'page.userCenter.signature' | translate }}</nz-form-label>
+        <nz-form-control nzSpan="16">
+          <textarea
+            formControlName="signature"
+            nz-input
+            [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+            rows="5"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.userCenter.signature' | translate }"
+            trim="blur"
+          ></textarea>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control nzOffset="3">
+          <button nz-button nzType="primary" [disabled]="!userForm.valid">
+            <i nz-icon nzType="edit" nzTheme="outline"></i>
+            {{ 'common.button.save' | translate }}
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+</div>

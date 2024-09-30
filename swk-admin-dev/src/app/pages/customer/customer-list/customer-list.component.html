@@ -1,0 +1,195 @@
+<nz-collapse [nzBordered]="true">
+  <nz-collapse-panel [nzHeader]="'common.text.search' | translate">
+    <form nz-form [formGroup]="seachForm" nzLayout="inline">
+      <nz-form-item>
+        <nz-form-label nzFor="customerName">
+          {{ 'page.customer.name' | translate }}
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="errorName">
+          <input
+            nz-input
+            formControlName="customerName"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.customer.name' | translate }"
+            style="width: 200px"
+            trim="blur"
+          />
+          <ng-template #errorName let-control></ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="invalidatedIn">
+          {{ 'page.customer.validOrInvalid' | translate }}
+        </nz-form-label>
+        <nz-form-control>
+          <label nz-checkbox formControlName="invalidatedIn">
+            {{ 'page.customer.containInvalidData' | translate }}
+          </label>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" (click)="search()">
+            <i nz-icon nzType="search"></i>
+            {{ 'common.text.search' | translate }}
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </nz-collapse-panel>
+</nz-collapse>
+<div style="padding-top: 16px" *ngIf="!isSmall; else elseButtonZoom">
+  <nz-space>
+    <ng-template nzSpaceItem>
+      <nz-button-group>
+        <button nz-button nzType="primary" (click)="foward()">
+          <i nz-icon nzType="plus"></i>
+          {{ 'common.button.add' | translate }}
+        </button>
+        <button nz-button nzType="primary" (click)="refresh()">
+          <i nz-icon nzType="sync"></i>
+          {{ 'common.button.refresh' | translate }}
+        </button>
+      </nz-button-group>
+    </ng-template>
+    <ng-template nzSpaceItem>
+      <nz-button-group>
+        <button
+          nz-button
+          nzType="primary"
+          nzDanger="true"
+          [disabled]="selectDataOfValid.length === 0 || selectData.length !== selectDataOfValid.length"
+          (click)="deleteAll()"
+        >
+          <i nz-icon nzType="rest"></i>
+          {{ 'common.button.invalid' | translate }}
+        </button>
+        <button
+          nz-button
+          nzType="primary"
+          nzDanger="true"
+          [disabled]="selectData.length === 0"
+          (click)="hardDeleteAll()"
+        >
+          <i nz-icon nzType="delete"></i>
+          {{ 'common.button.delete' | translate }}
+        </button>
+        <button
+          nz-button
+          [nzType]="'default'"
+          [disabled]="selectDataOfInvalid.length === 0 || selectData.length !== selectDataOfInvalid.length"
+          (click)="recover()"
+        >
+          <i nz-icon nzType="redo"></i>
+          {{ 'common.button.recover' | translate }}
+        </button>
+      </nz-button-group>
+    </ng-template>
+  </nz-space>
+</div>
+
+<!-- 画面变小，折叠按钮 -->
+<ng-template #elseButtonZoom>
+  <div nz-row style="padding-top: 16px">
+    <nz-button-group>
+      <button nz-button nzType="primary" (click)="foward()">
+        <i nz-icon nzType="plus"></i>
+        {{ 'common.button.add' | translate }}
+      </button>
+      <button
+        nz-button
+        nz-dropdown
+        nzType="primary"
+        [nzDropdownMenu]="buttonZoom"
+        [(nzVisible)]="isZoomFlg"
+        nzPlacement="bottomLeft"
+      >
+        <i nz-icon nzType="ellipsis"></i>
+      </button>
+    </nz-button-group>
+    <nz-dropdown-menu #buttonZoom="nzDropdownMenu">
+      <ul nz-menu nzSelectable>
+        <li nz-menu-item (click)="refresh()">
+          <i nz-icon nzType="sync"></i>
+          {{ 'common.button.refresh' | translate }}
+        </li>
+        <li nz-menu-item (click)="deleteAll()">
+          <i nz-icon nzType="rest"></i>
+          {{ 'common.button.invalid' | translate }}
+        </li>
+        <li nz-menu-item (click)="hardDeleteAll()">
+          <i nz-icon nzType="delete"></i>
+          {{ 'common.button.delete' | translate }}
+        </li>
+        <li nz-menu-item (click)="recover()">
+          <i nz-icon nzType="redo"></i>
+          {{ 'common.button.recover' | translate }}
+        </li>
+      </ul>
+    </nz-dropdown-menu>
+  </div>
+</ng-template>
+
+<div style="padding-top: 16px">
+  <nz-table
+    #basicTable
+    [nzData]="displayData"
+    nzBordered="true"
+    nzSize="middle"
+    [nzTotal]="displayData.length"
+    [nzShowTotal]="rangeTemplate"
+    [nzScroll]="{ y: '300px' }"
+  >
+    <thead>
+      <tr>
+        <th
+          nzWidth="40px"
+          nzLeft="0"
+          nzShowCheckbox
+          [(nzChecked)]="selectAll"
+          (nzCheckedChange)="checkAll($event)"
+        ></th>
+        <ng-container *ngFor="let col of cols">
+          <th
+            *ngIf="col.width"
+            nz-resizable
+            nzBounds="window"
+            [nzWidth]="col.width"
+            [nzMinWidth]="60"
+            (nzResizeEnd)="onResize($event, col.title)"
+          >
+            {{ col.title | translate }}
+            <nz-resize-handle nzDirection="right"></nz-resize-handle>
+          </th>
+          <th *ngIf="!col.width">
+            {{ col.title | translate }}
+          </th>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let data of basicTable.data"
+        (click)="data.deleted_by ? null : goToDetail(data.customer_id)"
+        [style.background]="data.deleted_by ? '#eeeeee' : ''"
+      >
+        <td
+          nzLeft="0"
+          [style.background]="data.deleted_by ? '#eeeeee' : ''"
+          nzShowCheckbox
+          [(nzChecked)]="data.checked"
+          (nzCheckedChange)="checked($event)"
+        ></td>
+        <td>{{ data.customer_name }}</td>
+        <td>{{ data.domain }}</td>
+        <td>{{ data.created_at | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}</td>
+        <td>{{ data.updated_at | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}</td>
+        <td>
+          <nz-tag [nzColor]="'orange'" *ngFor="let item of data.apps">{{ item | translate }}</nz-tag>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+  <ng-template #rangeTemplate let-range="range" let-total>
+    {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+  </ng-template>
+</div>

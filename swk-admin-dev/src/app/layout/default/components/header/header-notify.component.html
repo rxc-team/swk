@@ -1,0 +1,166 @@
+<span
+  *ngIf="!nxShowText"
+  class="menu"
+  style="width: 41px"
+  nz-popover
+  nzType="primary"
+  nzPopoverPlacement="bottom"
+  (click)="showModal()"
+  nz-tooltip
+  nzTooltipPlacement="bottom"
+  [nzTooltipTitle]="'header.title.notice' | translate"
+>
+  <nz-badge [nzDot]="(unReadmessages$ | async).length > 0"><i nz-icon nzType="bell"></i></nz-badge>
+</span>
+
+<li nz-menu-item *ngIf="nxShowText" style="width: 120px">
+  <span title (click)="showModal()">
+    <i nz-icon nzType="bell"></i>
+    <span>{{ 'header.title.notice' | translate }}</span>
+  </span>
+</li>
+
+<nz-modal [nzVisible]="isVisible" [nzTitle]="'header.title.notice' | translate" (nzOnCancel)="handleCancel()">
+  <ng-template nzModalContent>
+    <div style="height: 350px; overflow: auto">
+      <nz-list [nzDataSource]="messages$ | async" [nzRenderItem]="item" [nzItemLayout]="'horizontal'">
+        <ng-template #item let-item>
+          <nz-card
+            [nzTitle]="title"
+            [nzActions]="[readAction, closeAction]"
+            nzType="inner"
+            nzSize="small"
+            style="margin-bottom: 16px"
+          >
+            <nz-card-meta [nzTitle]="msgTitle" [nzDescription]="content" [nzAvatar]="avatar"></nz-card-meta>
+          </nz-card>
+
+          <ng-template #msgTitle>
+            <div style="display: flex">
+              <span style="flex: 1">{{ item.sender }}</span>
+              <span style="font-size: 12px; color: rgba(0, 0, 0, 0.45)">{{ item.send_time | distance }}</span>
+            </div>
+          </ng-template>
+
+          <ng-template #avatar>
+            <nz-avatar nzIcon="user"></nz-avatar>
+          </ng-template>
+
+          <ng-template #readAction>
+            <button
+              nz-button
+              nzSize="small"
+              nzType="link"
+              [disabled]="item.status === 'read'"
+              (click)="changeStatus(item.message_id)"
+            >
+              <i nz-icon nzType="check"></i>
+              {{ 'common.text.maskAsRead' | translate }}
+            </button>
+          </ng-template>
+          <ng-template #closeAction>
+            <button nz-button nzSize="small" nzType="link" nzDanger="true" (click)="close(item.message_id)">
+              <i nz-icon nzType="close"></i>
+              {{ 'common.text.deleteMsg' | translate }}
+            </button>
+          </ng-template>
+          <ng-template #title>
+            <span [ngSwitch]="item.msg_type">
+              <span *ngSwitchCase="'approve'" style="font-weight: bolder">
+                {{ 'common.message.approveTitle' | translate }}
+              </span>
+              <span *ngSwitchCase="'qa'" style="font-weight: bolder">
+                {{ 'common.message.qaTitle' | translate }}
+              </span>
+              <span *ngSwitchCase="'expire'" style="font-weight: bolder">
+                {{ 'common.message.expireTitle' | translate }}
+              </span>
+              <span *ngSwitchDefault style="font-weight: bolder">{{ 'common.message.newTitle' | translate }}</span>
+            </span>
+          </ng-template>
+          <ng-template #content>
+            <div [ngSwitch]="item.msg_type">
+              <div *ngSwitchCase="'approve'" style="font-weight: bolder">
+                <div style="max-height: 120px; overflow: auto; flex: 1">
+                  <span>{{ 'common.text.ApproveLink' | translate }}</span>
+                  <a disable="disable">
+                    <i nz-icon nzType="link"></i>
+                    <span>{{ item.content }}</span>
+                  </a>
+                </div>
+              </div>
+              <div *ngSwitchCase="'qa'" style="font-weight: bolder">
+                <div style="max-height: 120px; overflow: auto; flex: 1; display: flex; flex-direction: column">
+                  <span>{{ 'common.text.qaLink' | translate }}</span>
+                  <a (click)="goToLink(item.message_id, item.link, item.domain)">
+                    <i nz-icon nzType="link"></i>
+                    <span>{{ item.content }}</span>
+                  </a>
+                </div>
+              </div>
+              <div *ngSwitchCase="'expire'" style="font-weight: bolder">
+                <div style="max-height: 120px; overflow: auto; flex: 1; display: flex; flex-direction: column">
+                  <span>{{ 'common.text.expireLink' | translate }}</span>
+                  <a disable="disable">
+                    <i nz-icon nzType="link"></i>
+                    <span>{{ item.content }}</span>
+                  </a>
+                </div>
+              </div>
+              <div *ngSwitchCase="'refresh'" style="font-weight: bolder">
+                <div style="max-height: 120px; overflow: auto; flex: 1; display: flex; flex-direction: column">
+                  <div style="max-height: 120px; overflow: auto; flex: 1">
+                    <span *ngIf="!item.code">{{ item.content }}</span>
+                    <span *ngIf="item.code">{{ 'common.message.info.' + item.code | translate }}</span>
+                  </div>
+                  <a (click)="refershWindows(item.message_id)">
+                    <i nz-icon nzType="link"></i>
+                    <span *ngIf="!item.object">{{ 'common.button.refresh' | translate }}</span>
+                    <span *ngIf="item.object">{{ item.object | translate }}</span>
+                  </a>
+                </div>
+              </div>
+              <div *ngSwitchDefault style="font-weight: bolder">
+                <div style="display: flex; flex-direction: column">
+                  <div style="max-height: 120px; overflow: auto; flex: 1">
+                    <span *ngIf="!item.code">{{ item.content }}</span>
+                    <span *ngIf="item.code">{{ 'common.message.info.' + item.code | translate }}</span>
+                  </div>
+                  <a disable="disable" *ngIf="item.link">
+                    <i nz-icon nzType="link"></i>
+                    <span>{{ item.object | translate }}</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </ng-template>
+      </nz-list>
+    </div>
+  </ng-template>
+
+  <ng-template nzModalFooter>
+    <div style="text-align: center">
+      <nz-space>
+        <ng-template nzSpaceItem>
+          <button nz-button (click)="refersh()">
+            <i nz-icon nzType="sync"></i>
+            {{ 'common.button.refresh' | translate }}
+          </button>
+        </ng-template>
+        <ng-template nzSpaceItem *ngIf="(messages$ | async).length > 0">
+          <button nz-button (click)="clear()">
+            <i nz-icon nzType="clear"></i>
+            {{ 'common.button.clear' | translate }}
+          </button>
+        </ng-template>
+        <ng-template nzSpaceItem *ngIf="(messages$ | async).length > 0">
+          <button nz-button (click)="more()">
+            <i nz-icon nzType="link" nzTheme="outline"></i>
+            {{ 'common.button.more' | translate }}
+          </button>
+        </ng-template>
+      </nz-space>
+    </div>
+  </ng-template>
+</nz-modal>

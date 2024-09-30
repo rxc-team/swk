@@ -1,0 +1,6 @@
+<div *ngIf="show" class="container" [style.z-index]="50" [style.position]="fullScreen ? 'fixed' : 'absolute'">
+  <div class="spin">
+    <nz-spin nzSimple></nz-spin>
+    <span>{{ tip }}</span>
+  </div>
+</div>

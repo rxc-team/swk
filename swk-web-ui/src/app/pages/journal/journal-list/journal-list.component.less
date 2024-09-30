@@ -1,0 +1,10 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    @table-row-hover-bg:red;
+    tr:hover{
+        background-color: @component-background !important;
+    }
+  }
+});

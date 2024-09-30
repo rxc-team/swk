@@ -1,0 +1,42 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    .exception {
+      display: flex;
+      align-items: center;
+      height: 100%;
+    
+      &-body {
+        width: 100%;
+    
+        &-img {
+          height: 360px;
+          width: 100%;
+          max-width: 430px;
+          float: right;
+          background-repeat: no-repeat;
+          background-position: 50% 50%;
+          background-size: 100% 100%;
+        }
+    
+        &-desc {
+          padding-top: 64px;
+          // width: 300px;
+    
+          h1 {
+            font-size: 72px;
+            color: gray;
+            padding: 0;
+            margin: 0
+          }
+    
+          h4 {
+            font-size: 24px;
+            color: gray
+          }
+        }
+      }
+    }
+  }
+});

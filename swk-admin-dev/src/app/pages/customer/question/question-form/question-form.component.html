@@ -1,0 +1,151 @@
+<nz-descriptions [nzTitle]="'page.customer.qa.info' | translate" nzBordered nzSize="small">
+  <nz-descriptions-item [nzTitle]="'page.customer.qa.title' | translate">
+    {{ titleInfo }}
+  </nz-descriptions-item>
+  <nz-descriptions-item [nzTitle]="'page.customer.qa.type' | translate">
+    {{ getTypeInfoLabel(typeInfo) | translate }}
+  </nz-descriptions-item>
+  <nz-descriptions-item [nzTitle]="'page.customer.qa.place' | translate">
+    {{ positionInfo }}
+  </nz-descriptions-item>
+  <nz-descriptions-item [nzTitle]="'page.customer.qa.status' | translate">
+    <nz-badge
+      [nzStatus]="statusInfo === 'closed' ? 'success' : 'processing'"
+      [nzText]="getStatusInfoLabel(statusInfo) | translate"
+    ></nz-badge>
+  </nz-descriptions-item>
+  <nz-descriptions-item [nzTitle]="'page.customer.qa.pictures' | translate" nzSpan="2">
+    <div *ngFor="let qpic of qpicListInfo">
+      <img [src]="qpic" height="25" width="50" (click)="showImageModal(qpic)" />
+    </div>
+    <nz-modal [(nzVisible)]="showImage" (nzOnCancel)="hideImageModal()" [nzFooter]="null">
+      <ng-template nzModalContent>
+        <img [src]="imageUrl" width="100%" />
+      </ng-template>
+    </nz-modal>
+  </nz-descriptions-item>
+  <nz-descriptions-item [nzTitle]="'page.customer.qa.detail' | translate" nzSpan="3">
+    <div
+      [innerHTML]="detailInfo | html"
+      style="word-break: break-all; word-wrap: break-word; white-space: normal"
+    ></div>
+  </nz-descriptions-item>
+  <nz-descriptions-item [nzTitle]="'page.customer.qa.locate' | translate" nzSpan="3">
+    <div *ngFor="let location of locationInfos">
+      <span>{{ location.locationName | translate }}：</span>
+      <span *ngIf="location.transkbn">{{ location.locationValue | translate }}</span>
+      <span *ngIf="!location.transkbn">{{ location.locationValue }}</span>
+    </div>
+  </nz-descriptions-item>
+</nz-descriptions>
+<nz-card
+  nzBordered="true"
+  nzSize="small"
+  nzType="inner"
+  style="margin-top: 8px"
+  [nzTitle]="'page.customer.qa.answerTitle' | translate"
+>
+  <nz-list
+    *ngIf="psdata.length"
+    [nzDataSource]="psdata"
+    [nzRenderItem]="item"
+    [nzItemLayout]="'horizontal'"
+    style="overflow: auto; height: 300px"
+  >
+    <ng-template #item let-item>
+      <nz-comment [nzAuthor]="item.author" [nzDatetime]="item.displayTime">
+        <nz-avatar nz-comment-avatar nzIcon="user" [nzSrc]="item.avatar"></nz-avatar>
+        <nz-comment-content>
+          <div *ngIf="item.content">
+            <p>{{ item.content }}</p>
+          </div>
+          <div *ngIf="item.link">
+            <a [routerLink]="['/help/update', item.link]">
+              <i nz-icon nzType="link" nzTheme="outline"></i>
+              Help Document Link
+            </a>
+          </div>
+          <div *ngIf="item.images">
+            <div *ngFor="let item of item.images">
+              <img [src]="item" height="102" width="102" (click)="showImageModal(item)" />
+            </div>
+          </div>
+        </nz-comment-content>
+      </nz-comment>
+    </ng-template>
+  </nz-list>
+  <div *ngIf="isOpen">
+    <nz-comment>
+      <nz-avatar nz-comment-avatar nzIcon="user" [nzSrc]="psuser.avatar"></nz-avatar>
+      <nz-comment-content>
+        <nz-form-item>
+          <nz-upload
+            nzAction="/file/header/upload"
+            [nzMultiple]="true"
+            [nzBeforeUpload]="beforeUploadPic"
+            [nzHeaders]="{ authorization: 'authorization-text' }"
+            (nzChange)="psHandleChange($event)"
+            [nzCustomRequest]="customReq"
+            [(nzFileList)]="psFileList"
+          >
+            <button nz-button>
+              <i nz-icon nzType="picture" nzTheme="outline"></i>
+            </button>
+          </nz-upload>
+          <button
+            nz-button
+            nz-popover
+            nzPopoverTrigger="click"
+            [(nzPopoverVisible)]="psLinkVisible"
+            [nzPopoverContent]="contentTemplate"
+          >
+            <i nz-icon nzType="link" nzTheme="outline"></i>
+          </button>
+          <ng-template #contentTemplate>
+            <div class="serarch">
+              <nz-input-group nzSize="large">
+                <input
+                  placeholder="Input Help Title"
+                  nz-input
+                  [(ngModel)]="inputValue"
+                  (input)="onInput($event.target?.value)"
+                  (keyup)="onKeyup($event)"
+                  [nzAutocomplete]="auto"
+                />
+                <nz-autocomplete nzBackfill #auto>
+                  <a *ngFor="let help of searchHelps" nz-col (click)="psHandleChangeLink(help.help_id)">
+                    <nz-auto-option [nzValue]="help.title">{{ help.title }}</nz-auto-option>
+                  </a>
+                </nz-autocomplete>
+              </nz-input-group>
+            </div>
+          </ng-template>
+          <textarea [(ngModel)]="psValue" nz-input rows="4" style="margin-top: 8px"></textarea>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-space>
+            <ng-template nzSpaceItem>
+              <button
+                nz-button
+                nzType="primary"
+                [nzLoading]="submitting"
+                [disabled]="!psValue"
+                (click)="handleSubmit()"
+                appDebounceClick
+              >
+                <i nz-icon nzType="send" nzTheme="outline"></i>
+                {{ 'common.button.send' | translate }}
+              </button>
+            </ng-template>
+            <ng-template nzSpaceItem>
+              <button nz-button (click)="closeQuestion()">
+                <i nz-icon nzType="close" nzTheme="outline"></i>
+                {{ 'page.customer.qa.close' | translate }}
+              </button>
+            </ng-template>
+          </nz-space>
+        </nz-form-item>
+      </nz-comment-content>
+    </nz-comment>
+  </div>
+</nz-card>

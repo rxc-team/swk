@@ -1,0 +1,66 @@
+<h1>{{ 'page.help.serviceAndSupport' | translate }}</h1>
+<div style="display: flex; justify-content: center">
+  <div class="serarch" appSelect (select)="goDetail($event)">
+    <form nz-form [formGroup]="searchForm">
+      <nz-form-item>
+        <nz-form-control [nzErrorTip]="seachValueTip">
+          <input
+            [placeholder]="'page.help.searchValue' | translate"
+            nz-input
+            cancelable
+            (keyup)="stop($event)"
+            (keydown)="stop($event)"
+            formControlName="inputValue"
+            (input)="onInput($event.target?.value)"
+          />
+          <ng-template #seachValueTip let-control></ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <div *ngIf="searchHelps.length > 0">
+        {{ searchHelps.length + ' result found' }}
+        <nz-list nzBordered nzSize="small" [nzFooter]="footer">
+          <nz-list-item *ngFor="let help of searchHelps.slice(0, 10); let i = index">
+            <a [routerLink]="['/help/detail', help.help_id]">
+              <div [innerHTML]="help.title | search: inputValue"></div>
+            </a>
+          </nz-list-item>
+        </nz-list>
+        <ng-template #footer>only show 10 items of search result.</ng-template>
+      </div>
+    </form>
+  </div>
+</div>
+<div *ngIf="searchHelps.length == 0">
+  <div class="help-type">
+    <div nz-row [nzGutter]="16">
+      <div class="help-item" nz-col [nzSpan]="6" *ngFor="let type of types">
+        <nz-card style="height: 350px" [nzHoverable]="true">
+          <nz-avatar *ngIf="type.icon" nzIcon="user" [nzSize]="150" [nzSrc]="type.icon"></nz-avatar>
+          <nz-card-meta [nzTitle]="type.type_name" style="margin-top: 8px"></nz-card-meta>
+          <p
+            *ngFor="let help of type.helps"
+            style="
+              margin-top: 16px;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              word-break: break-all;
+            "
+          >
+            <a [routerLink]="['/help/detail', help.help_id]" style="color: rgb(25, 95, 201); font-size: large">
+              {{ help.title }}
+            </a>
+          </p>
+        </nz-card>
+      </div>
+    </div>
+    <nz-empty *ngIf="types.length === 0"></nz-empty>
+  </div>
+  <h2>{{ 'page.help.commonProblem' | translate }}</h2>
+  <nz-list nzBordered nzSize="small" class="normal-items">
+    <nz-list-item *ngFor="let help of normalHelps">
+      <a [routerLink]="['/help/detail', help.help_id]">{{ help.title }}</a>
+    </nz-list-item>
+    <nz-empty *ngIf="normalHelps.length === 0"></nz-empty>
+  </nz-list>
+</div>

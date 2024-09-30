@@ -1,0 +1,16 @@
+<nz-tabset [nzTabPosition]="'top'" [nzType]="'line'">
+  <nz-tab [nzTitle]="messageSend">
+    <ng-template #messageSend>
+      <i nz-icon nzType="profile"></i>
+      {{ 'page.message.send' | translate }}
+    </ng-template>
+    <app-send-message></app-send-message>
+  </nz-tab>
+  <nz-tab [nzTitle]="updateMessageSend">
+    <ng-template #updateMessageSend>
+      <i nz-icon nzType="profile"></i>
+      {{ 'page.message.sendSystemMessage' | translate }}
+    </ng-template>
+    <app-update-message></app-update-message>
+  </nz-tab>
+</nz-tabset>

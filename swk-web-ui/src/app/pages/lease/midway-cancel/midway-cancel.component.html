@@ -1,0 +1,1661 @@
+<nz-empty *ngIf="controlArray.length === 0"></nz-empty>
+<form nz-form [formGroup]="form">
+  <div style="padding: 8px">
+    <!-- 契約管理番号 -->
+    <nz-form-item>
+      <nz-form-label nzFor="keiyakuno" [nzRequired]="fieldMap.get('keiyakuno').is_required">
+        <span nz-tooltip [nzTooltipTitle]="fieldMap.get('keiyakuno').label | translate">
+          {{ fieldMap.get('keiyakuno').label | translate }}
+        </span>
+      </nz-form-label>
+      <nz-form-control [nzErrorTip]="keiyakunoTip">
+        <input
+          style="width: 280px"
+          [minlength]="fieldMap.get('keiyakuno').minLength"
+          [disabled]="true"
+          [readOnly]="fieldMap.get('keiyakuno').disabled"
+          [maxlength]="fieldMap.get('keiyakuno').maxLength"
+          nz-input
+          formControlName="keiyakuno"
+          (focus)="selectControl = fieldMap.get('keiyakuno')"
+          [placeholder]="fieldMap.get('keiyakuno').placeholder | translate"
+          trim="blur"
+        />
+        <span *ngIf="fieldMap.get('keiyakuno').maxLength">
+          <span style="padding: 0 4px">
+            {{ fieldMap.get('keiyakuno').value.length + '/' + fieldMap.get('keiyakuno').maxLength }}
+          </span>
+        </span>
+        <ng-template #keiyakunoTip let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('minlength')">
+            {{ 'common.validator.minlength' | translate: { min: fieldMap.get('leasekaishacd').minLength } }}
+          </ng-container>
+
+          <ng-container *ngIf="control.hasError('duplicated')">
+            {{ 'common.validator.duplicated' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+  <div class="solid_border" style="padding: 8px; margin-top: 10px">
+    <nz-tabset [nzTabBarExtraContent]="extraBtn">
+      <nz-tab [nzTitle]="'page.datastore.contract.contractInfo' | translate">
+        <!--リース会社-->
+        <nz-form-item>
+          <nz-form-label nzFor="leasekaishacd" [nzRequired]="fieldMap.get('leasekaishacd').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('leasekaishacd').label | translate">
+              {{ fieldMap.get('leasekaishacd').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="leasekaishacdTip">
+            <nz-input-group nzSearch [nzAddOnAfter]="suffixLeasekaishacd" style="width: 280px">
+              <input
+                nz-input
+                formControlName="leasekaishacd"
+                [placeholder]="fieldMap.get('leasekaishacd').placeholder | translate"
+                readonly
+                trim="blur"
+              />
+            </nz-input-group>
+            <ng-template #suffixLeasekaishacd>
+              <button
+                nz-button
+                type="button"
+                nzType="primary"
+                nzSearch
+                (click)="openModal('leasekaishacd')"
+                [disabled]="fieldMap.get('leasekaishacd').disabled"
+                style="margin-right: 0px"
+              >
+                <i nz-icon nzType="search"></i>
+              </button>
+            </ng-template>
+            <ng-template #leasekaishacdTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--契約年月日-->
+        <nz-form-item>
+          <nz-form-label nzFor="keiyakuymd" [nzRequired]="fieldMap.get('keiyakuymd').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('keiyakuymd').label | translate">
+              {{ fieldMap.get('keiyakuymd').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="keiyakuymdTip">
+            <nz-date-picker
+              style="width: 280px"
+              formControlName="keiyakuymd"
+              [nzPlaceHolder]="fieldMap.get('keiyakuymd').placeholder | translate"
+              (nzOnOpenChange)="selectControl = fieldMap.get('keiyakuymd')"
+            ></nz-date-picker>
+            <ng-template #keiyakuymdTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--リース開始年月日-->
+        <nz-form-item>
+          <nz-form-label nzFor="leasestymd" [nzRequired]="fieldMap.get('leasestymd').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('leasestymd').label | translate">
+              {{ fieldMap.get('leasestymd').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="leasestymdTip">
+            <nz-date-picker
+              style="width: 280px"
+              formControlName="leasestymd"
+              [nzPlaceHolder]="fieldMap.get('leasestymd').placeholder | translate"
+              (nzOnOpenChange)="selectControl = fieldMap.get('leasestymd')"
+            ></nz-date-picker>
+            <ng-template #leasestymdTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('compare')">
+                {{ 'page.datastore.contract.leaseDateValidator' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--解约年月日-->
+        <nz-form-item>
+          <nz-form-label nzFor="kaiyakuymd" [nzRequired]="fieldMap.get('kaiyakuymd').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('kaiyakuymd').label | translate">
+              {{ fieldMap.get('kaiyakuymd').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="henkouymdTip">
+            <nz-date-picker
+              style="width: 280px"
+              formControlName="kaiyakuymd"
+              [nzDisabledDate]="disabledDate"
+              [nzPlaceHolder]="fieldMap.get('kaiyakuymd').placeholder | translate"
+              (nzOnOpenChange)="selectControl = fieldMap.get('kaiyakuymd')"
+            ></nz-date-picker>
+            <ng-template #henkouymdTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('compare')">
+                {{ 'page.datastore.contract.leaseDateValidator' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--リース期間-->
+        <nz-form-item>
+          <nz-form-label nzFor="leasekikan" [nzRequired]="fieldMap.get('leasekikan').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('leasekikan').label | translate">
+              {{ fieldMap.get('leasekikan').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="leasekikanTip">
+            <nz-input-number
+              style="width: 280px"
+              [nzMin]="fieldMap.get('leasekikan').minValue ? fieldMap.get('leasekikan').minValue : 0"
+              [nzMax]="fieldMap.get('leasekikan').maxValue"
+              formControlName="leasekikan"
+              (input)="selectControl = fieldMap.get('leasekikan')"
+              [nzPrecision]="fieldMap.get('leasekikan').precision"
+              nzPrecisionMode="cut"
+              [nzPlaceHolder]="fieldMap.get('leasekikan').placeholder | translate"
+              trim="blur"
+            ></nz-input-number>
+            <span style="padding: 0 4px">
+              {{ fieldMap.get('leasekikan').minValue + '〜' + fieldMap.get('leasekikan').maxValue }}
+            </span>
+            <ng-template #leasekikanTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--延長オプション期間-->
+        <nz-form-item>
+          <nz-form-label nzFor="extentionOption" [nzRequired]="fieldMap.get('extentionOption').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('extentionOption').label | translate">
+              {{ fieldMap.get('extentionOption').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="extentionOptionTip">
+            <nz-input-number
+              style="width: 280px"
+              [nzMin]="fieldMap.get('extentionOption').minValue ? fieldMap.get('extentionOption').minValue : 0"
+              [nzMax]="fieldMap.get('extentionOption').maxValue"
+              formControlName="extentionOption"
+              (input)="selectControl = fieldMap.get('extentionOption')"
+              [nzPrecision]="fieldMap.get('extentionOption').precision"
+              nzPrecisionMode="cut"
+              [nzPlaceHolder]="fieldMap.get('extentionOption').placeholder | translate"
+              trim="blur"
+            ></nz-input-number>
+            <span style="padding: 0 4px">
+              {{ fieldMap.get('extentionOption').minValue + '〜' + fieldMap.get('extentionOption').maxValue }}
+            </span>
+            <ng-template #extentionOptionTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--分類コード-->
+        <nz-form-item>
+          <nz-form-label nzFor="bunruicd" [nzRequired]="fieldMap.get('bunruicd').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('bunruicd').label | translate">
+              {{ fieldMap.get('bunruicd').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="bunruicdTip">
+            <nz-input-group nzSearch [nzAddOnAfter]="suffixBunruicd" style="width: 280px">
+              <input
+                nz-input
+                formControlName="bunruicd"
+                [placeholder]="fieldMap.get('bunruicd').placeholder | translate"
+                readonly
+                trim="blur"
+              />
+            </nz-input-group>
+            <ng-template #suffixBunruicd>
+              <button
+                nz-button
+                type="button"
+                nzType="primary"
+                nzSearch
+                (click)="openModal('bunruicd')"
+                [disabled]="fieldMap.get('bunruicd').disabled"
+                style="margin-right: 0px"
+              >
+                <i nz-icon nzType="search"></i>
+              </button>
+            </ng-template>
+            <ng-template #bunruicdTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!-- 耐用年数 -->
+        <nz-form-item>
+          <nz-form-label nzFor="assetlife" [nzRequired]="fieldMap.get('assetlife').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('assetlife').label | translate">
+              {{ fieldMap.get('assetlife').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="assetlifeTip">
+            <nz-input-number
+              style="width: 280px"
+              [nzMin]="fieldMap.get('assetlife').minValue ? fieldMap.get('assetlife').minValue : 0"
+              [nzMax]="fieldMap.get('assetlife').maxValue"
+              formControlName="assetlife"
+              (input)="selectControl = fieldMap.get('assetlife')"
+              [nzPrecision]="fieldMap.get('assetlife').precision"
+              nzPrecisionMode="cut"
+              [nzPlaceHolder]="fieldMap.get('assetlife').placeholder | translate"
+              trim="blur"
+            ></nz-input-number>
+            <span style="padding: 0 4px">
+              {{ fieldMap.get('assetlife').minValue + '〜' + fieldMap.get('assetlife').maxValue }}
+            </span>
+            <ng-template #assetlifeTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!-- 契約名称 -->
+        <nz-form-item>
+          <nz-form-label nzFor="keiyakunm" [nzRequired]="fieldMap.get('keiyakunm').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('keiyakunm').label | translate">
+              {{ fieldMap.get('keiyakunm').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="keiyakunmTip">
+            <input
+              style="width: 280px"
+              [minlength]="fieldMap.get('keiyakunm').minLength"
+              [maxlength]="fieldMap.get('keiyakunm').maxLength"
+              nz-input
+              formControlName="keiyakunm"
+              (focus)="selectControl = fieldMap.get('keiyakunm')"
+              [placeholder]="fieldMap.get('keiyakunm').placeholder | translate"
+              trim="blur"
+            />
+            <span *ngIf="fieldMap.get('keiyakunm').maxLength">
+              <span style="padding: 0 4px">
+                {{ fieldMap.get('keiyakunm').value.length + '/' + fieldMap.get('keiyakunm').maxLength }}
+              </span>
+            </span>
+            <ng-template #keiyakunmTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('minlength')">
+                {{ 'common.validator.minlength' | translate: { min: fieldMap.get('keiyakunm').minLength } }}
+              </ng-container>
+
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!-- 資産名称 -->
+        <nz-form-item>
+          <nz-form-label nzFor="shisannm" [nzRequired]="fieldMap.get('shisannm').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('shisannm').label | translate">
+              {{ fieldMap.get('shisannm').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="shisannmTip">
+            <input
+              style="width: 280px"
+              [minlength]="fieldMap.get('shisannm').minLength"
+              [maxlength]="fieldMap.get('shisannm').maxLength"
+              nz-input
+              formControlName="shisannm"
+              (focus)="selectControl = fieldMap.get('shisannm')"
+              [placeholder]="fieldMap.get('shisannm').placeholder | translate"
+              trim="blur"
+            />
+            <span *ngIf="fieldMap.get('shisannm').maxLength">
+              <span style="padding: 0 4px">
+                {{ fieldMap.get('shisannm').value.length + '/' + fieldMap.get('shisannm').maxLength }}
+              </span>
+            </span>
+            <ng-template #shisannmTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('minlength')">
+                {{ 'common.validator.minlength' | translate: { min: fieldMap.get('shisannm').minLength } }}
+              </ng-container>
+
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--取引判定区分-->
+        <nz-form-item>
+          <nz-form-label nzFor="torihikikbn" [nzRequired]="fieldMap.get('torihikikbn').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('torihikikbn').label | translate">
+              {{ fieldMap.get('torihikikbn').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="torihikikbnTip">
+            <nz-select
+              style="width: 280px"
+              formControlName="torihikikbn"
+              (nzOpenChange)="selectControl = fieldMap.get('torihikikbn')"
+              [nzPlaceHolder]="fieldMap.get('torihikikbn').placeholder | translate"
+              nzAllowClear
+            >
+              <nz-option
+                *ngFor="let item of options[fieldMap.get('torihikikbn').option_id]"
+                [nzLabel]="item.option_label | translate"
+                [nzValue]="item.option_value"
+                [nzDisabled]="item.deleted_by != ''"
+              ></nz-option>
+            </nz-select>
+            <ng-template #torihikikbnTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--管理部門-->
+        <nz-form-item>
+          <nz-form-label nzFor="segmentcd" [nzRequired]="fieldMap.get('segmentcd').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('segmentcd').label | translate">
+              {{ fieldMap.get('segmentcd').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="segmentcdTip">
+            <nz-input-group nzSearch [nzAddOnAfter]="suffixSegmentcd" style="width: 280px">
+              <input
+                nz-input
+                formControlName="segmentcd"
+                [placeholder]="fieldMap.get('segmentcd').placeholder | translate"
+                readonly
+                trim="blur"
+              />
+            </nz-input-group>
+            <ng-template #suffixSegmentcd>
+              <button
+                nz-button
+                type="button"
+                nzType="primary"
+                nzSearch
+                (click)="openModal('segmentcd')"
+                [disabled]="fieldMap.get('segmentcd').disabled"
+                style="margin-right: 0px"
+              >
+                <i nz-icon nzType="search"></i>
+              </button>
+            </ng-template>
+            <ng-template #segmentcdTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--設置場所-->
+        <nz-form-item>
+          <nz-form-label nzFor="locationcd" [nzRequired]="fieldMap.get('locationcd').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('locationcd').label | translate">
+              {{ fieldMap.get('locationcd').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="locationcdTip">
+            <nz-input-group nzSearch [nzAddOnAfter]="suffixLocationcd" style="width: 280px">
+              <input
+                nz-input
+                formControlName="locationcd"
+                [placeholder]="fieldMap.get('locationcd').placeholder | translate"
+                readonly
+                trim="blur"
+              />
+            </nz-input-group>
+            <ng-template #suffixLocationcd>
+              <button
+                nz-button
+                type="button"
+                nzType="primary"
+                nzSearch
+                (click)="openModal('locationcd')"
+                [disabled]="fieldMap.get('locationcd').disabled"
+                style="margin-right: 0px"
+              >
+                <i nz-icon nzType="search"></i>
+              </button>
+            </ng-template>
+            <ng-template #locationcdTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!-- 設置場所補足 -->
+        <nz-form-item>
+          <nz-form-label nzFor="locationhosoku" [nzRequired]="fieldMap.get('locationhosoku').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('locationhosoku').label | translate">
+              {{ fieldMap.get('locationhosoku').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="locationhosokuTip">
+            <input
+              style="width: 280px"
+              [minlength]="fieldMap.get('locationhosoku').minLength"
+              [maxlength]="fieldMap.get('locationhosoku').maxLength"
+              nz-input
+              formControlName="locationhosoku"
+              (focus)="selectControl = fieldMap.get('locationhosoku')"
+              [placeholder]="fieldMap.get('locationhosoku').placeholder | translate"
+              trim="blur"
+            />
+            <span *ngIf="fieldMap.get('locationhosoku').maxLength">
+              <span style="padding: 0 4px">
+                {{ fieldMap.get('locationhosoku').value.length + '/' + fieldMap.get('locationhosoku').maxLength }}
+              </span>
+            </span>
+            <ng-template #locationhosokuTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('minlength')">
+                {{ 'common.validator.minlength' | translate: { min: fieldMap.get('locationhosoku').minLength } }}
+              </ng-container>
+
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!-- 面積 -->
+        <nz-form-item>
+          <nz-form-label nzFor="ky_niniLd02cd" [nzRequired]="fieldMap.get('ky_niniLd02cd').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('ky_niniLd02cd').label | translate">
+              {{ fieldMap.get('ky_niniLd02cd').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="ky_niniLd02cdTip">
+            <input
+              style="width: 280px"
+              [minlength]="fieldMap.get('ky_niniLd02cd').minLength"
+              [maxlength]="fieldMap.get('ky_niniLd02cd').maxLength"
+              nz-input
+              formControlName="ky_niniLd02cd"
+              (focus)="selectControl = fieldMap.get('ky_niniLd02cd')"
+              [placeholder]="fieldMap.get('ky_niniLd02cd').placeholder | translate"
+              trim="blur"
+            />
+            <span *ngIf="fieldMap.get('ky_niniLd02cd').maxLength">
+              <span style="padding: 0 4px">
+                {{ fieldMap.get('ky_niniLd02cd').value.length + '/' + fieldMap.get('ky_niniLd02cd').maxLength }}
+              </span>
+            </span>
+            <ng-template #ky_niniLd02cdTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('minlength')">
+                {{ 'common.validator.minlength' | translate: { min: fieldMap.get('ky_niniLd02cd').minLength } }}
+              </ng-container>
+
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--敷金-->
+        <nz-form-item>
+          <nz-form-label nzFor="ky_niniLd03cd" [nzRequired]="fieldMap.get('ky_niniLd03cd').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('ky_niniLd03cd').label | translate">
+              {{ fieldMap.get('ky_niniLd03cd').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="ky_niniLd03cdTip">
+            <input
+              style="width: 280px"
+              [minlength]="fieldMap.get('ky_niniLd03cd').minLength"
+              [maxlength]="fieldMap.get('ky_niniLd03cd').maxLength"
+              nz-input
+              formControlName="ky_niniLd03cd"
+              (focus)="selectControl = fieldMap.get('ky_niniLd03cd')"
+              [placeholder]="fieldMap.get('ky_niniLd03cd').placeholder | translate"
+              trim="blur"
+            />
+            <span *ngIf="fieldMap.get('ky_niniLd03cd').maxLength">
+              <span style="padding: 0 4px">
+                {{ fieldMap.get('ky_niniLd03cd').value.length + '/' + fieldMap.get('ky_niniLd03cd').maxLength }}
+              </span>
+            </span>
+            <ng-template #ky_niniLd03cdTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('minlength')">
+                {{ 'common.validator.minlength' | translate: { min: fieldMap.get('ky_niniLd03cd').minLength } }}
+              </ng-container>
+
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--備考1-->
+        <nz-form-item>
+          <nz-form-label nzFor="biko1" [nzRequired]="fieldMap.get('biko1').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('biko1').label | translate">
+              {{ fieldMap.get('biko1').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="biko1Tip">
+            <textarea
+              nz-input
+              [minlength]="fieldMap.get('biko1').minLength"
+              [maxlength]="fieldMap.get('biko1').maxLength"
+              [rows]="3"
+              [cols]="50"
+              style="width: 280px"
+              (focus)="selectControl = fieldMap.get('biko1')"
+              formControlName="biko1"
+              [nzAutosize]="true"
+              [placeholder]="fieldMap.get('biko1').placeholder | translate"
+              trim="blur"
+            ></textarea>
+            <span *ngIf="fieldMap.get('biko1').maxLength">
+              <span style="padding: 0 8px">
+                {{ fieldMap.get('biko1').value.length + '/' + fieldMap.get('biko1').maxLength }}
+              </span>
+            </span>
+            <ng-template #biko1Tip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('minlength')">
+                {{ 'common.validator.minlength' | translate: { min: fieldMap.get('biko1').minLength } }}
+              </ng-container>
+
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--備考2-->
+        <nz-form-item>
+          <nz-form-label nzFor="biko2" [nzRequired]="fieldMap.get('biko2').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('biko2').label | translate">
+              {{ fieldMap.get('biko2').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="biko2Tip">
+            <textarea
+              nz-input
+              [minlength]="fieldMap.get('biko2').minLength"
+              [maxlength]="fieldMap.get('biko2').maxLength"
+              [rows]="3"
+              [cols]="50"
+              style="width: 280px"
+              (focus)="selectControl = fieldMap.get('biko2')"
+              formControlName="biko2"
+              [nzAutosize]="true"
+              [placeholder]="fieldMap.get('biko2').placeholder | translate"
+              trim="blur"
+            ></textarea>
+            <span *ngIf="fieldMap.get('biko2').maxLength">
+              <span style="padding: 0 8px">
+                {{ fieldMap.get('biko2').value.length + '/' + fieldMap.get('biko2').maxLength }}
+              </span>
+            </span>
+            <ng-template #biko2Tip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('minlength')">
+                {{ 'common.validator.minlength' | translate: { min: fieldMap.get('biko2').minLength } }}
+              </ng-container>
+
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-tab>
+      <nz-tab [nzTitle]="'page.datastore.contract.paymentInfo' | translate">
+        <!--初回支払年月日-->
+        <nz-form-item>
+          <nz-form-label nzFor="paymentstymd" [nzRequired]="fieldMap.get('paymentstymd').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('paymentstymd').label | translate">
+              {{ fieldMap.get('paymentstymd').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="paymentstymdTip">
+            <nz-date-picker
+              style="width: 280px"
+              formControlName="paymentstymd"
+              [nzPlaceHolder]="fieldMap.get('paymentstymd').placeholder | translate"
+              (nzOnOpenChange)="selectControl = fieldMap.get('paymentstymd')"
+            ></nz-date-picker>
+            <ng-template #paymentstymdTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('compare')">
+                {{ 'page.datastore.contract.firstPaymentDateValidator' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--支払サイクル-->
+        <nz-form-item>
+          <nz-form-label nzFor="paymentcycle" [nzRequired]="fieldMap.get('paymentcycle').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('paymentcycle').label | translate">
+              {{ fieldMap.get('paymentcycle').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="paymentcycleTip">
+            <nz-select
+              style="width: 280px"
+              formControlName="paymentcycle"
+              (nzOpenChange)="selectControl = fieldMap.get('paymentcycle')"
+              [nzPlaceHolder]="fieldMap.get('paymentcycle').placeholder | translate"
+              nzAllowClear
+            >
+              <nz-option
+                *ngFor="let item of options[fieldMap.get('paymentcycle').option_id]"
+                [nzLabel]="item.option_label | translate"
+                [nzValue]="item.option_value"
+                [nzDisabled]="item.deleted_by != ''"
+              ></nz-option>
+            </nz-select>
+            <ng-template #paymentcycleTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--支払日-->
+        <nz-form-item>
+          <nz-form-label nzFor="paymentday" [nzRequired]="fieldMap.get('paymentday').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('paymentday').label | translate">
+              {{ fieldMap.get('paymentday').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="paymentdayTip">
+            <nz-select
+              style="width: 280px"
+              formControlName="paymentday"
+              (nzOpenChange)="selectControl = fieldMap.get('paymentday')"
+              [nzPlaceHolder]="fieldMap.get('paymentday').placeholder | translate"
+              nzAllowClear
+            >
+              <nz-option
+                *ngFor="let item of options[fieldMap.get('paymentday').option_id]"
+                [nzLabel]="item.option_label | translate"
+                [nzValue]="item.option_value"
+                [nzDisabled]="item.deleted_by != ''"
+              ></nz-option>
+            </nz-select>
+            <ng-template #paymentdayTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--支払回数-->
+        <nz-form-item>
+          <nz-form-label nzFor="paymentcounts" [nzRequired]="fieldMap.get('paymentcounts').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('paymentcounts').label | translate">
+              {{ fieldMap.get('paymentcounts').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="paymentcountsTip">
+            <nz-input-number
+              style="width: 280px"
+              [nzMin]="fieldMap.get('paymentcounts').minValue ? fieldMap.get('paymentcounts').minValue : 0"
+              [nzMax]="fieldMap.get('paymentcounts').maxValue"
+              formControlName="paymentcounts"
+              (input)="selectControl = fieldMap.get('paymentcounts')"
+              [nzPrecision]="fieldMap.get('paymentcounts').precision"
+              nzPrecisionMode="cut"
+              [nzPlaceHolder]="fieldMap.get('paymentcounts').placeholder | translate"
+              trim="blur"
+            ></nz-input-number>
+            <span style="padding: 0 4px">
+              {{ fieldMap.get('paymentcounts').minValue + '〜' + fieldMap.get('paymentcounts').maxValue }}
+            </span>
+            <ng-template #paymentcountsTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--支払リース料-->
+        <nz-form-item>
+          <nz-form-label nzFor="paymentleasefee" [nzRequired]="fieldMap.get('paymentleasefee').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('paymentleasefee').label | translate">
+              {{ fieldMap.get('paymentleasefee').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="paymentcountsTip">
+            <nz-input-number
+              style="width: 280px"
+              [nzMin]="fieldMap.get('paymentleasefee').minValue ? fieldMap.get('paymentleasefee').minValue : 0"
+              [nzMax]="fieldMap.get('paymentleasefee').maxValue"
+              formControlName="paymentleasefee"
+              (input)="selectControl = fieldMap.get('paymentleasefee')"
+              [nzPrecision]="fieldMap.get('paymentleasefee').precision"
+              nzPrecisionMode="cut"
+              [nzPlaceHolder]="fieldMap.get('paymentleasefee').placeholder | translate"
+              trim="blur"
+            ></nz-input-number>
+            <span style="padding: 0 4px">
+              {{ fieldMap.get('paymentleasefee').minValue + '〜' + fieldMap.get('paymentleasefee').maxValue }}
+            </span>
+            <ng-template #paymentcountsTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--残価保証額-->
+        <nz-form-item>
+          <nz-form-label nzFor="residualValue" [nzRequired]="fieldMap.get('residualValue').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('residualValue').label | translate">
+              {{ fieldMap.get('residualValue').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="residualValueTip">
+            <nz-input-number
+              style="width: 280px"
+              [nzMin]="fieldMap.get('residualValue').minValue ? fieldMap.get('residualValue').minValue : 0"
+              [nzMax]="fieldMap.get('residualValue').maxValue"
+              formControlName="residualValue"
+              (input)="selectControl = fieldMap.get('residualValue')"
+              [nzPrecision]="fieldMap.get('residualValue').precision"
+              nzPrecisionMode="cut"
+              [nzPlaceHolder]="fieldMap.get('residualValue').placeholder | translate"
+              trim="blur"
+            ></nz-input-number>
+            <span style="padding: 0 4px">
+              {{ fieldMap.get('residualValue').minValue + '〜' + fieldMap.get('residualValue').maxValue }}
+            </span>
+            <ng-template #residualValueTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--割引率-->
+        <nz-form-item>
+          <nz-form-label nzFor="rishiritsu" [nzRequired]="fieldMap.get('rishiritsu').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('rishiritsu').label | translate">
+              {{ fieldMap.get('rishiritsu').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="rishiritsuTip">
+            <nz-input-number
+              style="width: 280px"
+              [nzMin]="fieldMap.get('rishiritsu').minValue ? fieldMap.get('rishiritsu').minValue : 0"
+              [nzMax]="fieldMap.get('rishiritsu').maxValue"
+              formControlName="rishiritsu"
+              (input)="selectControl = fieldMap.get('rishiritsu')"
+              [nzPrecision]="fieldMap.get('rishiritsu').precision"
+              nzPrecisionMode="cut"
+              [nzPlaceHolder]="fieldMap.get('rishiritsu').placeholder | translate"
+              trim="blur"
+            ></nz-input-number>
+            <span style="padding: 0 4px">
+              {{ fieldMap.get('rishiritsu').minValue + '〜' + fieldMap.get('rishiritsu').maxValue }}
+            </span>
+            <ng-template #rishiritsuTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--前払リース料-->
+        <nz-form-item>
+          <nz-form-label nzFor="paymentsAtOrPrior" [nzRequired]="fieldMap.get('paymentsAtOrPrior').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('paymentsAtOrPrior').label | translate">
+              {{ fieldMap.get('paymentsAtOrPrior').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="paymentsAtOrPriorTip">
+            <nz-input-number
+              style="width: 280px"
+              [nzMin]="fieldMap.get('paymentsAtOrPrior').minValue ? fieldMap.get('paymentsAtOrPrior').minValue : 0"
+              [nzMax]="fieldMap.get('paymentsAtOrPrior').maxValue"
+              formControlName="paymentsAtOrPrior"
+              (input)="selectControl = fieldMap.get('paymentsAtOrPrior')"
+              [nzPrecision]="fieldMap.get('paymentsAtOrPrior').precision"
+              nzPrecisionMode="cut"
+              [nzPlaceHolder]="fieldMap.get('paymentsAtOrPrior').placeholder | translate"
+              trim="blur"
+            ></nz-input-number>
+            <span style="padding: 0 4px">
+              {{ fieldMap.get('paymentsAtOrPrior').minValue + '〜' + fieldMap.get('paymentsAtOrPrior').maxValue }}
+            </span>
+            <ng-template #paymentsAtOrPriorTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--リース・インセンティブ(前払)-->
+        <nz-form-item>
+          <nz-form-label nzFor="incentivesAtOrPrior" [nzRequired]="fieldMap.get('incentivesAtOrPrior').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('incentivesAtOrPrior').label | translate">
+              {{ fieldMap.get('incentivesAtOrPrior').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="incentivesAtOrPriorTip">
+            <nz-input-number
+              style="width: 280px"
+              [nzMin]="fieldMap.get('incentivesAtOrPrior').minValue ? fieldMap.get('incentivesAtOrPrior').minValue : 0"
+              [nzMax]="fieldMap.get('incentivesAtOrPrior').maxValue"
+              formControlName="incentivesAtOrPrior"
+              (input)="selectControl = fieldMap.get('incentivesAtOrPrior')"
+              [nzPrecision]="fieldMap.get('incentivesAtOrPrior').precision"
+              nzPrecisionMode="cut"
+              [nzPlaceHolder]="fieldMap.get('incentivesAtOrPrior').placeholder | translate"
+              trim="blur"
+            ></nz-input-number>
+            <span style="padding: 0 4px">
+              {{ fieldMap.get('incentivesAtOrPrior').minValue + '〜' + fieldMap.get('incentivesAtOrPrior').maxValue }}
+            </span>
+            <ng-template #incentivesAtOrPriorTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--当初直接費用-->
+        <nz-form-item>
+          <nz-form-label nzFor="initialDirectCosts" [nzRequired]="fieldMap.get('initialDirectCosts').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('initialDirectCosts').label | translate">
+              {{ fieldMap.get('initialDirectCosts').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="initialDirectCostsTip">
+            <nz-input-number
+              style="width: 280px"
+              [nzMin]="fieldMap.get('initialDirectCosts').minValue ? fieldMap.get('initialDirectCosts').minValue : 0"
+              [nzMax]="fieldMap.get('initialDirectCosts').maxValue"
+              formControlName="initialDirectCosts"
+              (input)="selectControl = fieldMap.get('initialDirectCosts')"
+              [nzPrecision]="fieldMap.get('initialDirectCosts').precision"
+              nzPrecisionMode="cut"
+              [nzPlaceHolder]="fieldMap.get('initialDirectCosts').placeholder | translate"
+              trim="blur"
+            ></nz-input-number>
+            <span style="padding: 0 4px">
+              {{ fieldMap.get('initialDirectCosts').minValue + '〜' + fieldMap.get('initialDirectCosts').maxValue }}
+            </span>
+            <ng-template #initialDirectCostsTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--原状回復コスト-->
+        <nz-form-item>
+          <nz-form-label nzFor="restorationCosts" [nzRequired]="fieldMap.get('restorationCosts').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('restorationCosts').label | translate">
+              {{ fieldMap.get('restorationCosts').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="restorationCostsTip">
+            <nz-input-number
+              style="width: 280px"
+              [nzMin]="fieldMap.get('restorationCosts').minValue ? fieldMap.get('restorationCosts').minValue : 0"
+              [nzMax]="fieldMap.get('restorationCosts').maxValue"
+              formControlName="restorationCosts"
+              (input)="selectControl = fieldMap.get('restorationCosts')"
+              [nzPrecision]="fieldMap.get('restorationCosts').precision"
+              nzPrecisionMode="cut"
+              [nzPlaceHolder]="fieldMap.get('restorationCosts').placeholder | translate"
+              trim="blur"
+            ></nz-input-number>
+            <span style="padding: 0 4px">
+              {{ fieldMap.get('restorationCosts').minValue + '〜' + fieldMap.get('restorationCosts').maxValue }}
+            </span>
+            <ng-template #restorationCostsTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--解約損害金-->
+        <nz-form-item>
+          <nz-form-label nzFor="kaiyakusongaikin" [nzRequired]="fieldMap.get('kaiyakusongaikin').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('kaiyakusongaikin').label | translate">
+              {{ fieldMap.get('kaiyakusongaikin').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="kaiyakusongaikinTip">
+            <nz-input-number
+              style="width: 280px"
+              [nzMin]="fieldMap.get('kaiyakusongaikin').minValue ? fieldMap.get('kaiyakusongaikin').minValue : 0"
+              [nzMax]="fieldMap.get('kaiyakusongaikin').maxValue"
+              formControlName="kaiyakusongaikin"
+              (input)="selectControl = fieldMap.get('kaiyakusongaikin')"
+              [nzPrecision]="fieldMap.get('kaiyakusongaikin').precision"
+              nzPrecisionMode="cut"
+              [nzPlaceHolder]="fieldMap.get('kaiyakusongaikin').placeholder | translate"
+              trim="blur"
+            ></nz-input-number>
+            <span style="padding: 0 4px">
+              {{ fieldMap.get('kaiyakusongaikin').minValue + '〜' + fieldMap.get('kaiyakusongaikin').maxValue }}
+            </span>
+            <ng-template #kaiyakusongaikinTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <!--購入オプション行使価額-->
+        <nz-form-item>
+          <nz-form-label nzFor="optionToPurchase" [nzRequired]="fieldMap.get('optionToPurchase').is_required">
+            <span nz-tooltip [nzTooltipTitle]="fieldMap.get('optionToPurchase').label | translate">
+              {{ fieldMap.get('optionToPurchase').label | translate }}
+            </span>
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="optionToPurchaseTip">
+            <nz-input-number
+              style="width: 280px"
+              [nzMin]="fieldMap.get('optionToPurchase').minValue ? fieldMap.get('optionToPurchase').minValue : 0"
+              [nzMax]="fieldMap.get('optionToPurchase').maxValue"
+              formControlName="optionToPurchase"
+              (input)="selectControl = fieldMap.get('optionToPurchase')"
+              [nzPrecision]="fieldMap.get('optionToPurchase').precision"
+              nzPrecisionMode="cut"
+              [nzPlaceHolder]="fieldMap.get('optionToPurchase').placeholder | translate"
+              trim="blur"
+            ></nz-input-number>
+            <span style="padding: 0 4px">
+              {{ fieldMap.get('optionToPurchase').minValue + '〜' + fieldMap.get('optionToPurchase').maxValue }}
+            </span>
+            <ng-template #optionToPurchaseTip let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.duplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-tab>
+      <nz-tab [nzTitle]="'page.datastore.contract.otherInfo' | translate">
+        <ng-container *ngFor="let field of otherControls; let i = index">
+          <ng-container [ngSwitch]="field.field_type">
+            <!--Text-->
+            <nz-form-item nz-row *ngSwitchCase="'text'">
+              <nz-form-label [nzFor]="field.field_id" [nzRequired]="field.is_required">
+                <span nz-tooltip [nzTooltipTitle]="field.label | translate">{{ field.label | translate }}</span>
+              </nz-form-label>
+              <nz-form-control [nzErrorTip]="textTip">
+                <input
+                  style="width: 280px"
+                  [minlength]="field.minLength"
+                  [maxlength]="field.maxLength"
+                  nz-input
+                  [formControlName]="field.field_id"
+                  (focus)="selectControl = field"
+                  [placeholder]="field.placeholder | translate"
+                  trim="blur"
+                />
+                <span *ngIf="field.maxLength">
+                  <span style="padding: 0 4px">{{ field.value.length + '/' + field.maxLength }}</span>
+                </span>
+                <ng-template #textTip let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    {{ 'common.validator.requiredInput' | translate }}
+                  </ng-container>
+                  <ng-container *ngIf="control.hasError('minlength')">
+                    {{ 'common.validator.minlength' | translate: { min: field.minLength } }}
+                  </ng-container>
+
+                  <ng-container *ngIf="control.hasError('duplicated')">
+                    {{ 'common.validator.duplicated' | translate }}
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+            <!--Textarea-->
+            <nz-form-item nz-row *ngSwitchCase="'textarea'">
+              <nz-form-label [nzFor]="field.field_id" [nzRequired]="field.is_required">
+                <span nz-tooltip [nzTooltipTitle]="field.label | translate">{{ field.label | translate }}</span>
+              </nz-form-label>
+              <nz-form-control [nzErrorTip]="textareaTip">
+                <textarea
+                  nz-input
+                  [minlength]="field.minLength"
+                  [maxlength]="field.maxLength"
+                  [rows]="3"
+                  [cols]="50"
+                  style="width: 280px"
+                  (focus)="selectControl = field"
+                  [formControlName]="field.field_id"
+                  [nzAutosize]="true"
+                  [placeholder]="field.placeholder | translate"
+                  trim="blur"
+                ></textarea>
+                <span *ngIf="field.maxLength">
+                  <span style="padding: 0 8px">{{ field.value.length + '/' + field.maxLength }}</span>
+                </span>
+                <ng-template #textareaTip let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    {{ 'common.validator.requiredInput' | translate }}
+                  </ng-container>
+                  <ng-container *ngIf="control.hasError('minlength')">
+                    {{ 'common.validator.minlength' | translate: { min: field.minLength } }}
+                  </ng-container>
+
+                  <ng-container *ngIf="control.hasError('duplicated')">
+                    {{ 'common.validator.duplicated' | translate }}
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+            <!--Number-->
+            <nz-form-item nz-row *ngSwitchCase="'number'">
+              <nz-form-label [nzFor]="field.name" [nzRequired]="field.is_required">
+                <span nz-tooltip [nzTooltipTitle]="field.label | translate">{{ field.label | translate }}</span>
+              </nz-form-label>
+              <nz-form-control [nzErrorTip]="numberTip">
+                <nz-input-number
+                  style="width: 280px"
+                  [nzMin]="field.minValue ? field.minValue : 0"
+                  [nzMax]="field.maxValue"
+                  [formControlName]="field.field_id"
+                  (input)="selectControl = field"
+                  [nzPrecision]="field.precision"
+                  nzPrecisionMode="cut"
+                  [nzPlaceHolder]="field.placeholder | translate"
+                  trim="blur"
+                ></nz-input-number>
+                <span style="padding: 0 4px">
+                  {{ field.minValue + '〜' + field.maxValue }}
+                </span>
+                <ng-template #numberTip let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    {{ 'common.validator.requiredInput' | translate }}
+                  </ng-container>
+                  <ng-container *ngIf="control.hasError('duplicated')">
+                    {{ 'common.validator.duplicated' | translate }}
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+            <!--Date-->
+            <nz-form-item nz-row *ngSwitchCase="'date'">
+              <nz-form-label [nzFor]="field.field_id" [nzRequired]="field.is_required">
+                <span nz-tooltip [nzTooltipTitle]="field.label | translate">{{ field.label | translate }}</span>
+              </nz-form-label>
+              <nz-form-control [nzErrorTip]="dateTip">
+                <nz-date-picker
+                  style="width: 280px"
+                  [formControlName]="field.field_id"
+                  [nzPlaceHolder]="field.placeholder | translate"
+                  (nzOnOpenChange)="selectControl = field"
+                ></nz-date-picker>
+                <ng-template #dateTip let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    {{ 'common.validator.requiredInput' | translate }}
+                  </ng-container>
+                  <ng-container *ngIf="control.hasError('duplicated')">
+                    {{ 'common.validator.duplicated' | translate }}
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+            <!--Time-->
+            <nz-form-item nz-row *ngSwitchCase="'time'">
+              <nz-form-label [nzFor]="field.field_id" [nzRequired]="field.is_required">
+                <span nz-tooltip [nzTooltipTitle]="field.label | translate">{{ field.label | translate }}</span>
+              </nz-form-label>
+              <nz-form-control [nzErrorTip]="timeTip">
+                <nz-time-picker
+                  style="width: 280px"
+                  appDisableTimePicker
+                  [formControlName]="field.field_id"
+                  [nzPlaceHolder]="field.placeholder | translate"
+                  (focus)="selectControl = field"
+                ></nz-time-picker>
+                <ng-template #timeTip let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    {{ 'common.validator.requiredInput' | translate }}
+                  </ng-container>
+                  <ng-container *ngIf="control.hasError('duplicated')">
+                    {{ 'common.validator.duplicated' | translate }}
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+            <!--Switch-->
+            <nz-form-item nz-row *ngSwitchCase="'switch'">
+              <nz-form-label [nzFor]="field.field_id" [nzRequired]="field.is_required">
+                <span nz-tooltip [nzTooltipTitle]="field.label | translate">{{ field.label | translate }}</span>
+              </nz-form-label>
+              <nz-form-control [nzErrorTip]="switchTip">
+                <nz-switch [formControlName]="field.field_id" (focus)="selectControl = field"></nz-switch>
+                <ng-template #switchTip let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    {{ 'common.validator.requiredInput' | translate }}
+                  </ng-container>
+                  <ng-container *ngIf="control.hasError('duplicated')">
+                    {{ 'common.validator.duplicated' | translate }}
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+            <!--Options-->
+            <nz-form-item nz-row *ngSwitchCase="'options'">
+              <nz-form-label [nzFor]="field.field_id" [nzRequired]="field.is_required">
+                <span nz-tooltip [nzTooltipTitle]="field.label | translate">{{ field.label | translate }}</span>
+              </nz-form-label>
+              <nz-form-control [nzErrorTip]="optionsTip">
+                <nz-select
+                  style="width: 280px"
+                  [formControlName]="field.field_id"
+                  (nzOpenChange)="selectControl = field"
+                  [nzPlaceHolder]="field.placeholder | translate"
+                  nzAllowClear
+                >
+                  <nz-option
+                    *ngFor="let item of options[field.option_id]"
+                    [nzLabel]="item.option_label | translate"
+                    [nzValue]="item.option_value"
+                    [nzDisabled]="item.deleted_by != ''"
+                  ></nz-option>
+                </nz-select>
+                <ng-template #optionsTip let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    {{ 'common.validator.requiredInput' | translate }}
+                  </ng-container>
+                  <ng-container *ngIf="control.hasError('duplicated')">
+                    {{ 'common.validator.duplicated' | translate }}
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+            <!--Lookup-->
+            <nz-form-item nz-row *ngSwitchCase="'lookup'">
+              <nz-form-label [nzFor]="field.field_id" [nzRequired]="field.is_required">
+                <span nz-tooltip [nzTooltipTitle]="field.label | translate">{{ field.label | translate }}</span>
+              </nz-form-label>
+              <nz-form-control [nzErrorTip]="lookupTip">
+                <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton" style="width: 280px">
+                  <input
+                    nz-input
+                    [formControlName]="field.field_id"
+                    [placeholder]="field.placeholder | translate"
+                    readonly
+                    trim="blur"
+                  />
+                </nz-input-group>
+                <ng-template #suffixIconButton>
+                  <button
+                    nz-button
+                    type="button"
+                    nzType="primary"
+                    nzSearch
+                    (click)="openModal(field.field_id)"
+                    [disabled]="fieldMap.get(field.field_id).disabled"
+                    style="margin-right: 0px"
+                  >
+                    <i nz-icon nzType="search"></i>
+                  </button>
+                </ng-template>
+                <ng-template #lookupTip let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    {{ 'common.validator.requiredInput' | translate }}
+                  </ng-container>
+                  <ng-container *ngIf="control.hasError('duplicated')">
+                    {{ 'common.validator.duplicated' | translate }}
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+            <!--User-->
+            <nz-form-item nz-row *ngSwitchCase="'user'">
+              <nz-form-label [nzFor]="field.field_id" [nzRequired]="field.is_required">
+                <span nz-tooltip [nzTooltipTitle]="field.label | translate">{{ field.label | translate }}</span>
+              </nz-form-label>
+              <nz-form-control [nzErrorTip]="userTip">
+                <nz-select
+                  style="width: 280px"
+                  [nzMaxTagCount]="3"
+                  [nzMaxTagPlaceholder]="tagPlaceHolder"
+                  [formControlName]="field.field_id"
+                  nzMode="multiple"
+                  (nzOpenChange)="selectControl = field"
+                  [nzPlaceHolder]="field.placeholder | translate"
+                >
+                  <nz-option
+                    *ngFor="let option of userOptions[field.user_group_id]"
+                    nzCustomContent
+                    [nzLabel]="option.user_name"
+                    [nzValue]="option.user_id"
+                    [nzDisabled]="option.deleted_by != ''"
+                  >
+                    <nz-avatar nzSize="small" [nzText]="option.user_name" [nzSrc]="option.avatar"></nz-avatar>
+                    <span>{{ option.user_name }}</span>
+                  </nz-option>
+                </nz-select>
+                <ng-template #tagPlaceHolder let-selectedList>and {{ selectedList.length }} more selected</ng-template>
+                <ng-template #userTip let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    {{ 'common.validator.requiredInput' | translate }}
+                  </ng-container>
+                  <ng-container *ngIf="control.hasError('duplicated')">
+                    {{ 'common.validator.duplicated' | translate }}
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+            <!--File-->
+            <ng-container *ngSwitchCase="'file'">
+              <nz-form-item *ngIf="field.is_image">
+                <nz-form-label [nzRequired]="field.is_required">
+                  <span nz-tooltip [nzTooltipTitle]="field.label | translate">{{ field.label | translate }}</span>
+                </nz-form-label>
+                <nz-form-control>
+                  <nz-upload
+                    [nzDisabled]="field.disabled"
+                    nzAction="/file/item/upload"
+                    nzListType="picture-card"
+                    [nzPreview]="handlePreview"
+                    [nzBeforeUpload]="beforeUploadPic"
+                    [nzCustomRequest]="customReqPic"
+                    (nzChange)="handleChange($event)"
+                    [(nzFileList)]="field.value"
+                  >
+                    <span>
+                      <i nz-icon nzType="upload"></i>
+                      {{ 'page.datastore.detail.uploadpic' | translate }}
+                    </span>
+                  </nz-upload>
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item *ngIf="!field.is_image">
+                <nz-form-label [nzRequired]="field.is_required">
+                  <span nz-tooltip [nzTooltipTitle]="field.label | translate">{{ field.label | translate }}</span>
+                </nz-form-label>
+                <nz-form-control>
+                  <nz-upload
+                    class="upload-list-inline"
+                    nzAction="/file/item/upload"
+                    [nzBeforeUpload]="beforeUploadFile"
+                    [nzCustomRequest]="customReq"
+                    (nzChange)="handleChange($event)"
+                    [(nzFileList)]="field.value"
+                  >
+                    <button nz-button type="button">
+                      <span>
+                        <i nz-icon nzType="upload"></i>
+                        {{ 'common.button.uploadfile' | translate }}
+                      </span>
+                    </button>
+                  </nz-upload>
+                </nz-form-control>
+              </nz-form-item>
+            </ng-container>
+            <!--Auto Number-->
+            <nz-form-item nz-row *ngSwitchCase="'autonum'">
+              <nz-form-label [nzFor]="field.field_id" [nzRequired]="field.is_required">
+                <span nz-tooltip [nzTooltipTitle]="field.label | translate">{{ field.label | translate }}</span>
+              </nz-form-label>
+              <nz-form-control [nzErrorTip]="autonumTip">
+                <input
+                  nz-input
+                  style="width: 280px"
+                  [formControlName]="field.field_id"
+                  (focus)="selectControl = field"
+                  [placeholder]="'common.text.automatic' | translate"
+                  readonly
+                  trim="blur"
+                />
+                <ng-template #autonumTip let-control>
+                  <ng-container *ngIf="control.hasError('duplicated')">
+                    {{ 'common.validator.duplicated' | translate }}
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+            <!--Function-->
+            <nz-form-item *ngSwitchCase="'function'">
+              <nz-form-label [nzFor]="field.field_id" [nzRequired]="field.is_required">
+                <span nz-tooltip [nzTooltipTitle]="field.label | translate">{{ field.label | translate }}</span>
+              </nz-form-label>
+              <nz-form-control>
+                <input
+                  nz-input
+                  style="width: 280px"
+                  [formControlName]="field.field_id"
+                  (focus)="selectControl = field"
+                  [placeholder]="'common.text.autoCalculate' | translate"
+                  readonly
+                  trim="blur"
+                />
+              </nz-form-control>
+            </nz-form-item>
+            <!--Default-->
+            <nz-form-item nz-row *ngSwitchDefault>
+              <nz-form-label [nzFor]="field.field_id" [nzRequired]="field.is_required">
+                <span nz-tooltip [nzTooltipTitle]="field.label | translate">{{ field.label | translate }}</span>
+              </nz-form-label>
+              <nz-form-control [nzErrorTip]="defaultTip">
+                <input
+                  nz-input
+                  [formControlName]="field.field_id"
+                  style="width: 280px"
+                  (focus)="selectControl = field"
+                  [placeholder]="field.placeholder | translate"
+                  trim="blur"
+                />
+                <ng-template #defaultTip let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    {{ 'common.validator.requiredInput' | translate }}
+                  </ng-container>
+                  <ng-container *ngIf="control.hasError('duplicated')">
+                    {{ 'common.validator.duplicated' | translate }}
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </ng-container>
+        </ng-container>
+      </nz-tab>
+      <ng-template #extraBtn>
+        <nz-space>
+          <div *nzSpaceItem>
+            <button nz-button (click)="compute()" [disabled]="form.invalid">
+              {{ 'common.button.confirmRegistration' | translate }}
+            </button>
+          </div>
+        </nz-space>
+      </ng-template>
+    </nz-tabset>
+  </div>
+</form>
+
+<nz-modal [nzVisible]="previewVisible" [nzFooter]="null" (nzOnCancel)="previewVisible = false">
+  <ng-template nzModalContent>
+    <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+  </ng-template>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisible"
+  [nzTitle]="'page.datastore.pleaseSelect' | translate"
+  (nzOnCancel)="close()"
+  nzWidth="60%"
+  [nzFooter]="null"
+>
+  <ng-template nzModalContent>
+    <app-item-search
+      [lookupDatastoreId]="lookupDatastoreId"
+      (nxReflect)="reflect($event)"
+      [userList]="userList"
+      [lookField]="lookField"
+      (nxCancel)="close()"
+    ></app-item-search>
+  </ng-template>
+</nz-modal>
+
+<nz-modal
+  [nzVisible]="computeVisible"
+  nzWidth="800px"
+  nzClosable="false"
+  [nzTitle]="'page.datastore.contract.calculationResultTilte' | translate"
+>
+  <ng-template nzModalContent>
+    <div class="loading" *ngIf="loading">
+      <nz-spin nzSimple></nz-spin>
+    </div>
+    <div class="container" *ngIf="!loading">
+      <nz-descriptions [nzTitle]="'page.datastore.contract.summary' | translate" nzBordered>
+        <nz-descriptions-item [nzTitle]="'page.datastore.contract.remainDebt' | translate">
+          {{ computeResult.remaindebt | number: '1.0-9' }}
+        </nz-descriptions-item>
+        <nz-descriptions-item [nzTitle]="'page.datastore.contract.lossgaku' | translate">
+          {{ computeResult.lossgaku | number: '1.0-9' }}
+        </nz-descriptions-item>
+      </nz-descriptions>
+    </div>
+    <nz-tabset *ngIf="!loading">
+      <nz-tab [nzTitle]="'page.datastore.contract.calculationResult' | translate">
+        <nz-table
+          #paymentTable
+          nzShowSizeChanger
+          [nzFrontPagination]="false"
+          [nzData]="leaseData"
+          nzBordered="true"
+          [nzTotal]="paymentTotal"
+          [(nzPageIndex)]="paymentPageIndex"
+          [(nzPageSize)]="paymentPageSize"
+          nzSize="middle"
+          [nzShowTotal]="rangeTemplatePayment"
+          [nzScroll]="scroll"
+          [nzPageSizeOptions]="[50, 100, 500]"
+          (nzPageIndexChange)="searchPaymentInterest(false)"
+          (nzPageSizeChange)="searchPaymentInterest(true)"
+        >
+          <thead>
+            <tr>
+              <th nzWidth="80px" nzLeft>No</th>
+              <th nzWidth="120px" nzLeft>
+                {{ 'page.datastore.contract.monthly' | translate }}
+              </th>
+              <th nzWidth="150px">
+                {{ 'page.datastore.contract.interest' | translate }}
+              </th>
+              <th nzWidth="150px">
+                {{ 'page.datastore.contract.principal' | translate }}
+              </th>
+              <th nzWidth="150px">
+                {{ 'page.datastore.contract.principalBalance' | translate }}
+              </th>
+              <th nzWidth="100px">
+                {{ 'page.datastore.contract.presentValue' | translate }}
+              </th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let i of paymentTable.data">
+              <td nzLeft>{{ i.no }}</td>
+              <td nzLeft>{{ i.paymentymd }}</td>
+              <td style="text-align: right">
+                {{ i.interest | number: '1.0-9' }}
+              </td>
+              <td style="text-align: right">
+                {{ i.repayment | number: '1.0-9' }}
+              </td>
+              <td style="text-align: right">
+                {{ i.balance | number: '1.0-9' }}
+              </td>
+              <td style="text-align: right">
+                {{ i.present | number: '1.0-9' }}
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </nz-table>
+        <ng-template #rangeTemplatePayment let-range="range" let-total>
+          {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+        </ng-template>
+      </nz-tab>
+      <nz-tab [nzTitle]="'page.datastore.contract.depreciationResult' | translate">
+        <nz-table
+          #repaymentTable
+          nzShowSizeChanger
+          [nzFrontPagination]="false"
+          [nzData]="repayData"
+          nzBordered="true"
+          [nzTotal]="repaymentTotal"
+          [(nzPageIndex)]="repaymentPageIndex"
+          [(nzPageSize)]="repaymentPageSize"
+          nzSize="middle"
+          [nzShowTotal]="rangeTemplateRepayment"
+          [nzScroll]="scroll"
+          [nzPageSizeOptions]="[50, 100, 500]"
+          (nzPageIndexChange)="searchRepayment(false)"
+          (nzPageSizeChange)="searchRepayment(true)"
+        >
+          <thead>
+            <tr>
+              <th nzLeft nzWidth="80px">No</th>
+              <th nzLeft nzWidth="120px">
+                {{ 'page.datastore.contract.monthly' | translate }}
+              </th>
+              <th nzLeft nzWidth="80px">
+                {{ 'page.datastore.contract.depreciationkbn' | translate }}
+              </th>
+              <th nzWidth="100px">
+                {{ 'page.datastore.contract.monthendBookValue' | translate }}
+              </th>
+              <th nzWidth="180px">
+                {{ 'page.datastore.contract.beginningBookValue' | translate }}
+              </th>
+              <th nzWidth="120px">
+                {{ 'page.datastore.contract.depreciation' | translate }}
+              </th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let i of repaymentTable.data">
+              <td nzLeft>{{ i.no }}</td>
+              <td nzLeft>{{ i.syokyakuymd }}</td>
+              <td nzLeft>{{ i.syokyakukbn }}</td>
+              <td style="text-align: right">
+                {{ i.endboka | number: '1.0-9' }}
+              </td>
+              <td style="text-align: right">{{ i.boka | number: '1.0-9' }}</td>
+              <td style="text-align: right">
+                {{ i.syokyaku | number: '1.0-9' }}
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </nz-table>
+        <ng-template #rangeTemplateRepayment let-range="range" let-total>
+          {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+        </ng-template>
+      </nz-tab>
+    </nz-tabset>
+  </ng-template>
+  <ng-template nzModalFooter>
+    <button nz-button nzType="default" (click)="cancelComputView()" [disabled]="loading">
+      {{ 'common.button.cancel' | translate }}
+    </button>
+    <button nz-button nzType="primary" (click)="submit()" [disabled]="loading">
+      {{ 'common.button.confirm' | translate }}
+    </button>
+  </ng-template>
+</nz-modal>

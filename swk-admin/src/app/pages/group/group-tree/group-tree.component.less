@@ -1,0 +1,44 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    .custom-node {
+      cursor: pointer;
+      line-height: 24px;
+      margin-left: 4px;
+      display: inline-block;
+      width: 100%;
+    }
+    
+    .active {
+      background: #bae7ff;
+    }
+    
+    .file-name,
+    .folder-name {
+      margin-left: 4px;
+    }
+    
+    .file-desc,
+    .folder-desc {
+      padding: 0 8px;
+      display: inline-block;
+      background: #87ceff;
+      color: #ffffff;
+      position: relative;
+      left: 12px;
+    }
+    
+    .datastore-node {
+      display: inline-block;
+      width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    nz-form-label {
+      width: 120px;
+    }
+  }
+});

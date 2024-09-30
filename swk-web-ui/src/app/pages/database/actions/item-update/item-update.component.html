@@ -1,0 +1,7 @@
+<div style="padding: 16px 0px 0px 0px">
+  <nz-spin [nzSpinning]="loading">
+    <app-datatype-form *ngIf="!loading" [controlArray]="controlArray" [fieldsInfo]="fieldsInfo" [isUpdate]="true"
+      (nxCancel)="cancel()" [userList]="userList" (nxSubmit)="submit($event)"
+      (nxChange)="change($event)"></app-datatype-form>
+  </nz-spin>
+</div>

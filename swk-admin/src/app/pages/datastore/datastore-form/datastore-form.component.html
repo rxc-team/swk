@@ -1,0 +1,413 @@
+<form nz-form [formGroup]="form">
+  <nz-tabset>
+    <nz-tab [nzTitle]="'common.text.baseInfo' | translate">
+      <!-- 台账名称 -->
+      <nz-form-item>
+        <nz-form-label nzRequired="true">{{ 'page.datastore.datastoreName' | translate }}</nz-form-label>
+        <nz-form-control [nzErrorTip]="datastoreName">
+          <input nz-input [ngStyle]="{ width: isSmall ? '220px' : '300px' }" formControlName="datastoreName" trim="blur"
+            [placeholder]="
+              'common.placeholder.input' | translate: { label: 'page.datastore.datastoreName' | translate }
+            " />
+          <ng-template #datastoreName let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+
+            <ng-container *ngIf="control.hasError('duplicated')">
+              {{ 'common.validator.datastoreDuplicated' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <!-- API-KEY -->
+      <nz-form-item>
+        <nz-form-label nzRequired="true">{{ 'page.datastore.field.apiKey' | translate }}</nz-form-label>
+        <nz-form-control [nzErrorTip]="apiKey">
+          <input nz-input formControlName="apiKey" [ngStyle]="{ width: isSmall ? '220px' : '300px' }" trim="blur"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.datastore.field.apiKey' | translate }"
+            [readOnly]="status === 'edit' && apiKeyOld != ''" />
+          <ng-template #apiKey let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredInput' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.hasError('pattern')">
+              {{ 'common.validator.apiKey' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.hasError('duplicated')">
+              {{ 'common.validator.apiKeyDuplicated' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <!-- 台账宽幅设定 -->
+      <nz-form-item>
+        <nz-form-label nzRequired="false">{{ 'page.datastore.fieldWidth' | translate }}</nz-form-label>
+        <nz-form-control>
+          <input nz-input type="number" [ngStyle]="{ width: isSmall ? '220px' : '300px' }" formControlName="fieldWidth"
+            trim="blur" [placeholder]="
+                'common.placeholder.input' | translate: { label: 'page.datastore.fieldWidth' | translate }
+              " />
+        </nz-form-control>
+      </nz-form-item>
+      <!-- 是否棚卸台帳 -->
+      <nz-form-item>
+        <nz-form-label>
+          {{ 'page.datastore.checkDatastore' | translate }}
+        </nz-form-label>
+        <nz-form-control>
+          <nz-switch formControlName="canCheck" (ngModelChange)="inventoryChange($event)"></nz-switch>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-tab>
+    <nz-tab [nzTitle]="'page.datastore.scanSetting' | translate"
+      *ngIf="this.form.controls.canCheck.value && status === 'edit'">
+      <!-- 扫描字段 -->
+      <nz-form-item>
+        <nz-form-label>{{ 'page.datastore.scanField' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-input-group nzSearch [nzAddOnAfter]="suffixScanField" style="width: 280px">
+            <input nz-input
+              [placeholder]="'common.placeholder.select' | translate: { label: 'page.datastore.scanField' | translate }"
+              readonly trim="blur" formControlName="selectFieldsName" />
+          </nz-input-group>
+          <ng-template #suffixScanField>
+            <button nz-button type="button" nzType="primary" nzSearch (click)="openModal()" style="margin-right: 0px">
+              <i nz-icon nzType="search"></i>
+            </button>
+          </ng-template>
+          <!-- <nz-select formControlName="scanFields" nzMode="multiple" nzAllowClear
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.datastore.scanField' | translate }"
+            [ngStyle]="{ width: isSmall ? '220px' : '300px' }">
+            <nz-option *ngFor="let sf of scanFieldsSel" [nzLabel]="sf.field_name | translate"
+              [nzValue]="sf.field_id"></nz-option>
+          </nz-select> -->
+        </nz-form-control>
+      </nz-form-item>
+      <!-- 扫描字段连接符 -->
+      <nz-form-item>
+        <nz-form-label>{{ 'page.datastore.scanFieldConnector' | translate }}</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="scanFieldsConnector" [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+            trim="blur" [placeholder]="
+              'common.placeholder.input' | translate: { label: 'page.datastore.scanFieldConnector' | translate }
+            " />
+        </nz-form-control>
+      </nz-form-item>
+      <!-- 标签打印字段1 -->
+      <nz-form-item>
+        <nz-form-label>{{ 'page.datastore.printField1' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select formControlName="printField1" nzAllowClear [nzPlaceHolder]="
+              'common.placeholder.select' | translate: { label: 'page.datastore.printField1' | translate }
+            " [ngStyle]="{ width: isSmall ? '220px' : '300px' }">
+            <nz-option *ngFor="let sf of fields" [nzLabel]="sf.field_name | translate"
+              [nzValue]="sf.field_id"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <!-- 标签打印字段2 -->
+      <nz-form-item>
+        <nz-form-label>{{ 'page.datastore.printField2' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select formControlName="printField2" nzAllowClear [nzPlaceHolder]="
+              'common.placeholder.select' | translate: { label: 'page.datastore.printField2' | translate }
+            " [ngStyle]="{ width: isSmall ? '220px' : '300px' }">
+            <nz-option *ngFor="let sf of fields" [nzLabel]="sf.field_name | translate"
+              [nzValue]="sf.field_id"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <!-- 标签打印字段3 -->
+      <nz-form-item>
+        <nz-form-label>{{ 'page.datastore.printField3' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select formControlName="printField3" nzAllowClear [nzPlaceHolder]="
+              'common.placeholder.select' | translate: { label: 'page.datastore.printField3' | translate }
+            " [ngStyle]="{ width: isSmall ? '220px' : '300px' }">
+            <nz-option *ngFor="let sf of fields" [nzLabel]="sf.field_name | translate"
+              [nzValue]="sf.field_id"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-tab>
+    <nz-tab [nzTitle]="'page.datastore.defaultSortMethod' | translate" *ngIf="status === 'edit'">
+      <button nz-button nzType="primary" nzSize="small" (click)="showField = true" style="float: right">
+        <i nz-icon nzType="plus" nzTheme="outline"></i>
+        {{ 'page.datastore.addSortField' | translate }}
+      </button>
+      <br />
+      <div>
+        <nz-table [nzData]="listOfData" [nzFrontPagination]="false" [nzPageSize]="100" [nzShowPagination]="false"
+          nzBordered="true" [nzScroll]="{ y: '300px' }" nzSize="middle">
+          <thead>
+            <tr>
+              <ng-container *ngFor="let col of cols">
+                <th *ngIf="col.width" nz-resizable nzBounds="window" [nzWidth]="col.width" [nzMinWidth]="80"
+                  (nzResizeEnd)="onResize($event, col.title)">
+                  {{ col.title | translate }}
+                  <nz-resize-handle nzDirection="right"></nz-resize-handle>
+                </th>
+                <th *ngIf="!col.width">
+                  {{ col.title | translate }}
+                </th>
+              </ng-container>
+            </tr>
+          </thead>
+          <tbody cdkDropList (cdkDropListDropped)="drop($event)">
+            <tr *ngFor="let item of listOfData" cdkDrag>
+              <td>{{ item.sort_no }}</td>
+              <td>{{ item.sort_key }}</td>
+              <td>{{ item.sort_field_name | translate }}</td>
+              <td>
+                {{ item.sort_value_label | translate }}
+                <button nz-button nzType="link" (click)="changeSort(item.sort_key)">
+                  <i nz-icon [nzType]="item.sort_value === 'ascend' ? 'sort-ascending' : 'sort-descending'"></i>
+                </button>
+              </td>
+              <td>
+                <button nz-button nzType="primary" nzDanger="true" nzSize="small" (click)="deleteField(item.sort_key)">
+                  <i nz-icon nzType="close-circle"></i>
+                  {{ 'common.button.delete' | translate }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+    </nz-tab>
+    <nz-tab [nzTitle]="'page.datastore.uniqueSet' | translate" *ngIf="status === 'edit'">
+      <button nz-button nzType="primary" nzSize="small" (click)="addUnique()" style="float: right">
+        <i nz-icon nzType="plus" nzTheme="outline"></i>
+        {{ 'page.datastore.addUniqueSet' | translate }}
+      </button>
+      <br />
+      <div>
+        <nz-list [nzDataSource]="uniqueFields" [nzRenderItem]="it" nzBordered="true" nzSize="small">
+          <nz-list-empty *ngIf="!uniqueFields"></nz-list-empty>
+          <ng-template #it let-item>
+            <nz-list-item nzNoFlex>
+              <ul nz-list-item-actions>
+                <nz-list-item-action>
+                  <button nz-button nzDanger="true" nzType="primary" nzSize="small" (click)="deleteUnique(item)"
+                    [disabled]="uniques.includes(item)">
+                    <i nz-icon nzType="close" nzTheme="outline"></i>
+                  </button>
+                </nz-list-item-action>
+              </ul>
+              <span *ngFor="let fs of showFieldInfo(item)" class="dashed_border dashboard_bg"
+                style="padding: 4px 10px; margin-left: 2px">
+                {{ fs.field_name | translate }}
+              </span>
+            </nz-list-item>
+          </ng-template>
+        </nz-list>
+      </div>
+    </nz-tab>
+    <nz-tab [nzTitle]="'page.datastore.relationSet' | translate" *ngIf="status === 'edit'">
+      <button nz-button nzType="primary" nzSize="small" (click)="addRelation()" style="float: right">
+        <i nz-icon nzType="plus" nzTheme="outline"></i>
+        {{ 'page.datastore.addRelationSet' | translate }}
+      </button>
+      <br />
+      <div>
+        <nz-list [nzDataSource]="relations" [nzRenderItem]="rit1" nzSize="small">
+          <nz-list-empty *ngIf="!relations"></nz-list-empty>
+          <ng-template #rit1 let-item>
+            <nz-list-item nzNoFlex>
+              <fieldset>
+                <legend>
+                  {{ item.datastore_id | translate }}
+                </legend>
+                <div style="display: flex; flex-direction: row; align-items: center">
+                  <div style="flex: 1">
+                    <div *ngFor="let mp of item.fields | keyvalue">
+                      {{ mp.key | translate }}
+                      <span style="display: inline-block; padding: 0 10px">=></span>
+                      {{ mp.value | translate }}
+                    </div>
+                  </div>
+                  <button nz-button (click)="deleteRelation(item.relation_id)" title="Delete"
+                    style="vertical-align: middle">
+                    <i nz-icon nzType="close-circle" nzTheme="twotone" nzTwotoneColor="#ff0000"></i>
+                    <span>{{ 'common.button.delete' | translate }}</span>
+                  </button>
+                </div>
+              </fieldset>
+            </nz-list-item>
+          </ng-template>
+        </nz-list>
+      </div>
+    </nz-tab>
+  </nz-tabset>
+  <br />
+  <!-- bottom button -->
+  <nz-form-item>
+    <nz-space>
+      <div *nzSpaceItem>
+        <button nz-button nzType="primary" appDebounceClick (click)="submitForm($event, form.value)"
+          [disabled]="!form.valid">
+          <i nz-icon [nzType]="status === 'add' ? 'plus' : 'edit'" nzTheme="outline"></i>
+          {{ 'common.button.save' | translate }}
+        </button>
+      </div>
+      <div *nzSpaceItem>
+        <button nz-button (click)="reset()" *ngIf="status === 'add'">
+          <i nz-icon nzType="redo" nzTheme="outline"></i>
+          {{ 'common.button.reset' | translate }}
+        </button>
+      </div>
+      <div *nzSpaceItem>
+        <button nz-button (click)="cancel()">
+          <i nz-icon nzType="close" nzTheme="outline"></i>
+          {{ 'common.button.cancel' | translate }}
+        </button>
+      </div>
+    </nz-space>
+  </nz-form-item>
+</form>
+<!-- 弹窗 追加排序字段画面 -->
+<nz-modal [nzTitle]="'page.datastore.addSortField' | translate" [(nzVisible)]="showField"
+  (nzOnCancel)="fieldModalInit()" (nzOnOk)="addField(fieldForm.value)" [nzOkDisabled]="fieldForm.invalid"
+  nzMaskClosable="false" nzClosable="false">
+  <ng-template nzModalContent>
+    <form nz-form nzLayout="vertical" [formGroup]="fieldForm">
+      <nz-form-item>
+        <nz-form-label nzFor="sortKey" nzRequired>
+          {{ 'page.language.labelFields' | translate }}
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="sortKeyTip">
+          <nz-select formControlName="sortKey"
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.datastore.fieldInfo' | translate }"
+            nzAllowClear>
+            <nz-option *ngFor="let op of sortOptions" [nzLabel]="op.label | translate" [nzValue]="op.value"
+              [nzHide]="!isNotSelected(op.value)"></nz-option>
+          </nz-select>
+          <ng-template #sortKeyTip let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredSelect' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="sortValue" nzRequired>
+          {{ 'page.report.fieldSort' | translate }}
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="sortValueTip">
+          <nz-select formControlName="sortValue"
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.report.fieldSort' | translate }"
+            [nzDisabled]="!fieldForm.get('sortKey').value" nzAllowClear>
+            <nz-option [nzLabel]="'page.report.ascending' | translate" nzValue="ascend"></nz-option>
+            <nz-option [nzLabel]="'page.report.descending' | translate" nzValue="descend"></nz-option>
+          </nz-select>
+          <ng-template #sortValueTip let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredSelect' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-template>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="isVisible" [nzTitle]="'page.datastore.scanField' | translate" (nzOnCancel)="close()"
+  nzWidth="60%" [nzFooter]="null">
+  <ng-template nzModalContent>
+    <div nz-row nzJustify="space-around" nzAlign="top">
+      <!-- 出力台账 -->
+      <div nz-col [nzXs]="24" [nzMd]="8" class="solid_border" style="padding: 4px; height: 360px">
+        <div>
+          <nz-form-label>{{ 'page.report.canSelectField' | translate }}</nz-form-label>
+          <div class="select-field" style="height: 320px; overflow-y: auto; overflow-x: hidden; padding-right: 10px">
+            <nz-empty *ngIf="scanFieldsSel.length === 0"></nz-empty>
+            <ul nz-menu nzMode="inline">
+              <ng-container *ngFor="let item of scanFieldsSel">
+                <ng-container *ngIf="item.children; else elseTemplate">
+                  <li nz-submenu [nzTitle]="lookup" class="solid_border" style="margin-top: 2px; padding: 2px">
+                    <ul>
+                      <li nz-menu-item *ngFor="let it of item.children" class="solid_border" style="margin-top: 2px"
+                        [nzDisabled]="it.disabled" (click)="saveField(it)">
+                        <ng-container *ngIf="it.disabled; else elseTemplate">
+                          <i nz-icon nzType="star" nzTheme="fill"></i>
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                          <i nz-icon nzType="star" nzTheme="outline"></i>
+                        </ng-template>
+
+                        {{ it.field_name | translate }}
+                      </li>
+                    </ul>
+                  </li>
+                  <ng-template #lookup>
+                    <i nz-icon nzType="block" nzTheme="outline"></i>
+                    {{ item.field_name | translate }}
+                  </ng-template>
+                </ng-container>
+                <ng-template #elseTemplate>
+                  <li nz-menu-item class="solid_border" style="margin-top: 2px" (click)="saveField(item)"
+                    [nzDisabled]="item.disabled">
+                    <ng-container *ngIf="item.disabled; else elseTemplate">
+                      <i nz-icon nzType="star" nzTheme="fill"></i>
+                    </ng-container>
+                    <ng-template #elseTemplate>
+                      <i nz-icon nzType="star" nzTheme="outline"></i>
+                    </ng-template>
+
+                    {{ item.field_name | translate }}
+                  </li>
+                </ng-template>
+              </ng-container>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- 已选字段 -->
+      <div nz-col [nzXs]="24" [nzMd]="16" class="solid_border" style="padding: 4px; min-height: 360px" #sortList>
+        <nz-form-label>{{ 'page.report.selectedField' | translate }}</nz-form-label>
+        <div>
+          <button nz-button nzType="primary" (click)="addDami()">
+            {{ 'common.button.dami' | translate }}
+          </button>
+        </div>
+        <nz-table [nzData]="selectFields" [nzFrontPagination]="false" [nzShowPagination]="false" nzBordered="true"
+          nzSize="small" nzNoResult=" " [nzScroll]="{ y: '240px' }">
+          <thead>
+            <tr>
+              <ng-container *ngFor="let col of colsWithGroup">
+                <th *ngIf="col.width" nz-resizable nzBounds="window" [nzWidth]="col.width" [nzMinWidth]="80"
+                  (nzResizeEnd)="onResizeScanField($event, col.title)">
+                  {{ col.title | translate }}
+                  <nz-resize-handle nzDirection="right"></nz-resize-handle>
+                </th>
+                <th *ngIf="!col.width">
+                  {{ col.title | translate }}
+                </th>
+              </ng-container>
+            </tr>
+          </thead>
+          <tbody cdkDropList (cdkDropListDropped)="dropScanField($event)">
+            <tr *ngFor="let item of selectFields" cdkDrag>
+              <td>{{ item.order }}</td>
+              <td>{{ item.field_name | translate }}</td>
+              <td>
+                <button nz-button nzDanger nzSize="small" nzType="text"
+                  (click)="delete(item.field_id, item.datastore_id,item.order)">
+                  <i nz-icon nzType="delete" nzTheme="outline"></i>
+                  {{ 'common.button.delete' | translate }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+    </div>
+    <button nz-button nzType="primary" style="margin-top: 50px;" (click)="reflect()">
+      {{ 'common.button.save' | translate }}
+    </button>
+    <button nz-button nzType="primary" (click)="close()">
+      {{ 'common.button.cancel' | translate }}
+    </button>
+  </ng-template>
+</nz-modal>

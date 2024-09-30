@@ -1,0 +1,283 @@
+<app-http-spin></app-http-spin>
+<!-- 应用消息区 -->
+<div *ngIf="showExpired">
+  <div *ngIf="expiredType === 'trial'">
+    <nz-alert
+      nzType="warning"
+      [nzMessage]="'page.home.trialReminder' | translate"
+      nzBanner="true"
+      nzCloseable
+      [nzDescription]="'page.home.trialDaysReminder' | translate: { days: daysRemain }"
+      [nzCloseText]="'page.home.buyNow' | translate"
+    ></nz-alert>
+  </div>
+  <div *ngIf="expiredType === 'formal'">
+    <nz-alert
+      nzType="warning"
+      [nzMessage]="'page.home.formalReminder' | translate"
+      nzBanner="true"
+      nzCloseable
+      [nzDescription]="'page.home.formalDaysReminder' | translate: { days: daysRemain }"
+      [nzCloseText]="'page.home.renewalNow' | translate"
+    ></nz-alert>
+  </div>
+</div>
+<div *ngIf="(unReadUpdateMessages$ | async).length > 0">
+  <nz-alert
+    nzType="warning"
+    [nzMessage]="'page.home.systemUpdateMessage' | translate"
+    nzBanner="true"
+    [nzDescription]="message"
+    nzCloseable="true"
+    [nzCloseText]="'common.text.confirmed' | translate"
+    *ngFor="let item of (unReadUpdateMessages$ | async).slice(0, 1)"
+    (nzOnClose)="onCloseSysInfo(item.message_id)"
+  >
+    <ng-template #message>
+      <textarea
+        readonly="true"
+        nz-input
+        [ngModel]="item.content"
+        [nzAutosize]="{ minRows: 2, maxRows: 3 }"
+        nzBorderless="true"
+      ></textarea>
+    </ng-template>
+  </nz-alert>
+</div>
+<!-- 任务栏 -->
+<app-task-list></app-task-list>
+<!-- 头部 -->
+<nz-layout class="layout" style="height: 100%" *ngIf="!show">
+  <nz-header class="nx-header">
+    <div nz-row nzJustify="space-between">
+      <div nz-col nzSpan="*" class="nx-header-left">
+        <app-header-logo [width]="sliderWidth$ | async" [logoUrl]="userInfo.logo" *ngIf="!isSmall"></app-header-logo>
+        <span class="menu" style="width: 41px" (click)="toggle()">
+          <i nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
+        </span>
+        <app-header-select *ngIf="!isSmall" (appChange)="appChange($event)" [apps]="appsOption"></app-header-select>
+      </div>
+      <div nz-col nzSpan="*" class="nx-header-right" *ngIf="!isSmall; else elseZoom">
+        <app-header-i18n></app-header-i18n>
+        <app-header-notify></app-header-notify>
+        <app-theme-picker></app-theme-picker>
+        <app-header-help></app-header-help>
+        <app-header-qa></app-header-qa>
+        <app-header-user></app-header-user>
+      </div>
+      <!-- head menu 折叠 -->
+      <ng-template #elseZoom>
+        <div nz-col nzSpan="*" class="nx-header-right">
+          <app-header-i18n></app-header-i18n>
+          <app-header-notify></app-header-notify>
+          <app-theme-picker></app-theme-picker>
+          <app-header-qa-help></app-header-qa-help>
+          <app-header-user></app-header-user>
+        </div>
+      </ng-template>
+    </div>
+  </nz-header>
+  <nz-header class="nx-header" *ngIf="isSmall">
+    <app-header-select (appChange)="appChange($event)" [apps]="appsOption"></app-header-select>
+  </nz-header>
+  <!--  侧边栏 -->
+  <nz-layout style="height: 100%">
+    <nz-sider
+      class="nx-sider"
+      (nzCollapsedChange)="toggle($event)"
+      [nzWidth]="sliderWidth$ | async"
+      [nzCollapsedWidth]="sliderWidth$ | async"
+      [nzTheme]="(currentTheme$ | async).mode"
+      [nzCollapsed]="isCollapsed"
+      style="overflow-y: auto; overflow-x: hidden"
+    >
+      <ul
+        nz-menu
+        nzMode="inline"
+        [nzTheme]="(currentTheme$ | async).mode"
+        style="height: 100%"
+        [nzInlineCollapsed]="isCollapsed"
+      >
+        <!-- 侧边栏主菜单 -->
+        <div *ngIf="(sliderWidth$ | async) === 200" class="nx-sider-category">
+          <h3>{{ 'menu.subtitle.main' | translate }}</h3>
+        </div>
+        <ng-container
+          *ngTemplateOutlet="staticMenuTpl; context: { $implicit: (asideMenu$ | async).menu }"
+        ></ng-container>
+        <ng-template #staticMenuTpl let-menus>
+          <ng-container *ngFor="let menu of menus">
+            <li
+              nz-menu-item
+              [nzPaddingLeft]="isCollapsed ? 0 : menu.level * 24"
+              *ngIf="!menu.children"
+              [routerLink]="menu.path"
+              nzMatchRouter
+              (click)="tabs(menu.path)"
+            >
+              <span title>
+                <i nz-icon [nzType]="menu.icon" *ngIf="menu.icon"></i>
+                <span [title]="menu.title | translate">{{ menu.title | translate }}</span>
+              </span>
+            </li>
+            <li
+              nz-submenu
+              [nzPaddingLeft]="isCollapsed ? 0 : menu.level * 24"
+              *ngIf="menu.children"
+              [nzOpen]="menu.open"
+            >
+              <span title>
+                <i nz-icon [nzType]="menu.icon" *ngIf="menu.icon"></i>
+                <span [title]="menu.title | translate">{{ menu.title | translate }}</span>
+              </span>
+              <ul>
+                <ng-container *ngTemplateOutlet="staticMenuTpl; context: { $implicit: menu.children }"></ng-container>
+              </ul>
+            </li>
+          </ng-container>
+        </ng-template>
+
+        <div *ngIf="(sliderWidth$ | async) === 200" class="nx-sider-category">
+          <h3>{{ 'menu.database' | translate }}</h3>
+        </div>
+        <ng-container
+          *ngTemplateOutlet="dynamicMenuTpl; context: { $implicit: (asideMenu$ | async).dynamicMenu }"
+        ></ng-container>
+        <ng-template #dynamicMenuTpl let-menus>
+          <ng-container *ngFor="let menu of menus">
+            <li
+              nz-menu-item
+              [nzPaddingLeft]="isCollapsed ? 0 : menu.level * 24"
+              *ngIf="!menu.children"
+              [nzDisabled]="menu.disabled"
+              [routerLink]="menu.path"
+              nzMatchRouter
+              (click)="tabs(menu.path)"
+              [ngClass]="{ 'nx-sider-extend': menu.extend }"
+            >
+              <span title *ngIf="menu.extend">
+                <div nz-row nzJustify="start" nzAlign="top">
+                  <div nz-col nzSpan="20">
+                    <i nz-icon [nzType]="menu.icon" *ngIf="menu.icon"></i>
+                    <span [title]="menu.title">{{ menu.title }}</span>
+                  </div>
+                  <div nz-col nzSpan="4" style="text-align: right">
+                    <span
+                      nz-dropdown
+                      [nzTrigger]="'click'"
+                      [nzDropdownMenu]="downmenu"
+                      (click)="$event.stopPropagation()"
+                      style="padding-left: 8px; text-align: right"
+                    >
+                      <i nz-icon [nzIconfont]="'icon-i-more'"></i>
+                    </span>
+                    <nz-dropdown-menu #downmenu="nzDropdownMenu">
+                      <ul nz-menu>
+                        <li nz-menu-item *ngFor="let item of menu.extend.child">
+                          <a *ngIf="item.type === 'path'" [routerLink]="item.path">
+                            <i nz-icon [nzType]="item.icon"></i>
+                            <span style="display: inline-block; width: 150px; padding-left: 0px">
+                              {{ item.name | translate }}
+                            </span>
+                          </a>
+                        </li>
+                      </ul>
+                    </nz-dropdown-menu>
+                  </div>
+                </div>
+              </span>
+              <span title>
+                <i nz-icon [nzType]="menu.icon" *ngIf="menu.icon"></i>
+                <span [title]="menu.title | translate">{{ menu.title | translate }}</span>
+              </span>
+            </li>
+            <li
+              nz-submenu
+              [nzPaddingLeft]="isCollapsed ? 0 : menu.level * 24"
+              *ngIf="menu.children"
+              [nzOpen]="menu.open"
+              [nzDisabled]="menu.disabled"
+              [ngClass]="{ 'nx-sider-extend': menu.extend }"
+            >
+              <span title *ngIf="menu.extend">
+                <div nz-row nzJustify="start" nzAlign="top">
+                  <div nz-col nzSpan="20">
+                    <i nz-icon [nzType]="menu.icon" *ngIf="menu.icon"></i>
+                    <span [title]="menu.title">{{ menu.title }}</span>
+                  </div>
+                  <div nz-col nzSpan="4" style="text-align: right">
+                    <span
+                      nz-dropdown
+                      [nzTrigger]="'click'"
+                      [nzDropdownMenu]="downmenu"
+                      (click)="$event.stopPropagation()"
+                      style="padding-left: 8px; text-align: right"
+                    >
+                      <i nz-icon [nzIconfont]="'icon-i-more'"></i>
+                    </span>
+                    <nz-dropdown-menu #downmenu="nzDropdownMenu">
+                      <ul nz-menu>
+                        <li nz-menu-item *ngFor="let item of menu.extend.child">
+                          <a *ngIf="item.type === 'path'" [routerLink]="item.path">
+                            <i nz-icon [nzType]="item.icon"></i>
+                            <span style="display: inline-block; width: 150px; padding-left: 0px">
+                              {{ item.name | translate }}
+                            </span>
+                          </a>
+                        </li>
+                      </ul>
+                    </nz-dropdown-menu>
+                  </div>
+                </div>
+              </span>
+              <span title *ngIf="!menu.extend">
+                <i nz-icon [nzType]="menu.icon" *ngIf="menu.icon"></i>
+                <span [title]="menu.title | translate">{{ menu.title | translate }}</span>
+              </span>
+              <ul>
+                <ng-container *ngTemplateOutlet="dynamicMenuTpl; context: { $implicit: menu.children }"></ng-container>
+              </ul>
+            </li>
+          </ng-container>
+        </ng-template>
+      </ul>
+    </nz-sider>
+    <!-- body -->
+    <nz-layout style="height: 100%">
+      <nz-content class="nx-content" style="height: 100%; padding-bottom: 16px">
+        <!-- 面包屑 -->
+        <div class="nx-content-header">
+          <nz-breadcrumb>
+            <nz-breadcrumb-item *ngIf="canBack">
+              <a (click)="back()">
+                <i nz-icon nzType="left"></i>
+                {{ 'common.text.return' | translate }}
+              </a>
+            </nz-breadcrumb-item>
+            <nz-breadcrumb-item *ngIf="!canBack">
+              <a [routerLink]="['/home']">
+                <i nz-icon nzType="home"></i>
+                {{ 'route.home' | translate }}
+              </a>
+            </nz-breadcrumb-item>
+            <nz-breadcrumb-item *ngIf="breadcrumb">
+              {{ breadcrumb | translate }}
+            </nz-breadcrumb-item>
+          </nz-breadcrumb>
+        </div>
+        <!-- 路由应用-->
+        <div class="nx-content-body" style="position: relative">
+          <router-outlet></router-outlet>
+        </div>
+      </nz-content>
+      <!-- 页脚 -->
+      <nz-footer style="text-align: center; height: 50px">
+        <div nz-row nzJustify="center" nzAlign="middle">
+          <div nz-col nzSpan="24">
+            {{ 'footer.copyright' | translate }}
+          </div>
+        </div>
+      </nz-footer>
+    </nz-layout>
+  </nz-layout>
+</nz-layout>

@@ -1,0 +1,46 @@
+<div nz-row nzJustify="start" nzAlign="top" class="profile" [ngStyle]="{ width: isSmall ? '200px' : '300px' }">
+  <div nz-col nzSpan="24" class="profile-header">
+    <div nz-row nzJustify="start">
+      <div nz-col nzSpan="*" class="profile-header-avatar">
+        <nz-avatar nzIcon="user" [nzSize]="64" [nzSrc]="userInfo.avatar"></nz-avatar>
+      </div>
+      <div nz-col nzSpan="*" class="profile-header-info">
+        <div>
+          <div>
+            <span style="font-weight: bolder">{{ userInfo.name }}</span>
+          </div>
+          <div>
+            <span>{{ userInfo.email }}</span>
+          </div>
+        </div>
+      </div>
+      <div nz-col nzSpan="24" class="profile-header-role">
+        <i nz-icon nzType="team" nzTheme="outline"></i>
+        {{ 'SYSTEM' }}
+      </div>
+      <div nz-col nzSpan="24" class="profile-header-signature">
+        <div>
+          <span>{{ userInfo.signature }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div nz-col nzSpan="24" class="profile-action">
+    <div>
+      <span>
+        <a routerLink="/profile">
+          <i nz-icon nzType="user" theme="outline"></i>
+          {{ 'header.title.userCenter' | translate }}
+        </a>
+      </span>
+    </div>
+    <div>
+      <span>
+        <a (click)="logout()">
+          <i nz-icon nzType="logout" theme="outline"></i>
+          {{ 'header.title.logout' | translate }}
+        </a>
+      </span>
+    </div>
+  </div>
+</div>

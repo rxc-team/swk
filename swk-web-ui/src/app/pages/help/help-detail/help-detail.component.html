@@ -1,0 +1,17 @@
+<div fxLayout="row" fxLayoutGap="40px" *ngIf="show">
+  <div fxFlex="1 1 calc(100% - 220px)">
+    <h1>{{ article.title }}</h1>
+    <span>
+      {{ 'common.text.updateDate' | translate }}: {{ article.updated_at | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}
+    </span>
+    <nz-divider></nz-divider>
+    <div class="content">
+      <markdown [data]="article.content" (ready)="onReady()"></markdown>
+    </div>
+  </div>
+  <div class="menu" fxLayout="column" fxFlex="1 0 180px" fxFlexAlign="flex-start" fxHide.lt-md>
+    <nz-anchor [nzOffsetTop]="120" nzContainer=".nx-content-body">
+      <nz-link *ngFor="let heading of headings" [nzHref]="getHref(heading)" [nzTitle]="getName(heading)"></nz-link>
+    </nz-anchor>
+  </div>
+</div>

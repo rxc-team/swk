@@ -1,0 +1,87 @@
+<nz-card [nzTitle]="'common.text.baseInfo' | translate" nzSize="small" nzType="inner">
+  <form nz-form [formGroup]="validateForm">
+    <nz-form-item>
+      <nz-form-label nzFor="file" nzRequired>
+        <span>
+          {{ 'page.document.upload.select' | translate }}
+          <i nz-icon nz-tooltip [nzTooltipTitle]="title" nzType="question-circle" theme="outline"></i>
+          <ng-template #title>
+            <span>
+              {{ 'common.text.supportFile' | translate }}
+              <div>
+                <span style="margin-right: 4px; color: red" *ngFor="let suffix of supportFile">{{ suffix }}</span>
+              </div>
+            </span>
+          </ng-template>
+        </span>
+      </nz-form-label>
+      <nz-form-control>
+        <nz-upload nzListType="text" [nzMultiple]="false" [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload">
+          <button nz-button nzType="primary" [ngStyle]="{ width: isSmall ? '220px' : '300px' }">
+            <i nz-icon nzType="upload"></i>
+            {{ 'common.button.selectFile' | translate }}
+          </button>
+        </nz-upload>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzFor="file_name" nzRequired>
+        {{ 'page.document.upload.fileName' | translate }}
+      </nz-form-label>
+      <nz-form-control [nzErrorTip]="errorName">
+        <nz-input-group>
+          <input
+            type="text"
+            nz-input
+            formControlName="file_name"
+            [readOnly]="fileList.length == 0"
+            [placeholder]="
+              'common.placeholder.input' | translate: { label: 'page.document.upload.fileName' | translate }
+            "
+            [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+            trim="blur"
+          />
+        </nz-input-group>
+        <ng-template #errorName let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+
+          <ng-container *ngIf="control.hasError('duplicated')">
+            {{ 'common.validator.fileNameDuplicated' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-card>
+
+<div class="text-left" style="margin-top: 16px">
+  <nz-space>
+    <ng-template nzSpaceItem>
+      <button
+        nz-button
+        nzType="primary"
+        nzSize="default"
+        (click)="handleUpload()"
+        [nzLoading]="uploading"
+        [disabled]="fileList.length == 0 || validateForm.invalid"
+      >
+        <i nz-icon nzType="save" nzTheme="outline"></i>
+        {{ 'common.button.save' | translate }}
+      </button>
+    </ng-template>
+    <ng-template nzSpaceItem>
+      <button nz-button nzType="default" nzSize="default" (click)="reset()">
+        <i nz-icon nzType="redo" nzTheme="outline"></i>
+        {{ 'common.button.reset' | translate }}
+      </button>
+    </ng-template>
+    <ng-template nzSpaceItem>
+      <button nz-button nzType="default" nzSize="default" (click)="cancel()">
+        <i nz-icon nzType="close" nzTheme="outline"></i>
+        {{ 'common.button.cancel' | translate }}
+      </button>
+    </ng-template>
+  </nz-space>
+</div>

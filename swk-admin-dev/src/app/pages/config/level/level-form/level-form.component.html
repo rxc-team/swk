@@ -1,0 +1,69 @@
+<nz-card [nzTitle]="'common.text.baseInfo' | translate" nzSize="small" nzType="inner">
+  <form nz-form [formGroup]="form">
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.level.name' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="levelName">
+        <nz-input-group [ngStyle]="{ width: isSmall ? '220px' : '300px' }">
+          <input
+            nz-input
+            formControlName="levelName"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.level.name' | translate }"
+            trim="blur"
+          />
+        </nz-input-group>
+        <ng-template #levelName let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('halfAlphaNumber')">
+            {{ 'common.validator.halfAlphaNumber' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('duplicated')">
+            {{ 'common.validator.typeNameDuplicated' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.level.license' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="allows">
+        <nz-select
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          formControlName="allows"
+          nzMode="multiple"
+          [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.level.license' | translate }"
+          nzAllowClear
+        >
+          <nz-option *ngFor="let item of allowList" [nzLabel]="item.allow_name" [nzValue]="item.allow_id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+      <ng-template #allows let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredSelect' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-item>
+  </form>
+</nz-card>
+<nz-form-item style="margin-top: 16px">
+  <nz-space nzSize="small">
+    <ng-template nzSpaceItem>
+      <button nz-button nzType="primary" (click)="submitForm()" appDebounceClick [disabled]="!form.valid">
+        <i nz-icon nzType="save" nzTheme="outline"></i>
+        {{ 'common.button.save' | translate }}
+      </button>
+    </ng-template>
+    <ng-template nzSpaceItem *ngIf="status == 'add'">
+      <button nz-button nzType="default" (click)="reset()">
+        <i nz-icon nzType="redo" nzTheme="outline"></i>
+        {{ 'common.button.reset' | translate }}
+      </button>
+    </ng-template>
+    <ng-template nzSpaceItem>
+      <button nz-button nzType="default" (click)="cancel()">
+        <i nz-icon nzType="close" nzTheme="outline"></i>
+        {{ 'common.button.cancel' | translate }}
+      </button>
+    </ng-template>
+  </nz-space>
+</nz-form-item>

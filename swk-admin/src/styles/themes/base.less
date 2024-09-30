@@ -1,0 +1,79 @@
+.ant-menu-inline {
+  border-right: none;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  background: @table-header-bg;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.dashed_border {
+  border: 1px dashed @border-color-split;
+}
+
+.solid_border {
+  border: 1px solid @border-color-split;
+}
+
+.dashboard_bg {
+  background-color: @table-header-bg;
+}
+
+table tr {
+  td {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -moz-text-overflow: ellipsis;
+    -webkit-text-overflow: ellipsis;
+  }
+
+  th {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -moz-text-overflow: ellipsis;
+    -webkit-text-overflow: ellipsis;
+    font-weight: bold !important;
+  }
+}
+
+.ant-table-thead {
+  tr {
+    th {
+      word-break: break-all;
+      white-space: normal;
+      -ms-word-break: break-all;
+    }
+  }
+}
+
+strong {
+  font-weight: bold !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold !important;
+}
+
+html,
+body {
+  font-family: 'MS UI Gothic', 'MS PGothic', 'Hiragino Kaku Gothic Pro', 'Osaka', 'Arial', 'Helvetica', sans-serif;
+}

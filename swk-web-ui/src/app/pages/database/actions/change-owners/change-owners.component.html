@@ -1,0 +1,34 @@
+<button nz-button nzType="primary" (click)="show()" *ngIf="!showText">
+  <i nz-icon nzType="user-switch" nzTheme="outline"></i>
+  {{ 'common.button.groupChange' | translate }}
+</button>
+<li nz-menu-item (click)="show()" *ngIf="showText">
+  <i nz-icon nzType="user-switch" nzTheme="outline"></i>
+  {{ 'common.button.groupChange' | translate }}
+</li>
+
+<nz-modal
+  [nzTitle]="'page.datastore.groupChange' | translate"
+  [(nzVisible)]="visible && loadfinished"
+  nzClosable="true"
+  (nzOnCancel)="visible = false"
+  (nzOnOk)="change()"
+  [nzOkDisabled]="!accessKey"
+>
+  <ng-template nzModalContent>
+    <nz-form-item>
+      <nz-form-label nzFor="accessKey" style="width: 100px">{{ 'page.datastore.groups' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-tree-select
+          [(ngModel)]="accessKey"
+          style="width: 300px"
+          [nzNodes]="selectNodes"
+          [nzMultiple]="false"
+          nzDefaultExpandAll
+          [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.datastore.groups' | translate }"
+          [nzAllowClear]="false"
+        ></nz-tree-select>
+      </nz-form-control>
+    </nz-form-item>
+  </ng-template>
+</nz-modal>

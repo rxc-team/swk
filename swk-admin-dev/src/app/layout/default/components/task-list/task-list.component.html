@@ -1,0 +1,136 @@
+<div class="container" [ngClass]="{ opend: visible }" [@openClose]="visible ? 'open' : 'closed'" *ngIf="!visible">
+  <button style="width: 32px" nz-button [nzType]="visible ? 'danger' : 'primary'" (click)="visible ? close() : open()">
+    <i nz-icon [nzType]="visible ? 'close' : 'schedule'" style="font-size: 1em"></i>
+  </button>
+</div>
+<nz-drawer
+  [nzClosable]="false"
+  [nzVisible]="visible"
+  nzPlacement="right"
+  [nzWidth]="320"
+  [nzTitle]="title"
+  (nzOnClose)="close()"
+>
+  <ng-template #title>
+    <div style="display: flex; justify-content: space-between">
+      <h3 style="flex: 1">{{ 'page.task.title' | translate }}</h3>
+      <button nz-button nzType="link" nzDanger="true" (click)="close()">
+        <i nz-icon nzType="close" style="font-size: 1em"></i>
+      </button>
+    </div>
+  </ng-template>
+  <ng-template nzDrawerContent>
+    <div class="job">
+      <div *ngFor="let job of runtimeJobs">
+        <nz-card style="width: 100%; margin-bottom: 16px" nzHoverable>
+          <div class="job-header">
+            <div style="display: flex">
+              <h3 style="flex: 1">
+                {{ 'page.task.name' | translate }}:
+                {{ job.job_name }}
+              </h3>
+              <i nz-icon nzType="close-circle" nzTheme="outline" (click)="clear(job.job_id)"></i>
+            </div>
+            <span>
+              {{ 'page.task.no' | translate }}:
+              {{ job.job_id }}
+            </span>
+          </div>
+          <div class="job-progress" *ngIf="job.show_progress">
+            <nz-progress
+              [nzPercent]="job.progress"
+              [nzStatus]="job.progress === 100 ? 'success' : 'normal'"
+            ></nz-progress>
+            <div class="job-progress-message" [style.color]="job.error_file.url ? 'red' : 'green'">
+              {{ job.message }}
+            </div>
+          </div>
+          <div class="job-progress" *ngIf="!job.show_progress">
+            <div class="job-progress-message" [style.color]="'blue'">
+              {{ job.message }}
+            </div>
+          </div>
+          <div class="job-steps" *ngIf="job.steps">
+            <nz-collapse nzAccordion>
+              <nz-collapse-panel nzHeader="STEPS">
+                <nz-steps
+                  *ngIf="!job.error_file || !job.error_file.url"
+                  [nzCurrent]="job.steps.indexOf(job.current_step) + 1"
+                  nzSize="small"
+                  nzDirection="vertical"
+                >
+                  <nz-step *ngFor="let step of job.steps" [nzTitle]="step"></nz-step>
+                </nz-steps>
+                <nz-steps
+                  *ngIf="job.error_file && job.error_file.url"
+                  [nzCurrent]="job.steps.indexOf(job.current_step)"
+                  nzSize="small"
+                  nzDirection="vertical"
+                >
+                  <nz-step *ngFor="let step of job.steps" [nzTitle]="step"></nz-step>
+                </nz-steps>
+              </nz-collapse-panel>
+            </nz-collapse>
+          </div>
+          <div *ngIf="job.task_type === 'ds-csv-import'" style="text-align: center; padding: 8px">
+            <div style="display: flex">
+              <span style="flex: 1; margin: 1px" class="solid_border ant-btn-primary">TOTAL</span>
+              <span style="flex: 1; margin: 1px" class="solid_border ant-btn-primary">INSERT</span>
+              <span style="flex: 1; margin: 1px" class="solid_border ant-btn-primary">UPDATE</span>
+            </div>
+            <div style="display: flex">
+              <span style="flex: 1; margin: 0 1px" class="solid_border">{{ job.total ? job.total : 0 }}</span>
+              <span style="flex: 1; margin: 0 1px" class="solid_border">{{ job.insert ? job.insert : 0 }}</span>
+              <span style="flex: 1; margin: 0 1px" class="solid_border">{{ job.update ? job.update : 0 }}</span>
+            </div>
+          </div>
+          <div class="job-info">
+            <div
+              *ngIf="
+                job.task_type === 'ds-csv-download' ||
+                job.task_type === 'ds-data-sync' ||
+                job.task_type === 'ds-csv-import' ||
+                job.task_type === 'rp-csv-download' ||
+                job.task_type === 'rp-xlsx-download' ||
+                job.task_type === 'ds-pdf-generation' ||
+                job.task_type === 'al-csv-download' ||
+                job.task_type === 'generate-report-data' ||
+                job.task_type === 'hs-csv-download'
+              "
+            >
+              <i nz-icon nzType="info-circle" nzTheme="outline"></i>
+              {{ job.origin | translate }}
+            </div>
+            <div *ngIf="job.start_time">
+              <i nz-icon nzType="clock-circle" nzTheme="outline"></i>
+              {{ job.start_time | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}
+            </div>
+            <div *ngIf="job.end_time">
+              <i nz-icon nzType="stop" nzTheme="outline"></i>
+              {{ job.end_time | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}
+            </div>
+          </div>
+          <div class="job-actions" *ngIf="job.error_file && job.error_file.url">
+            <button nz-button nzType="primary" nzSize="small" (click)="downloadLog(job.job_id)">
+              <i nz-icon nzType="file-text" nzTheme="outline"></i>
+              {{ 'page.task.downloadLog' | translate }}
+            </button>
+          </div>
+          <div class="job-actions" *ngIf="job.file && job.file.url">
+            <button nz-button nzType="primary" nzSize="small" (click)="downloadCsvFile(job.job_id)">
+              <i nz-icon nzType="file" nzTheme="outline"></i>
+              {{ 'page.task.download' | translate }}
+            </button>
+          </div>
+        </nz-card>
+      </div>
+    </div>
+    <nz-pagination
+      [(nzPageIndex)]="index"
+      [nzPageSize]="5"
+      [nzTotal]="total"
+      nzHideOnSinglePage="true"
+      (nzPageIndexChange)="search()"
+    ></nz-pagination>
+  </ng-template>
+</nz-drawer>

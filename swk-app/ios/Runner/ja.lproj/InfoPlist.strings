@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  Runner
+
+  Created by RXC on 2020/9/22.
+  Copyright © 2020 The Chromium Authors. All rights reserved.
+*/
+"NSCameraUsageDescription" = "カメラを使用してQRコードをスキャンする必要があります。許可してください！";
+"NSPhotoLibraryUsageDescription" = "写真とファイルをアップロードするには、アルバムファイルを読み取る必要があります。許可してください！";

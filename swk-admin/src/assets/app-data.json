@@ -1,0 +1,193 @@
+{
+  "app": {
+    "name": "ProPlusPit-Admin",
+    "version": "0.0.1-alpha"
+  },
+  "slideMenu": {
+    "main": [
+      {
+        "level": 1,
+        "path": "/home",
+        "title": "menu.home",
+        "icon": "home",
+        "open": false,
+        "selected": false,
+        "disabled": false
+      },
+      {
+        "level": 1,
+        "path": "/document",
+        "title": "menu.document",
+        "icon": "folder-open",
+        "open": false,
+        "selected": false,
+        "disabled": false
+      },
+      {
+        "level": 1,
+        "path": "/customer/setting",
+        "title": "menu.setting",
+        "icon": "setting",
+        "open": false,
+        "selected": false,
+        "disabled": false,
+        "children": [
+          {
+            "level": 2,
+            "path": "/customer/setting",
+            "title": "menu.customerSetting",
+            "open": false,
+            "selected": false,
+            "disabled": false
+          },
+          {
+            "level": 2,
+            "path": "customer/app/setting",
+            "title": "menu.appSetting",
+            "open": false,
+            "selected": false,
+            "disabled": false
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "path": "/",
+        "title": "menu.accessManage",
+        "icon": "safety",
+        "open": false,
+        "selected": false,
+        "disabled": false,
+        "children": [
+          {
+            "level": 2,
+            "path": "/user/list",
+            "title": "menu.userManage",
+            "icon": "user",
+            "open": false,
+            "selected": false,
+            "disabled": false
+          },
+          {
+            "level": 2,
+            "path": "/group/list",
+            "title": "menu.groupManage",
+            "icon": "apartment",
+            "open": false,
+            "selected": false,
+            "disabled": false
+          },
+          {
+            "level": 2,
+            "path": "/role/list",
+            "title": "menu.roleManage",
+            "icon": "team",
+            "open": false,
+            "selected": false,
+            "disabled": false
+          },
+          {
+            "level": 2,
+            "path": "/access/list",
+            "title": "menu.dataManage",
+            "icon": "safety-certificate",
+            "open": false,
+            "selected": false,
+            "disabled": false
+          }
+        ]
+      },
+      {
+        "level": 1,
+        "path": "/log",
+        "title": "menu.log",
+        "icon": "history",
+        "open": false,
+        "selected": false,
+        "disabled": false,
+        "children": [
+          {
+            "level": 2,
+            "path": "/schedule/job/list",
+            "title": "menu.jobList",
+            "open": false,
+            "selected": false,
+            "disabled": false
+          },
+          {
+            "level": 2,
+            "path": "/log/login",
+            "title": "menu.loginList",
+            "open": false,
+            "selected": false,
+            "disabled": false
+          },
+          {
+            "level": 2,
+            "path": "/log/operate",
+            "title": "menu.operateList",
+            "open": false,
+            "selected": false,
+            "disabled": false
+          }
+        ]
+      }
+    ],
+    "database": [
+      {
+        "level": 1,
+        "path": "/datastores/list",
+        "title": "menu.databaseManage",
+        "icon": "database",
+        "open": false,
+        "selected": false,
+        "disabled": false
+      },
+      {
+        "level": 1,
+        "path": "/language/list",
+        "title": "menu.languageManage",
+        "icon": "global",
+        "open": false,
+        "selected": false,
+        "disabled": false
+      },
+      {
+        "level": 1,
+        "path": "/workflow/list",
+        "title": "menu.workflowManage",
+        "icon": "node-expand",
+        "open": false,
+        "selected": false,
+        "disabled": false
+      },
+      {
+        "level": 1,
+        "path": "/option/list",
+        "title": "menu.optionManage",
+        "icon": "select",
+        "open": false,
+        "selected": false,
+        "disabled": false
+      },
+      {
+        "level": 1,
+        "path": "/report/list",
+        "title": "menu.reportManage",
+        "icon": "table",
+        "open": false,
+        "selected": false,
+        "disabled": false
+      },
+      {
+        "level": 1,
+        "path": "/dashboard/list",
+        "title": "menu.dashboardManage",
+        "icon": "dashboard",
+        "open": false,
+        "selected": false,
+        "disabled": false
+      }
+    ]
+  }
+}

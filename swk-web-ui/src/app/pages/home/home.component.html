@@ -1,0 +1,273 @@
+<div nz-row nzJustify="space-between" nzAlign="top">
+  <h2>{{ user.name + '(' + user.customer_name + ')' }}</h2>
+  <button nz-button nzType="primary" (click)="refresh()" nzSize="small" style="margin-top: 8px; margin-right: 16px">
+    <i nz-icon nzType="reload" nzTheme="outline"></i>
+  </button>
+</div>
+<!-- <div nz-row nzJustify="space-around" nzAlign="top" [nzGutter]="[16, 16]">
+  <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="6">
+    <nz-card nzHoverable="true" nzType="inner">
+      <div nz-row nzJustify="start" nzAlign="top">
+        <div nz-col nzSpan="16">
+          <nz-statistic
+            [nzValue]="databaseNumber"
+            [nzTitle]="dsTitle"
+            [nzPrefix]="dsPrefix"
+            [nzSuffix]="'page.home.unit.data' | translate"
+            [nzValueStyle]="{ color: '#3F8600' }"
+          ></nz-statistic>
+          <ng-template #dsTitle>
+            <h3 style="color: #888888">{{ 'page.home.datastore' | translate }}</h3>
+          </ng-template>
+          <ng-template #dsPrefix><i nz-icon nzType="arrow-up"></i></ng-template>
+        </div>
+        <div nz-col nzSpan="8" style="text-align: right">
+          <div
+            style="
+              text-align: center;
+              background-color: #f5365c;
+              border-radius: 50%;
+              padding: 8px;
+              width: 60px;
+              height: 60px;
+              line-height: 60px;
+            "
+            class="pull-right"
+          >
+            <i nz-icon nzType="database" style="font-size: 3em; color: white"></i>
+          </div>
+        </div>
+        <div nz-col nzSpan="24" style="margin: 4px 0; border-top: 1px solid #eeeeee">
+          <p style="line-height: 1em; margin: 0; padding-top: 8px">
+            <i nz-icon nzType="clock-circle" nzTheme="outline"></i>
+            <i>{{ 'common.text.updateDate' | translate }} {{ time }}</i>
+          </p>
+        </div>
+      </div>
+    </nz-card>
+  </div>
+  <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="6">
+    <nz-card nzHoverable="true" nzType="inner">
+      <div nz-row nzJustify="start" nzAlign="top">
+        <div nz-col nzSpan="16">
+          <nz-statistic
+            [nzValue]="reportNumber"
+            [nzTitle]="reportTitle"
+            [nzPrefix]="reportPrefix"
+            [nzSuffix]="'page.home.unit.piece' | translate"
+            [nzValueStyle]="{ color: '#FB6340' }"
+          ></nz-statistic>
+          <ng-template #reportTitle>
+            <h3 style="color: #888888">{{ 'page.home.report' | translate }}</h3>
+          </ng-template>
+          <ng-template #reportPrefix>
+            <i nz-icon nzType="filter" nzTheme="outline"></i>
+          </ng-template>
+        </div>
+        <div nz-col nzSpan="8" style="text-align: right">
+          <div
+            style="
+              text-align: center;
+              background-color: #fb6340;
+              border-radius: 50%;
+              padding: 8px;
+              width: 60px;
+              height: 60px;
+              line-height: 60px;
+            "
+            class="pull-right"
+          >
+            <i nz-icon nzType="area-chart" style="font-size: 3em; color: white"></i>
+          </div>
+        </div>
+        <div nz-col nzSpan="24" style="margin: 4px 0; border-top: 1px solid #eeeeee">
+          <p style="line-height: 1em; margin: 0; padding-top: 8px">
+            <i nz-icon nzType="clock-circle" nzTheme="outline"></i>
+            <i>{{ 'common.text.updateDate' | translate }} {{ time }}</i>
+          </p>
+        </div>
+      </div>
+    </nz-card>
+  </div>
+  <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="6">
+    <nz-card nzHoverable="true" nzType="inner">
+      <div nz-row nzJustify="start" nzAlign="top">
+        <div nz-col nzSpan="16">
+          <nz-statistic
+            [nzValue]="documentNumber"
+            [nzTitle]="docTitle"
+            [nzPrefix]="docPrefix"
+            [nzSuffix]="'page.home.unit.item' | translate"
+            [nzValueStyle]="{ color: '#6E68E4' }"
+          ></nz-statistic>
+          <ng-template #docTitle>
+            <h3 style="color: #888888">{{ 'page.home.document' | translate }}</h3>
+          </ng-template>
+          <ng-template #docPrefix>
+            <i nz-icon nzType="file" nzTheme="outline"></i>
+          </ng-template>
+        </div>
+        <div nz-col nzSpan="8" style="text-align: right">
+          <div
+            style="
+              text-align: center;
+              background-color: #6e68e4;
+              border-radius: 50%;
+              padding: 8px;
+              width: 60px;
+              height: 60px;
+              line-height: 60px;
+            "
+            class="pull-right"
+          >
+            <i nz-icon nzType="file-search" style="font-size: 3em; color: white"></i>
+          </div>
+        </div>
+        <div nz-col nzSpan="24" style="margin: 4px 0; border-top: 1px solid #eeeeee">
+          <p style="line-height: 1em; margin: 0; padding-top: 8px">
+            <i nz-icon nzType="clock-circle" nzTheme="outline"></i>
+            <i>{{ 'common.text.updateDate' | translate }} {{ time }}</i>
+          </p>
+        </div>
+      </div>
+    </nz-card>
+  </div>
+  <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="6">
+    <nz-card nzHoverable="true" nzType="inner">
+      <div nz-row nzJustify="start" nzAlign="top">
+        <div nz-col nzSpan="16">
+          <nz-statistic
+            [nzValue]="(unReadmessages$ | async).length"
+            [nzTitle]="noTitle"
+            [nzPrefix]="noPrefix"
+            [nzSuffix]="'page.home.unit.unread' | translate"
+            [nzValueStyle]="{ color: '#11CDEF' }"
+          ></nz-statistic>
+          <ng-template #noTitle>
+            <h3 style="color: #888888">{{ 'page.home.notice' | translate }}</h3>
+          </ng-template>
+          <ng-template #noPrefix><i nz-icon nzType="message"></i></ng-template>
+        </div>
+        <div nz-col nzSpan="8" style="text-align: right">
+          <div
+            style="
+              text-align: center;
+              background-color: #11cdef;
+              border-radius: 50%;
+              padding: 8px;
+              width: 60px;
+              height: 60px;
+              line-height: 60px;
+            "
+            class="pull-right"
+          >
+            <i nz-icon nzType="bell" style="font-size: 3em; color: white"></i>
+          </div>
+        </div>
+        <div nz-col nzSpan="24" style="margin: 4px 0; border-top: 1px solid #eeeeee">
+          <p style="line-height: 1em; margin: 0; padding-top: 8px">
+            <i nz-icon nzType="clock-circle" nzTheme="outline"></i>
+            <i>{{ 'common.text.updateDate' | translate }} {{ time }}</i>
+          </p>
+        </div>
+      </div>
+    </nz-card>
+  </div>
+</div> -->
+<div nz-row nzJustify="space-around" nzAlign="top" [nzGutter]="[16, 16]">
+  <div nz-col nzXs="24" nzSm="24" nzMd="24">
+    <nz-card [nzTitle]="'page.home.dashboard' | translate" nzType="inner" nzSize="small">
+      <nz-tabset>
+        <nz-tab [nzTitle]="item.dashboard_name | translate" *ngFor="let item of dashboards">
+          <ng-template nz-tab>
+            <div style="position: absolute; top: 50px; right: 12px; display: flex">
+              <span style="padding: 0 10px">{{ dashUpdateTime }}</span>
+              <button nz-button (click)="genReportData(item.report_id)" nzSize="small">
+                <i nz-icon nzType="reload" nzTheme="outline"></i>
+              </button>
+              <a nz-button nzSize="small" [routerLink]="['/report/' + item.report_id + '/list']">
+                <i nz-icon nzType="arrow-right" nzTheme="outline"></i>
+              </a>
+            </div>
+            <ng-container [ngSwitch]="item.dashboard_type">
+              <ng-container *ngSwitchCase="'line'">
+                <app-line-chart [dashboardId]="item.dashboard_id" [change]="dashUpdateTime" [gField]="item.g_field_id"
+                  [xRange]="item.x_range" [yRange]="item.y_range" [tickType]="item.tick_type" [ticks]="item.ticks"
+                  [tickCount]="item.tick_count" [limitInPlot]="item.limit_in_plot" [smooth]="item.smooth"
+                  [isStack]="item.is_stack" [stepType]="item.step_type" [slider]="item.slider"></app-line-chart>
+              </ng-container>
+              <ng-container *ngSwitchCase="'area'">
+                <app-area-chart [dashboardId]="item.dashboard_id" [change]="dashUpdateTime" [gField]="item.g_field_id"
+                  [xRange]="item.x_range" [yRange]="item.y_range" [tickType]="item.tick_type" [ticks]="item.ticks"
+                  [tickCount]="item.tick_count" [limitInPlot]="item.limit_in_plot" [smooth]="item.smooth"
+                  [isStack]="item.is_stack" [isPercent]="item.is_percent" [slider]="item.slider"></app-area-chart>
+              </ng-container>
+              <ng-container *ngSwitchCase="'bar'">
+                <app-bar-chart [dashboardId]="item.dashboard_id" [change]="dashUpdateTime" [gField]="item.g_field_id"
+                  [xRange]="item.x_range" [yRange]="item.y_range" [tickType]="item.tick_type" [ticks]="item.ticks"
+                  [tickCount]="item.tick_count" [limitInPlot]="item.limit_in_plot" [smooth]="item.smooth"
+                  [isStack]="item.is_stack" [isPercent]="item.is_percent" [isGroup]="item.is_group"
+                  [minBarWidth]="item.min_bar_width" [maxBarWidth]="item.max_bar_width"
+                  [scrollbar_type]="item.scrollbar.type" [scrollbar_width]="item.scrollbar.width"
+                  [scrollbar_height]="item.scrollbar.height"
+                  [scrollbar_categorySize]="item.scrollbar.category_size"></app-bar-chart>
+              </ng-container>
+              <ng-container *ngSwitchCase="'column'">
+                <app-column-chart [dashboardId]="item.dashboard_id" [change]="dashUpdateTime" [gField]="item.g_field_id"
+                  [xRange]="item.x_range" [yRange]="item.y_range" [tickType]="item.tick_type" [ticks]="item.ticks"
+                  [tickCount]="item.tick_count" [limitInPlot]="item.limit_in_plot" [smooth]="item.smooth"
+                  [isStack]="item.is_stack" [isPercent]="item.is_percent" [isGroup]="item.is_group"
+                  [minColumnWidth]="item.min_bar_width" [maxColumnWidth]="item.max_bar_width"
+                  [scrollbar_type]="item.scrollbar.type" [scrollbar_width]="item.scrollbar.width"
+                  [scrollbar_height]="item.scrollbar.height"
+                  [scrollbar_categorySize]="item.scrollbar.category_size"></app-column-chart>
+              </ng-container>
+              <ng-container *ngSwitchCase="'histogram'">
+                <app-histogram-chart [dashboardId]="item.dashboard_id" [change]="dashUpdateTime"
+                  [gField]="item.g_field_id" [xRange]="item.x_range" [yRange]="item.y_range" [tickType]="item.tick_type"
+                  [ticks]="item.ticks" [tickCount]="item.tick_count" [limitInPlot]="item.limit_in_plot"
+                  [binWidth]="item.bin_width"></app-histogram-chart>
+              </ng-container>
+              <ng-container *ngSwitchCase="'pie'">
+                <app-pie-chart [dashboardId]="item.dashboard_id" [change]="dashUpdateTime"
+                  [limitInPlot]="item.limit_in_plot" [radius]="item.radius" [innerRadius]="item.inner_radius"
+                  [startAngle]="item.start_angle" [endAngle]="item.end_angle"></app-pie-chart>
+              </ng-container>
+              <ng-container *ngSwitchCase="'point'">
+                <app-point-chart [dashboardId]="item.dashboard_id" [change]="dashUpdateTime"
+                  [limitInPlot]="item.limit_in_plot"></app-point-chart>
+              </ng-container>
+              <ng-container *ngSwitchCase="'radar'">
+                <app-radar-chart [dashboardId]="item.dashboard_id" [change]="dashUpdateTime"
+                  [limitInPlot]="item.limit_in_plot" [radius]="item.radius" [startAngle]="item.start_angle"
+                  [endAngle]="item.end_angle"></app-radar-chart>
+              </ng-container>
+            </ng-container>
+          </ng-template>
+        </nz-tab>
+      </nz-tabset>
+
+      <div *ngIf="dashboards.length === 0">
+        <nz-empty></nz-empty>
+      </div>
+    </nz-card>
+  </div>
+  <!-- <div nz-col nzXs="24" nzSm="24" nzMd="8">
+    <nz-card [nzTitle]="'page.home.notice' | translate" nzType="inner" nzSize="small">
+      <nz-alert [nzMessage]="message" (nzOnClose)="changeStatus(item.message_id)" nzCloseable
+        *ngFor="let item of (unReadmessages$ | async).slice(0, 5)" [nzDescription]="content" style="margin-bottom: 8px">
+        <ng-template #message>
+          <div style="display: flex; flex-direction: column">
+            <span>{{ item.sender }}</span>
+            <span style="font-size: 12px">{{ item.send_time | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}</span>
+          </div>
+        </ng-template>
+        <ng-template #content>
+          <span *ngIf="!item.code">{{ item.content }}</span>
+          <span *ngIf="item.code">{{ 'common.message.info.' + item.code | translate }}</span>
+        </ng-template>
+      </nz-alert>
+      <nz-empty *ngIf="(unReadmessages$ | async).length == 0"></nz-empty>
+    </nz-card>
+  </div>
+</div> -->

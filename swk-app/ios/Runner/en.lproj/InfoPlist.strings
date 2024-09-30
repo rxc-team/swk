@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  Runner
+
+  Created by RXC on 2020/9/22.
+  Copyright © 2020 The Chromium Authors. All rights reserved.
+*/
+"NSCameraUsageDescription" = "We need to start your camera when scanning a label such as a QR code and taking inventory";
+"NSPhotoLibraryUsageDescription" = "We need to read your album files in order to upload pictures or files";

@@ -1,0 +1,7 @@
+<span class="menu" nz-popover nzPopoverPlacement="bottomRight" [nzPopoverContent]="profile" nzPopoverTrigger="click">
+  <nz-avatar nzIcon="user" [nzSrc]="userInfo.avatar"></nz-avatar>
+  <span *ngIf="isSmall">&nbsp;&nbsp;{{ userInfo.name }}</span>
+</span>
+<ng-template #profile>
+  <app-header-profile [isSmall]="isSmall"></app-header-profile>
+</ng-template>

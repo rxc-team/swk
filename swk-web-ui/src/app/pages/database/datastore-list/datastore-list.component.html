@@ -1,0 +1,183 @@
+<div class="search" *ngIf="true">
+  <nz-collapse [nzBordered]="true">
+    <nz-collapse-panel [nzHeader]="'common.text.search' | translate">
+      <app-search-view [controls]="controlArray" [fields]="fields" (search)="searchDatabaseItems(true)"
+        (queryChange)="queryChange($event)"></app-search-view>
+    </nz-collapse-panel>
+  </nz-collapse>
+  <!-- button -->
+  <div style="padding-top: 16px" *ngIf="!isSmall; else elseButtonZoom">
+    <div nz-row nzJustify="space-between" nzAlign="top">
+      <div nz-col>
+        <nz-button-group>
+          <button nz-button nzType="primary" (click)="add()" appAccess action="insert">
+            <i nz-icon nzType="plus"></i>
+            {{ 'common.button.new' | translate }}
+          </button>
+          <app-import-from [conditionParam]="conditionParam" appAccess action="mapping"></app-import-from>
+          <app-print-view [pages]="pages" [dataSet]="items" [fields]="printFields" [qrFields]="qrFields"
+            [qrConnector]="qrConnector" appAccess action="print"></app-print-view>
+          <button nz-button nzType="primary" (click)="refresh()">
+            <i nz-icon nzType="sync" nzTheme="outline"></i>
+            {{ 'common.button.refresh' | translate }}
+          </button>
+        </nz-button-group>
+      </div>
+      <div nz-col>
+        <nz-button-group>
+          <button nz-button nzType="primary" nzDanger (click)="clear()" appAccess action="clear">
+            <i nz-icon nzType="delete"></i>
+            {{ 'common.button.clearDatastore' | translate }}
+          </button>
+          <button nz-button nzType="primary" nzDanger (click)="clearSelected()" appAccess action="batch_delete">
+            <i nz-icon nzType="delete"></i>
+            {{ 'common.button.deleteSelectedItems' | translate }}
+          </button>
+          <app-change-owners [conditionParam]="conditionParam" appAccess action="group"></app-change-owners>
+          <button nz-button nzType="primary" (click)="onlineDownloadPrsCsv()" appAccess action="principal_repayment">
+            <i nz-icon nzType="download"></i>
+            {{ 'common.button.csvDownloadPrsTitle' | translate }}
+          </button>
+          <app-change-history appAccess action="history" [canCheck]="canCheck"></app-change-history>
+          <button nz-button nzType="primary" (click)="onlineDownloadCsv()" appAccess action="data">
+            <i nz-icon nzType="download"></i>
+            {{ 'common.button.csvDownloadDataTitle' | translate }}
+          </button>
+          <app-upload-modal [fields]="fields"></app-upload-modal>
+        </nz-button-group>
+      </div>
+    </div>
+  </div>
+  <!-- 画面变小，折叠按钮 -->
+  <ng-template #elseButtonZoom>
+    <div nz-row style="padding-top: 16px">
+      <nz-button-group>
+        <button nz-button nzType="primary" (click)="refresh()">
+          <i nz-icon nzType="sync" nzTheme="outline"></i>
+          {{ 'common.button.refresh' | translate }}
+        </button>
+        <button nz-button nz-dropdown nzType="primary" [nzDropdownMenu]="buttonZoom" [(nzVisible)]="isZoomFlg"
+          nzPlacement="bottomLeft">
+          <i nz-icon nzType="ellipsis"></i>
+        </button>
+      </nz-button-group>
+      <nz-dropdown-menu #buttonZoom="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+          <li nz-menu-item (click)="add()" appAccess action="insert">
+            <i nz-icon nzType="plus"></i>
+            {{ 'common.button.new' | translate }}
+          </li>
+          <app-import-from [conditionParam]="conditionParam" [showText]="true" appAccess
+            action="mapping"></app-import-from>
+          <app-print-view [pages]="pages" [dataSet]="items" [fields]="printFields" [qrFields]="qrFields"
+            [qrConnector]="qrConnector" [showText]="true" appAccess action="print"></app-print-view>
+          <li nz-menu-item (click)="clear()" appAccess action="clear">
+            <i nz-icon nzType="delete"></i>
+            {{ 'common.button.clearDatastore' | translate }}
+          </li>
+          <li nz-menu-item (click)="clearSelected()" appAccess action="batch_delete">
+            <i nz-icon nzType="delete"></i>
+            {{ 'common.button.deleteSelectedItems' | translate }}
+          </li>
+          <app-change-owners [conditionParam]="conditionParam" [showText]="true" appAccess
+            action="group"></app-change-owners>
+          <li nz-menu-item (click)="onlineDownloadPrsCsv()" appAccess action="principal_repayment">
+            <i nz-icon nzType="download"></i>
+            {{ 'common.button.csvDownloadPrsTitle' | translate }}
+          </li>
+          <app-change-history [showText]="true" appAccess action="history" [canCheck]="canCheck"></app-change-history>
+          <li nz-menu-item (click)="onlineDownloadCsv()" appAccess action="data">
+            <i nz-icon nzType="download"></i>
+            {{ 'common.button.csvDownloadDataTitle' | translate }}
+          </li>
+          <app-upload-modal [fields]="fields" [showText]="true"></app-upload-modal>
+        </ul>
+      </nz-dropdown-menu>
+    </div>
+  </ng-template>
+
+  <!-- 数据 -->
+  <div class="db">
+    <nz-spin [nzSpinning]="loading">
+      <nz-table #basicTable nzSize="middle" nzShowSizeChanger [nzData]="dataSet" [nzTotal]="total"
+        [nzShowTotal]="rangeTemplate" [nzFrontPagination]="false" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize"
+        [nzPageSizeOptions]="[50, 100, 200, 500]" [nzScroll]="{ x: '1200px', y: '300px' }" nzBordered
+        [nzLoadingDelay]="500" [nzTitle]="title" (nzQueryParams)="onQueryParamsChange($event)">
+        <thead>
+          <tr>
+            <th *ngIf="isClear" [(nzChecked)]="checked" nzWidth="60px" (nzCheckedChange)="allChecked($event)"
+              [nzIndeterminate]="indeterminate"></th>
+            <th nzWidth="60px">{{ 'page.datastore.no' | translate }}</th>
+            <th *ngFor="let f of displayFields" [nzWidth]="f.width + 'px'"
+              [nzShowSort]="f.field_type !== 'file' && f.field_type !== 'user'" [nzSortFn]="true"
+              [nzSortPriority]="true" [nzColumnKey]="f.field_id" [title]="f.field_id">
+              {{ f.field_name | translate }}
+            </th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr (click)="goTo(row.items[0].value)" *ngFor="let row of basicTable.data">
+            <td *ngIf="isClear" [nzChecked]="setOfChecked.has(row.items[0].value)"
+              (nzCheckedChange)="updateCheckedSet(row.items[0].value, $event)"></td>
+            <td *ngFor="let col of row.items.slice(1); let i = index">
+              <div [ngSwitch]="col.data_type" class="content">
+                <!--Text-->
+                <div *ngSwitchDefault class="text">
+                  <span [title]="col.value">{{ col.value }}</span>
+                </div>
+                <div *ngSwitchCase="'number'" class="text" style="text-align: right">
+                  <span style="padding: 0 2px" [title]="col.value | number: '1.0-9'">
+                    {{ col.value | number: '1.0-9' }}
+                  </span>
+                </div>
+                <div *ngSwitchCase="'user'" class="text">
+                  <span [title]="col.value">
+                    {{ col.value }}
+                  </span>
+                </div>
+                <div *ngSwitchCase="'options'" class="text">
+                  <span [title]="col.value | translate">
+                    {{ col.value | translate }}
+                  </span>
+                </div>
+                <div *ngSwitchCase="'file'" class="text">
+                  <span style="padding: 0 2px" [title]="it.name" *ngFor="let it of col.value">
+                    <a [href]="it.url" (click)="$event.stopPropagation()" target="_blank">{{ it.name }}</a>
+                  </span>
+                </div>
+                <div *ngSwitchCase="'lookup'" class="text">
+                  <span [title]="col.value">
+                    {{ col.value }}
+                  </span>
+                </div>
+              </div>
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-spin>
+    <ng-template #rangeTemplate let-range="range" let-total>
+      {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+    </ng-template>
+
+    <ng-template #title>
+      <div style="display: flex">
+        <h3 style="flex: 1">
+          {{ 'route.databaseListTitle' | translate }}
+        </h3>
+        <div>
+          <button nz-button (click)="printList()" appAccess action="pdf" nz-tooltip
+            [nzTooltipTitle]="'common.button.pdfGenerate' | translate">
+            <i nz-icon nzType="printer" nzTheme="outline"></i>
+          </button>
+          <button nz-button (click)="downloadCSV()" appAccess action="tpl" nz-tooltip
+            [nzTooltipTitle]="'common.button.csvDownloadTempTitle' | translate">
+            <i nz-icon nzType="download"></i>
+          </button>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</div>

@@ -1,0 +1,439 @@
+<div class="datastore">
+  <div style="height: 100%; overflow: hidden">
+    <div nz-row nzJustify="space-around" nzAlign="top">
+      <div nz-col [nzMd]="24" [nzLg]="18">
+        <nz-card style="height: 50px" *ngIf="false">
+          {{ 'page.datastore.detail.status' | translate }}
+        </nz-card>
+        <nz-card [nzTitle]="fileTitle" nzType="inner" nzSize="small">
+          <form nz-form nzLayout="vertical">
+            <div [style.height.px]="height">
+              <gridster [options]="options" [ngClass]="{
+                  undraggable: !options.draggable.enabled
+                }">
+                <gridster-item [item]="item" *ngFor="let item of listData; let i = index"
+                  [ngClass]="{ label: item.type === 'text' && item.as_title }">
+                  <div [ngSwitch]="item.type">
+                    <div *ngSwitchCase="'text'" class="box">
+                      <ng-container *ngIf="item.as_title; then thenTemplate; else elseTemplate"></ng-container>
+                      <ng-template #thenTemplate>
+                        <nz-form-item style="width: 100%">
+                          <span class="label-title">▼ {{ item.name | translate }}</span>
+                        </nz-form-item>
+                      </ng-template>
+                      <ng-template #elseTemplate>
+                        <nz-form-item style="width: 100%">
+                          <nz-form-label [nzRequired]="item.is_required" class="title">
+                            {{ item.name | translate }}
+                          </nz-form-label>
+                          <nz-form-control style="width: 100%">
+                            <span class="value" [title]="item.value">{{ item.value }}</span>
+                          </nz-form-control>
+                        </nz-form-item>
+                      </ng-template>
+                    </div>
+                    <div *ngSwitchCase="'textarea'">
+                      <nz-form-item style="width: 100%">
+                        <nz-form-label [nzRequired]="item.is_required" class="title">
+                          {{ item.name | translate }}
+                        </nz-form-label>
+                        <nz-form-control style="width: 100%">
+                          <textarea nz-input readonly [rows]="item.rows - 1">{{ item.value }}</textarea>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                    <div *ngSwitchCase="'number'" class="box">
+                      <nz-form-item style="width: 100%">
+                        <nz-form-label [nzRequired]="item.is_required" class="title">
+                          {{ item.name | translate }}
+                        </nz-form-label>
+                        <nz-form-control style="width: 100%">
+                          <span class="value text-right">{{ item.value | number: '1.0-9' }}</span>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                    <div *ngSwitchCase="'autonum'" class="box">
+                      <nz-form-item style="width: 100%">
+                        <nz-form-label [nzRequired]="item.is_required" class="title">
+                          {{ item.name | translate }}
+                        </nz-form-label>
+                        <nz-form-control style="width: 100%">
+                          <span class="value">{{ item.value }}</span>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                    <div *ngSwitchCase="'date'" class="box">
+                      <nz-form-item style="width: 100%">
+                        <nz-form-label [nzRequired]="item.is_required" class="title">
+                          {{ item.name | translate }}
+                        </nz-form-label>
+                        <nz-form-control style="width: 100%">
+                          <span class="value">{{ item.value }}</span>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                    <div *ngSwitchCase="'time'" class="box">
+                      <nz-form-item style="width: 100%">
+                        <nz-form-label [nzRequired]="item.is_required" class="title">
+                          {{ item.name | translate }}
+                        </nz-form-label>
+                        <nz-form-control style="width: 100%">
+                          <span class="value">{{ item.value }}</span>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                    <div *ngSwitchCase="'switch'" class="box">
+                      <nz-form-item style="width: 100%">
+                        <nz-form-label [nzRequired]="item.is_required" class="title">
+                          {{ item.name | translate }}
+                        </nz-form-label>
+                        <nz-form-control style="width: 100%">
+                          <nz-switch [(ngModel)]="item.value" [ngModelOptions]="{ standalone: true }"
+                            nzDisabled></nz-switch>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                    <div *ngSwitchCase="'options'" class="box">
+                      <nz-form-item style="width: 100%">
+                        <nz-form-label [nzRequired]="item.is_required" class="title">
+                          {{ item.name | translate }}
+                        </nz-form-label>
+                        <nz-form-control style="width: 100%">
+                          <span class="value" [title]="item.value | translate">{{ item.value | translate }}</span>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                    <div *ngSwitchCase="'lookup'" class="box">
+                      <nz-form-item style="width: 100%">
+                        <nz-form-label [nzRequired]="item.is_required" class="title">
+                          {{ item.name | translate }}
+                        </nz-form-label>
+                        <nz-form-control style="width: 100%">
+                          <span class="value" *ngIf="item.value" [title]="item.value">
+                            <a (click)="toDetail(item.lookup_datastore_id, item.lookup_field_id, item.value)">
+                              {{ item.value }}
+                            </a>
+                          </span>
+                          <span class="value" *ngIf="!item.value"></span>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                    <div *ngSwitchCase="'user'">
+                      <nz-form-item style="width: 100%">
+                        <nz-form-label [nzRequired]="item.is_required" class="title">
+                          {{ item.name | translate }}
+                        </nz-form-label>
+                        <nz-form-control style="width: 100%; overflow: auto">
+                          <div style="display: flex; flex-direction: row; overflow-x: auto; padding: 4px 0">
+                            <span [title]="it" *ngFor="let it of item.value" class="user-value">
+                              <nz-avatar nzIcon="user" nzSize="small"></nz-avatar>
+                              {{ it }}
+                            </span>
+                          </div>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                    <div *ngSwitchCase="'file'">
+                      <nz-form-item style="width: 100%">
+                        <nz-form-label [nzRequired]="item.is_required" class="title">
+                          {{ item.name | translate }}
+                        </nz-form-label>
+                        <nz-form-control style="width: 100%">
+                          <span *ngIf="item.image" class="img-box">
+                            <nz-image-group>
+                              <img nz-image [height]="item.rows * 32 - 10" [width]="item.rows * 32 - 10"
+                                [nzSrc]="file.url" [alt]="file.name" *ngFor="let file of item.value" />
+                            </nz-image-group>
+                          </span>
+                          <span *ngIf="!item.image" class="file-box">
+                            <span class="value" *ngFor="let file of item.value">
+                              <a [href]="file.url" (click)="$event.stopPropagation()" target="_blank">
+                                {{ file.name }}
+                              </a>
+                            </span>
+                          </span>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                    <div *ngSwitchDefault class="box">
+                      <nz-form-item style="width: 100%">
+                        <nz-form-label [nzRequired]="item.is_required" class="title">
+                          {{ item.name | translate }}
+                        </nz-form-label>
+                        <nz-form-control style="width: 100%">
+                          <span class="value" [title]="item.value">{{ item.value }}</span>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                  </div>
+                </gridster-item>
+              </gridster>
+            </div>
+          </form>
+          <ng-template #fileTitle>
+            <i nz-icon nzType="profile"></i>
+            <span>{{ 'page.datastore.detail.info' | translate }} - {{ title }}</span>
+          </ng-template>
+        </nz-card>
+        <div class="card-container solid_border" *ngIf="lookupDatastoresInfos.length > 0">
+          <nz-tabset nzType="card">
+            <nz-tab [nzTitle]="item.datastore_id | datastore | async | translate"
+              *ngFor="let item of lookupDatastoresInfos">
+              <app-item-list [datastoreId]="item.datastore_id" [conditions]="item.conditions"
+                [conditionType]="item.condition_type"></app-item-list>
+            </nz-tab>
+          </nz-tabset>
+        </div>
+        <nz-card style="height: 100%; margin-top: 16px" [nzTitle]="sysTitle" nzType="inner" nzSize="small">
+          <div nz-row nzJustify="space-between" nzAlign="top">
+            <div nz-col [nzSm]="12" [nzXs]="24" *ngFor="let item of footerItems; let i = index">
+              <div style="height: 100%; padding: 0">
+                <span class="sys-title">{{ item.name | translate }}：</span>
+                <span class="sys-value" *ngIf="item.type === 'date'">
+                  {{ item.value | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}
+                </span>
+                <span class="sys-value" *ngIf="item.type === 'user'">
+                  {{ item.value }}
+                </span>
+                <span class="sys-value" *ngIf="item.type === 'group'">
+                  <span *ngFor="let g of item.value">
+                    {{ g | translate }}
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <ng-template #sysTitle>
+            <i nz-icon nzType="safety-certificate" nzTheme="outline"></i>
+            <span>{{ 'page.datastore.detail.systeminfo' | translate }}</span>
+          </ng-template>
+        </nz-card>
+      </div>
+      <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="24" [nzLg]="5">
+        <div class="solid_border" style="padding: 4px">
+          <nz-tabset nzType="card">
+            <nz-tab [nzTitle]="'page.datastore.detail.operate' | translate">
+              <nz-collapse nzAccordion>
+                <nz-collapse-panel [nzHeader]="'page.datastore.detail.approval' | translate">
+                  <nz-space nzDirection="vertical" style="width: 100%">
+                    <ng-container *ngFor="let item of workflows">
+                      <div *nzSpaceItem>
+                        <button nz-button nzBlock nzType="primary" (click)="update({ wfId: item.wf_id })"
+                          [disabled]="!item.is_valid || status !== '1'">
+                          <i nz-icon nzType="audit" nzTheme="outline"></i>
+                          {{ item.menu_name | translate }}
+                        </button>
+                      </div>
+                    </ng-container>
+                    <nz-empty *ngIf="workflows.length === 0"></nz-empty>
+                  </nz-space>
+                </nz-collapse-panel>
+                <nz-collapse-panel [nzHeader]="'page.datastore.detail.data' | translate" nzActive="true">
+                  <div appAccess action="update" [change]="change" style="margin-bottom: 8px">
+                    <button nz-button nzBlock nzType="primary" (click)="update({ wfId: '', action: '' })"
+                      [disabled]="status !== '1'">
+                      <i nz-icon nzType="edit" nzTheme="outline"></i>
+                      {{ 'common.button.update' | translate }}
+                    </button>
+                  </div>
+                  <div appAccess action="copy_insert" [change]="change" style="margin-bottom: 8px">
+                    <button nz-button nzBlock nzType="primary" (click)="add()" [disabled]="status !== '1'">
+                      <i nz-icon nzType="copy" nzTheme="outline"></i>
+                      {{ 'common.button.copyNew' | translate }}
+                    </button>
+                  </div>
+                  <div appAccess action="delete" [change]="change" style="margin-bottom: 8px">
+                    <button nz-button nzBlock nzType="primary" (click)="delete()"
+                      [disabled]="status !== '1' || !canDelete">
+                      <i nz-icon nzType="delete" nzTheme="outline"></i>
+                      {{ 'common.button.delete' | translate }}
+                    </button>
+                  </div>
+                  <div appAccess action="group" [change]="change" style="margin-bottom: 8px">
+                    <button nz-button nzBlock nzType="primary" (click)="show()">
+                      <i nz-icon nzType="user-switch" nzTheme="outline"></i>
+                      {{ 'common.button.groupChange' | translate }}
+                    </button>
+                  </div>
+                </nz-collapse-panel>
+                <nz-collapse-panel [nzHeader]="'page.datastore.detail.lease' | translate" nzActive="true"
+                  *ngIf="datastoreApiKey === 'keiyakudaicho'">
+                  <div appAccess action="contract_update" [change]="change" style="margin-bottom: 8px">
+                    <button nz-button nzBlock nzType="primary" (click)="update({ wfId: '', action: 'info' })"
+                      [disabled]="status !== '1' || canChange">
+                      <i nz-icon nzType="edit" nzTheme="outline"></i>
+                      {{ 'common.button.contractUpdate' | translate }}
+                    </button>
+                  </div>
+                  <div appAccess action="midway_cancel" [change]="change" style="margin-bottom: 8px">
+                    <button nz-button nzBlock nzType="primary" (click)="update({ wfId: '', action: 'cancel' })"
+                      [disabled]="status !== '1' || canTerminate">
+                      <i nz-icon nzType="edit" nzTheme="outline"></i>
+                      {{ 'common.button.midwayCancel' | translate }}
+                    </button>
+                  </div>
+                  <div appAccess action="estimate_update" [change]="change" style="margin-bottom: 8px">
+                    <button nz-button nzBlock nzType="primary" (click)="update({ wfId: '', action: 'debt' })"
+                      [disabled]="status !== '1' || canChange || notNormalLease">
+                      <i nz-icon nzType="edit" nzTheme="outline"></i>
+                      {{ 'common.button.estimateUpdate' | translate }}
+                    </button>
+                  </div>
+                  <div appAccess action="contract_expire" [change]="change" style="margin-bottom: 8px">
+                    <button nz-button nzBlock nzType="primary" (click)="update({ wfId: '', action: 'expire' })"
+                      [disabled]="status !== '1' || hasExpire">
+                      <i nz-icon nzType="edit" nzTheme="outline"></i>
+                      {{ 'common.button.contractExpire' | translate }}
+                    </button>
+                  </div>
+                </nz-collapse-panel>
+              </nz-collapse>
+            </nz-tab>
+            <nz-tab [nzTitle]="historyTitle">
+              <!-- <ng-template #historyTitle>{{ 'page.datastore.detail.history' | translate }} ({{ total }})</ng-template> -->
+              <ng-template #historyTitle>{{ 'page.datastore.detail.history' | translate }}</ng-template>
+              <!-- <nz-empty *ngIf="historyData.length === 0"></nz-empty>
+              <div style="height: 300px; overflow: auto">
+                <nz-timeline nzMode="left">
+                  <nz-timeline-item *ngFor="let history of historyData"
+                    [nzColor]="history.history_type === 'insert' ? 'green' : 'blue'">
+                    <div style="padding: 4px">
+                      {{ history.created_by | user: userList }}
+                      <span class="pull-right">
+                        {{ history.created_at | dateFormat: 'yyyy-MM-dd' }}
+                      </span>
+                      <ng-container *ngIf="history.history_type === 'insert'; else elseTemplate">
+                        <div style="padding: 4px 4px 4px 0">
+                          {{ 'page.datastore.detail.historyChangeTips' | translate: { number: history.total_changes } }}
+                          <i nz-icon nzType="search" nzTheme="outline" style="color: blue"
+                            (click)="showHistoryModal(history)"></i>
+                        </div>
+                      </ng-container>
+                      <ng-template #elseTemplate>
+                        <div style="padding: 4px 8px 4px 0">
+                          {{ 'page.datastore.detail.historyChangeTips' | translate: { number: history.total_changes } }}
+                          <i nz-icon nzType="search" nzTheme="outline" style="color: blue"
+                            (click)="showHistoryModal(history)"></i>
+                        </div>
+                      </ng-template>
+                    </div>
+                  </nz-timeline-item>
+                </nz-timeline>
+              </div> -->
+              <div style="text-align: center">
+                <a routerLink="history" nz-button nzType="primary" appAccess action="history" [change]="change">
+                  <i nz-icon nzType="search" nzTheme="outline"></i>
+                  {{ 'common.button.showAllHistory' | translate }}
+                </a>
+              </div>
+              <span *ngIf="total > 10" style="font-size: 0.5em; color: red">
+                ※ {{ 'page.datastore.detail.showAllHistoryTips' | translate }}
+              </span>
+            </nz-tab>
+            <nz-tab [nzTitle]="checkHistoryTitle">
+              <ng-template #checkHistoryTitle>
+                <!-- {{ 'page.datastore.detail.checkHistory' | translate }} ({{ checkTotal }}) -->
+                {{ 'page.datastore.detail.checkHistory' | translate }}
+              </ng-template>
+              <!-- <nz-empty *ngIf="checkHistoryData.length === 0"></nz-empty>
+              <div style="height: 300px; overflow: auto">
+                <nz-timeline nzMode="left">
+                  <nz-timeline-item *ngFor="let history of checkHistoryData">
+                    <div style="padding: 4px">
+                      {{ history.checked_by }}
+                      <span class="pull-right">
+                        {{ history.checked_at | dateFormat: 'yyyy-MM-dd' }}
+                      </span>
+                      <span class="pull-right">
+                        {{ showTypeName(history.check_type) | translate }}
+                      </span>
+                    </div>
+                  </nz-timeline-item>
+                </nz-timeline>
+              </div> -->
+              <div style="text-align: center">
+                <a routerLink="checkHistory" nz-button nzType="primary" appAccess action="history" [change]="change">
+                  <i nz-icon nzType="search" nzTheme="outline"></i>
+                  {{ 'common.button.showAllHistory' | translate }}
+                </a>
+              </div>
+              <span *ngIf="checkTotal > 10" style="font-size: 0.5em; color: red">
+                ※ {{ 'page.datastore.detail.showAllHistoryTips' | translate }}
+              </span>
+            </nz-tab>
+          </nz-tabset>
+        </div>
+        <nz-card style="height: 450px; margin-top: 16px" [nzTitle]="checkTitle" nzType="inner" nzSize="small"
+          *ngIf="canCheck">
+          <div nz-row nzJustify="space-between" nzAlign="top">
+            <div nz-col [nzSm]="24" [nzXs]="24" *ngFor="let item of checkItems; let i = index">
+              <div style="height: 100%; padding: 0">
+                <span class="title">{{ item.name | translate }}：</span>
+                <span class="value" *ngIf="item.type === 'date'">
+                  {{ item.value | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}
+                </span>
+                <span class="value" *ngIf="item.type === 'user'">
+                  {{ item.value }}
+                </span>
+                <span class="value" *ngIf="item.type === 'way'">{{ item.value | translate }}</span>
+                <span class="value" *ngIf="item.type === 'check'">{{ item.value | translate }}</span>
+              </div>
+            </div>
+            <div style="overflow: auto; height: 120px">
+              <nz-image-group>
+                <div nz-col [nzSm]="12" [nzXs]="12" *ngFor="let item of checkImages">
+                  <img nz-image width="100" height="100" style="padding: 4px" [nzSrc]="item" />
+                </div>
+              </nz-image-group>
+            </div>
+          </div>
+          <ng-template #checkTitle>
+            <i nz-icon nzType="schedule" nzTheme="outline"></i>
+            <span>{{ 'page.datastore.detail.checkInfo' | translate }}</span>
+          </ng-template>
+        </nz-card>
+      </div>
+    </div>
+  </div>
+</div>
+<nz-modal [(nzVisible)]="showHistory" [nzTitle]="'page.datastore.detail.history' | translate"
+  (nzOnCancel)="hideHistoryModal()" [nzFooter]="null">
+  <ng-template nzModalContent>
+    <div>{{ 'page.datastore.detail.historyChangeTips' | translate: { number: historyDetail.total_changes } }}</div>
+    <span style="color: red; font-size: 12px"
+      *ngIf="historyDetail.total_changes > (historyDetail.changes ? historyDetail.changes.length : 0)">
+      *{{ 'page.datastore.detail.changeTips' | translate }}
+    </span>
+
+    <div style="height: 200px; overflow-y: auto">
+      <div *ngFor="let change of historyDetail.changes" style="padding: 10px 0">
+        <nz-tag class="ellipsis" [title]="change.field_name | translate">{{ change.field_name | translate }} :</nz-tag>
+        <span>
+          <nz-tag [nzColor]="'#2db7f5'">
+            {{ change.old_value }}
+          </nz-tag>
+        </span>
+        <i nz-icon nzType="double-right" nzTheme="outline"></i>
+        &nbsp;&nbsp;
+        <span>
+          <nz-tag [nzColor]="'#f50'">{{ change.new_value }}</nz-tag>
+        </span>
+      </div>
+    </div>
+  </ng-template>
+</nz-modal>
+
+<nz-modal [nzTitle]="'page.datastore.groupChange' | translate" [(nzVisible)]="visible" nzClosable="true"
+  (nzOnCancel)="visible = false" (nzOnOk)="setAccess()" [nzOkDisabled]="!accessKey">
+  <ng-template nzModalContent>
+    <nz-form-item>
+      <nz-form-label nzFor="accessKey" style="width: 100px">{{ 'page.datastore.groups' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-tree-select [(ngModel)]="accessKey" style="width: 300px" [nzNodes]="selectNodes" [nzMultiple]="false"
+          nzDefaultExpandAll
+          [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.datastore.groups' | translate }"
+          [nzAllowClear]="false"></nz-tree-select>
+      </nz-form-control>
+    </nz-form-item>
+  </ng-template>
+</nz-modal>

@@ -1,0 +1,241 @@
+<div>
+  <header>
+    <div style="display: flex; flex-direction: row; justify-content: space-between">
+      <h3>{{ customerInfo.customer_name }}</h3>
+      <a nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click">
+        <i nz-icon nzType="setting" nzTheme="outline"></i>
+        {{ 'common.button.setting' | translate }}
+      </a>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+          <li nz-menu-item (click)="goCustomerSetting()">
+            <i nz-icon nzType="tag" nzTheme="outline"></i>
+            {{ 'page.customer.setting' | translate }}
+          </li>
+          <li nz-menu-item (click)="goAppList()">
+            <i nz-icon nzType="appstore" nzTheme="outline"></i>
+            {{ 'page.customer.appSetting' | translate }}
+          </li>
+          <li nz-menu-item (click)="showFileSelect = true">
+            <i nz-icon nzType="redo"></i>
+            {{ 'common.button.dbrestore' | translate }}
+          </li>
+        </ul>
+      </nz-dropdown-menu>
+    </div>
+    <br />
+
+    <div style="display: flex; flex-direction: row; justify-content: space-between">
+      <div>
+        <p>
+          <span>
+            <i nz-icon nzType="info-circle" nzTheme="outline"></i>
+            {{ 'page.customer.domain' | translate }}:
+          </span>
+          <span>
+            {{ customerInfo.domain }}
+          </span>
+        </p>
+        <p>
+          <span>
+            <i nz-icon nzType="user" nzTheme="outline"></i>
+            {{ 'page.customer.admin' | translate }}:
+          </span>
+          <span>
+            {{ customerInfo.default_user }}
+          </span>
+
+          <button
+            *ngIf="showPswRset"
+            nz-button
+            nzType="primary"
+            nzDanger="true"
+            nzSize="small"
+            (click)="restPassword(customerInfo.customer_id)"
+          >
+            <i nz-icon nzType="redo"></i>
+            {{ 'common.button.passwordReset' | translate }}
+          </button>
+          <button
+            *ngIf="showPswRset"
+            nz-button
+            nzType="primary"
+            nzSize="small"
+            (click)="unlock(customerInfo.customer_id)"
+          >
+            <i nz-icon nzType="unlock"></i>
+            {{ 'common.button.unlock' | translate }}
+          </button>
+          <button
+            *ngIf="showPswRset"
+            nz-button
+            nzSize="small"
+            (click)="clearWhitelist(customerInfo.customer_id, customerInfo.domain)"
+          >
+            <i nz-icon nzType="clear"></i>
+            {{ 'common.button.whitelistClear' | translate }}
+          </button>
+        </p>
+        <p>
+          <span>
+            <i nz-icon nzType="clock-circle" nzTheme="outline"></i>
+            {{ 'common.text.createdDate' | translate }}:
+          </span>
+          {{ customerInfo.created_at | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}
+        </p>
+        <p>
+          <span>
+            <i nz-icon nzType="usergroup-add" nzTheme="outline"></i>
+            {{
+              'page.customer.usersInfo'
+                | translate: { max_users: customerInfo.max_users, used_users: customerInfo.used_users }
+            }}
+          </span>
+        </p>
+        <p>
+          <span>
+            <i nz-icon nzType="cloud-server" nzTheme="outline"></i>
+            {{
+              'page.customer.sizeInfo'
+                | translate: { max_size: customerInfo.max_size, used_size: customerInfo.used_size | nzBytes }
+            }}
+          </span>
+        </p>
+        <p>
+          <span>
+            <i nz-icon nzType="hdd" nzTheme="outline"></i>
+            {{
+              'page.customer.dataSizeInfo'
+                | translate: { max_size: customerInfo.max_data_size, used_size: customerInfo.used_data_size | nzBytes }
+            }}
+          </span>
+        </p>
+        <p>
+          <span>
+            <i nz-icon nzType="file-protect" nzTheme="outline"></i>
+            {{ 'page.customer.uploadFileSize' | translate }}: {{ customerInfo.upload_file_size + 'MB' }}
+          </span>
+        </p>
+        <p>
+          <span>
+            <i nz-icon nzType="property-safety" nzTheme="outline"></i>
+            {{ 'page.customer.level' | translate }}: {{ getName(customerInfo.level) }}
+          </span>
+        </p>
+      </div>
+      <div *ngIf="!isSmall">
+        <img
+          [src]="
+            customerInfo.customer_logo
+              ? customerInfo.customer_logo
+              : 'assets/themes/default/image/logo/logo.horizontal.svg'
+          "
+          width="200"
+          height="60"
+        />
+      </div>
+    </div>
+  </header>
+  <div>
+    <nz-table
+      #fsTable
+      [nzData]="apps"
+      [nzTitle]="'page.customer.application.title' | translate"
+      nzSize="middle"
+      nzBordered="true"
+      [nzTotal]="apps.length"
+      [nzShowTotal]="rangeTemplate"
+      [nzScroll]="{ y: '300px' }"
+    >
+      <tbody>
+        <tr *ngFor="let item of fsTable.data">
+          <td>
+            <div style="display: flex; flex-direction: row">
+              <nz-avatar nzIcon="project" nzShape="square"></nz-avatar>
+              <div style="margin: 0 8px; display: inline-flex; flex-direction: column; flex: 1">
+                <div style="display: flex; flex-direction: row; justify-content: space-between">
+                  <a (click)="goToAppDetail(customerInfo.customer_id, item.app_id)">{{ item.app_name | translate }}</a>
+                  <nz-badge
+                    [nzStatus]="(item.end_time | validDay) ? 'warning' : 'success'"
+                    [nzText]="(item.end_time | validDay) ? 'invalid' : 'valid'"
+                  ></nz-badge>
+                </div>
+                <span *ngIf="item.is_trial">
+                  <span *ngIf="!(item.end_time | validDay); else trial">
+                    {{
+                      'page.customer.application.trialTips'
+                        | translate: { day: (item.start_time | validDay: item.end_time) }
+                    }}
+                  </span>
+                  <ng-template #trial>
+                    {{ 'page.customer.application.trialOverTips' | translate }}
+                  </ng-template>
+                </span>
+                <span *ngIf="!item.is_trial">
+                  <span *ngIf="!(item.end_time | validDay); else formal">
+                    {{
+                      'page.customer.application.formalTips'
+                        | translate: { day: (item.start_time | validDay: item.end_time) }
+                    }}
+                  </span>
+                  <ng-template #formal>
+                    {{ 'page.customer.application.formalOverTips' | translate }}
+                  </ng-template>
+                </span>
+                <!-- <span>{{ 'page.datastore.text.fieldTips' | translate : { user: item.created_by | user, time: item.created_at | dateFormat:'yyyy-MM-dd'  } }}</span> -->
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <ng-template #rangeTemplate let-range="range" let-total>
+      {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+    </ng-template>
+  </div>
+</div>
+
+<!--本地恢复--文件选择-->
+<nz-modal [(nzVisible)]="showFileSelect" [nzTitle]="modalTitle" nzClosable="false" nzMaskClosable="false">
+  <ng-template #modalTitle>{{ 'page.customer.dbRestore' | translate }}</ng-template>
+  <ng-template nzModalContent>
+    <nz-form-item>
+      <nz-form-label nzFor="zipFile" nzRequired>
+        <span>
+          {{ 'page.customer.dbBackupFile' | translate }}
+          <i nz-icon nz-tooltip [nzTooltipTitle]="zipTitle" nzType="question-circle" nzTheme="outline"></i>
+          <ng-template #zipTitle>
+            <span>
+              {{ 'common.text.supportFile' | translate }}
+              <span style="margin-right: 4px; color: red">.zip</span>
+            </span>
+          </ng-template>
+        </span>
+      </nz-form-label>
+      <nz-form-control>
+        <nz-upload
+          nzListType="text"
+          [nzMultiple]="false"
+          [(nzFileList)]="zipFileList"
+          nzAccept=".zip"
+          [nzBeforeUpload]="beforeUpload"
+        >
+          <button nz-button nzType="primary">
+            <i nz-icon nzType="upload"></i>
+            {{ 'common.button.upload' | translate }}
+          </button>
+        </nz-upload>
+      </nz-form-control>
+    </nz-form-item>
+  </ng-template>
+  <ng-template nzModalFooter>
+    <button nz-button nzType="primary" (click)="localRestore()" appDebounceClick [disabled]="zipFileList.length == 0">
+      <i nz-icon nzType="check" nzTheme="outline"></i>
+      {{ 'common.button.recover' | translate }}
+    </button>
+    <button nz-button (click)="cancel()">
+      <i nz-icon nzType="close" nzTheme="outline"></i>
+      {{ 'common.button.cancel' | translate }}
+    </button>
+  </ng-template>
+</nz-modal>

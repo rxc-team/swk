@@ -1,0 +1,185 @@
+<div>
+  <nz-collapse [nzBordered]="true">
+    <nz-collapse-panel [nzHeader]="'common.text.search' | translate" nzActive>
+      <form nz-form [formGroup]="searchForm" nzLayout="inline">
+        <nz-form-item>
+          <nz-form-label nzFor="checkType">
+            {{ 'common.text.checkWay' | translate }}
+          </nz-form-label>
+          <nz-form-control>
+            <nz-select
+              formControlName="checkType"
+              nzMode="default"
+              style="width: 200px"
+              nzAllowClear="true"
+              [nzPlaceHolder]="'page.datastore.pleaseSelect' | translate"
+            >
+              <nz-option
+                [nzLabel]="item.label | translate"
+                [nzValue]="item.value"
+                *ngFor="let item of checkTypes"
+              ></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzFor="checkStartDate">{{ 'common.text.checkStartDate' | translate }}</nz-form-label>
+          <nz-form-control>
+            <nz-date-picker
+              style="width: 200px"
+              [nzFormat]="'yyyy-MM-dd'"
+              nzAllowClear="true"
+              formControlName="checkStartDate"
+              [nzPlaceHolder]="'page.datastore.pleaseSelect' | translate"
+            ></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzFor="checkedAt">{{ 'common.text.checkTime' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="checkedAt">
+            <nz-range-picker
+              [nzFormat]="'yyyy-MM-dd'"
+              formControlName="checkedAt"
+              nzAllowClear="true"
+              [nzPlaceHolder]="[
+                'page.history.pleaseSelectStartTime' | translate,
+                'page.history.pleaseSelectEndTime' | translate
+              ]"
+            ></nz-range-picker>
+            <ng-template #checkedAt let-control>
+              <ng-container *ngIf="control.hasError('timeCompare')">
+                {{ 'common.validator.timeCompare' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzFor="checkedBy">{{ 'common.text.checkBy' | translate }}</nz-form-label>
+          <nz-form-control>
+            <nz-select
+              formControlName="checkedBy"
+              nzMode="default"
+              nzAllowClear="true"
+              style="width: 200px"
+              [nzPlaceHolder]="'page.datastore.pleaseSelect' | translate"
+            >
+              <nz-option [nzLabel]="item.label" [nzValue]="item.value" *ngFor="let item of userList"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <button nz-button type="button" [nzType]="'primary'" [disabled]="searchForm.invalid" (click)="search()">
+              <i nz-icon nzType="search"></i>
+              {{ 'common.button.search' | translate }}
+            </button>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </nz-collapse-panel>
+  </nz-collapse>
+
+  <div style="padding-top: 16px">
+    <div nz-row nzJustify="end" nzAlign="top" style="padding: 8px">
+      <div nz-col>
+        <button nz-button nzType="primary" (click)="download()">
+          <i nz-icon nzType="download"></i>
+          {{ 'common.button.fileDownload' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <nz-table
+      #nzTable
+      [nzData]="dataSet"
+      [nzFrontPagination]="false"
+      nzSize="middle"
+      nzBordered="true"
+      [(nzPageSize)]="pageSize"
+      [nzTotal]="total"
+      [(nzPageIndex)]="pageIndex"
+      [nzScroll]="{ x: '1200px', y: '350px' }"
+      [nzShowTotal]="rangeTemplate"
+      nzShowSizeChanger
+      [nzPageSizeOptions]="[30, 50, 100, 500]"
+      (nzPageIndexChange)="search()"
+      (nzPageSizeChange)="search()"
+    >
+      <thead>
+        <tr>
+          <th *ngFor="let f of displayFields" [nzWidth]="f.width + 'px'" [title]="f.field_id">
+            {{ f.field_name | translate }}
+          </th>
+          <ng-container *ngFor="let col of cols">
+            <th
+              *ngIf="col.width"
+              nz-resizable
+              nzBounds="window"
+              [nzWidth]="col.width"
+              [nzMinWidth]="60"
+              (nzResizeEnd)="onResize($event, col.title)"
+            >
+              {{ col.title | translate }}
+              <nz-resize-handle nzDirection="right"></nz-resize-handle>
+            </th>
+            <th *ngIf="!col.width">
+              {{ col.title | translate }}
+            </th>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of nzTable.data">
+          <td *ngFor="let col of row.items; let i = index">
+            <div [ngSwitch]="col.data_type" class="content">
+              <!--Text-->
+              <div *ngSwitchDefault class="text">
+                <span [title]="col.value">{{ col.value }}</span>
+              </div>
+              <div *ngSwitchCase="'number'" class="text" style="text-align: right">
+                <span style="padding: 0 2px" [title]="col.value | number: '1.0-9'">
+                  {{ col.value | number: '1.0-9' }}
+                </span>
+              </div>
+              <div *ngSwitchCase="'user'" class="text">
+                <span [title]="col.value">
+                  {{ col.value }}
+                </span>
+              </div>
+              <div *ngSwitchCase="'options'" class="text">
+                <span [title]="col.value | translate">
+                  {{ col.value | translate }}
+                </span>
+              </div>
+              <div *ngSwitchCase="'file'" class="text">
+                <span style="padding: 0 2px" [title]="it.name" *ngFor="let it of col.value">
+                  <a [href]="it.url" (click)="$event.stopPropagation()" target="_blank">{{ it.name }}</a>
+                </span>
+              </div>
+              <div *ngSwitchCase="'lookup'" class="text">
+                <span [title]="col.value">
+                  {{ col.value }}
+                </span>
+              </div>
+            </div>
+          </td>
+          <td>
+            {{ showTypeName(row.checkType) | translate }}
+          </td>
+          <td>
+            {{ row.checkStartDate }}
+          </td>
+          <td>
+            {{ row.checkedAt | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}
+          </td>
+          <td>
+            {{ row.checkedBy | user: userList }}
+          </td>
+        </tr>
+      </tbody>
+      <ng-template #rangeTemplate let-range="range" let-total>
+        {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+      </ng-template>
+    </nz-table>
+  </div>
+</div>

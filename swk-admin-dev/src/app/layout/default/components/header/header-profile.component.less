@@ -1,0 +1,67 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    .profile {
+    //   background-color: @primary-color;
+
+      &-header {
+        padding: 10px 0px;
+    
+        &-info {
+          color: @text-color;
+          height: 84px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+    
+        &-role {
+          padding: 5px;
+          background-color: @primary-1;
+          margin-bottom: 5px;
+    
+          span {
+            display: inline-block;
+            padding: 5px;
+            color: @text-color;
+            margin-right: 5px;
+          }
+        }
+    
+        &-signature {
+          padding: 5px;
+          min-height: 60px;
+          background-color: @primary-1;
+          color: @text-color;;
+        }
+    
+        &-avatar {
+          padding: 10px;
+        }
+      }
+    
+      &-action {
+        background-color: @component-background;
+        padding: 10px 4px;
+    
+        div {
+          padding-bottom: 10px;
+    
+          span {
+            width: 100%;
+    
+            a {
+              color: #747474;
+              outline-style: none;
+    
+              &:hover {
+                color: @primary-color;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+});

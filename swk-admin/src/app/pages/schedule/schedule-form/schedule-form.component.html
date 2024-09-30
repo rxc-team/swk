@@ -1,0 +1,107 @@
+<form nz-form [formGroup]="form" nzLayout="vertical">
+  <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'common.text.baseInfo' | translate">
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.schedule.scheduleName' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="scheduleNameTips">
+        <input
+          nz-input
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          formControlName="scheduleName"
+          trim="blur"
+          [placeholder]="'common.placeholder.input' | translate: { label: 'page.schedule.scheduleName' | translate }"
+        />
+        <ng-template #scheduleNameTips let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+
+          <ng-container *ngIf="control.hasError('duplicated')">
+            {{ 'common.validator.scheduleNameDuplicated' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.schedule.scheduleType' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="apps">
+        <nz-select
+          formControlName="scheduleType"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          nzAllowClear
+          [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.schedule.scheduleType' | translate }"
+        >
+          <nz-option nzValue="db-backup" [nzLabel]="'page.schedule.dbBackUp' | translate"></nz-option>
+        </nz-select>
+        <ng-template #apps let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredSelect' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.schedule.runType' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-radio-group formControlName="runType" (ngModelChange)="runTypeChange($event)">
+          <label nz-radio nzValue="now">{{ 'page.schedule.runNow' | translate }}</label>
+          <label nz-radio nzValue="cycle">{{ 'page.schedule.runRegular' | translate }}</label>
+        </nz-radio-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="form.get('runType').value === 'cycle'">
+      <nz-form-label nzRequired="true">{{ 'page.schedule.runTime' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="specTips">
+        <app-cron-editor formControlName="spec" [isSmall]="isSmall"></app-cron-editor>
+        <ng-template #specTips let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="form.get('runType').value === 'cycle'">
+      <nz-form-label nzRequired="true">{{ 'page.schedule.validTime' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="errorTime">
+        <nz-date-picker
+          style="width: 145px"
+          formControlName="startTime"
+          [nzPlaceHolder]="'common.text.startTime' | translate"
+        ></nz-date-picker>
+        <span style="display: inline-block; width: 10px; text-align: center; height: 32px; line-height: 32px">~</span>
+        <nz-date-picker
+          style="width: 145px"
+          formControlName="endTime"
+          (ngModelChange)="validateEndTime()"
+          [nzPlaceHolder]="'common.text.endTime' | translate"
+        ></nz-date-picker>
+        <ng-template #errorTime let-control>
+          <ng-container *ngIf="control.hasError('compare')">
+            {{ 'page.schedule.text.timeChecked' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredSelect' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </nz-card>
+  <br />
+  <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'page.schedule.paramInfo' | translate">
+    <div>{{ 'page.schedule.noNeedParam' | translate }}</div>
+  </nz-card>
+</form>
+<br />
+<nz-space>
+  <div *nzSpaceItem>
+    <button nz-button nzType="primary" [disabled]="form.invalid" (click)="submitForm($event)">
+      <i nz-icon nzType="save" nzTheme="outline"></i>
+      {{ 'common.button.save' | translate }}
+    </button>
+  </div>
+  <div *nzSpaceItem>
+    <button nz-button (click)="back()">
+      <i nz-icon nzType="close" nzTheme="outline"></i>
+      {{ 'common.button.cancel' | translate }}
+    </button>
+  </div>
+</nz-space>

@@ -1,0 +1,116 @@
+<nz-collapse [nzBordered]="true">
+  <nz-collapse-panel [nzHeader]="'common.text.search' | translate">
+    <form nz-form [formGroup]="seachForm" nzLayout="inline">
+      <nz-form-item>
+        <nz-form-label nzFor="operater">
+          {{ 'page.logger.action.user' | translate }}
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="errorName">
+          <input
+            nz-input
+            formControlName="operater"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.logger.action.user' | translate }"
+            style="width: 200px"
+            trim="blur"
+          />
+          <ng-template #errorName let-control>
+            <ng-container *ngIf="control.hasError('email')">
+              {{ 'common.validator.operator' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="operateDatetime">
+          {{ 'page.logger.action.time' | translate }}
+        </nz-form-label>
+        <nz-form-control>
+          <nz-date-picker
+            style="width: 145px"
+            formControlName="startTime"
+            [nzPlaceHolder]="'common.placeholder.starDate' | translate"
+          ></nz-date-picker>
+          <span style="display: inline-block; width: 10px; text-align: center; height: 32px; line-height: 32px">~</span>
+          <nz-date-picker
+            style="width: 145px"
+            formControlName="endTime"
+            [nzPlaceHolder]="'common.placeholder.endDate' | translate"
+          ></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button [nzType]="'primary'" (click)="reSearch()">
+            <i nz-icon nzType="search"></i>
+            {{ 'common.button.search' | translate }}
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </nz-collapse-panel>
+</nz-collapse>
+<div style="padding-top: 16px">
+  <nz-button-group>
+    <button nz-button [nzType]="'primary'" (click)="refresh()">
+      <i nz-icon nzType="sync"></i>
+      {{ 'common.button.refresh' | translate }}
+    </button>
+    <button nz-button nzType="primary" [disabled]="total === 0" (click)="downloadLog()">
+      <i nz-icon nzType="export"></i>
+      {{ 'common.button.export' | translate }}
+    </button>
+  </nz-button-group>
+</div>
+<div style="padding-top: 16px">
+  <nz-table
+    #nzTable
+    [nzData]="displayData"
+    [nzFrontPagination]="false"
+    [nzLoading]="loading"
+    nzLoadingDelay="500"
+    nzBordered="true"
+    [(nzPageSize)]="pageSize"
+    [nzTotal]="total"
+    [(nzPageIndex)]="pageIndex"
+    nzSize="middle"
+    [nzShowTotal]="rangeTemplate"
+    nzShowSizeChanger
+    [nzPageSizeOptions]="[30, 100, 200, 500]"
+    (nzPageIndexChange)="search()"
+    (nzPageSizeChange)="search()"
+    [nzScroll]="{ y: '300px' }"
+  >
+    <thead>
+      <tr>
+        <ng-container *ngFor="let col of cols">
+          <th
+            *ngIf="col.width"
+            nz-resizable
+            nzBounds="window"
+            [nzWidth]="col.width"
+            [nzMinWidth]="80"
+            (nzResizeEnd)="onResize($event, col.title)"
+          >
+            {{ col.title | translate }}
+            <nz-resize-handle nzDirection="right"></nz-resize-handle>
+          </th>
+          <th *ngIf="!col.width">
+            {{ col.title | translate }}
+          </th>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of nzTable.data">
+        <td>{{ data.user_id }}</td>
+        <td>{{ data.client_ip }}</td>
+        <td>{{ data.time | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}</td>
+        <td>{{ data.process_id }}</td>
+        <td>{{ data.msg | logger: data.params }}</td>
+      </tr>
+    </tbody>
+    <ng-template #rangeTemplate let-range="range" let-total>
+      {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+    </ng-template>
+  </nz-table>
+</div>

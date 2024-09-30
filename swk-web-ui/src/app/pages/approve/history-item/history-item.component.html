@@ -1,0 +1,37 @@
+<ng-container [ngSwitch]="item.value.data_type">
+  <!--Text-->
+  <div *ngSwitchDefault class="text">
+    {{ item.key | field: fields }}:
+    <span [title]="item.value.value">{{ item.value.value }}</span>
+  </div>
+  <div *ngSwitchCase="'number'" class="text">
+    {{ item.key | field: fields }}:
+    <span style="padding: 0 2px; text-align: right">
+      {{ item.value.value | number: '1.0-9' }}
+    </span>
+  </div>
+  <div *ngSwitchCase="'user'" class="text">
+    {{ item.key | field: fields }}:
+    <span style="padding: 0 2px" [title]="it" *ngFor="let it of item.value.value | object">
+      {{ it }}
+    </span>
+  </div>
+  <div *ngSwitchCase="'file'" class="text">
+    {{ item.key | field: fields }}:
+    <span style="padding: 0 2px" [title]="it.name" *ngFor="let it of item.value.value | object">
+      {{ it.name }}
+    </span>
+  </div>
+  <div *ngSwitchCase="'options'" class="text">
+    {{ item.key | field: fields }}:
+    <span [title]="item.value.value">
+      {{ item.value.value }}
+    </span>
+  </div>
+  <div *ngSwitchCase="'lookup'" class="text">
+    {{ item.key | field: fields }}:
+    <span [title]="item.value.value">
+      {{ item.value.value }}
+    </span>
+  </div>
+</ng-container>

@@ -1,0 +1,54 @@
+<div style="margin-bottom: 16px">
+  <nz-form-item>
+    <nz-form-label>{{ 'page.message.object' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        nzAllowClear
+        [nzPlaceHolder]="'page.message.all' | translate"
+        [(ngModel)]="domain"
+        (ngModelChange)="customerChange()"
+        style="width: 300px"
+      >
+        <nz-option *ngFor="let item of customerList" [nzLabel]="item.customer_name" [nzValue]="item.domain"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+</div>
+<div style="display: flex; flex-direction: row" *ngIf="customerList.length > 0">
+  <div class="dashed_border" style="padding: 16px; width: 85%; border-left: none">
+    <h3 *ngIf="domain === ''" style="color: #1890ff">{{ 'page.message.all' | translate }}</h3>
+    <form nz-form [formGroup]="form">
+      <nz-card nzSize="small" nzType="inner" style="margin-top: 8px" nzTitle="">
+        <nz-list
+          [nzDataSource]="messageRecords"
+          [nzRenderItem]="item"
+          [nzItemLayout]="'horizontal'"
+          (scroll)="scroll($event)"
+          style="overflow-y: scroll; overflow-x: hidden; height: 300px"
+        >
+          <ng-template #item let-item>
+            <nz-comment [nzAuthor]="item.sender" [nzDatetime]="item.displayTime">
+              <nz-comment-content>
+                <div *ngIf="item.content">
+                  <p>{{ item.content }}</p>
+                </div>
+              </nz-comment-content>
+            </nz-comment>
+          </ng-template>
+          <div *ngIf="!loadingMore" style="text-align: center; color: darkgrey">
+            <span>没有更多数据了</span>
+          </div>
+        </nz-list>
+        <nz-form-item>
+          <textarea formControlName="content" nz-input rows="4" style="margin-top: 8px"></textarea>
+        </nz-form-item>
+        <nz-form-item>
+          <button nz-button nzType="primary" [disabled]="form.invalid" (click)="handleSubmit()" appDebounceClick>
+            <i nz-icon nzType="send" nzTheme="outline"></i>
+            {{ 'common.button.send' | translate }}
+          </button>
+        </nz-form-item>
+      </nz-card>
+    </form>
+  </div>
+</div>

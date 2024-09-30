@@ -1,0 +1,269 @@
+<nz-page-header class="site-page-header">
+  <!--title-->
+  <nz-page-header-title>{{ 'page.generage.mappingCreateTitle' | translate }}</nz-page-header-title>
+  <!--extra-->
+  <nz-page-header-extra>
+    <button nz-button (click)="clear()">{{ 'common.button.cancel' | translate }}</button>
+    <button nz-button nzType="primary" (click)="pre()">{{ 'common.button.previous' | translate }}</button>
+    <button nz-button nzType="primary" [disabled]="form.invalid" (click)="next()">
+      {{ 'common.button.next' | translate }}
+    </button>
+  </nz-page-header-extra>
+
+  <!--content-->
+  <nz-page-header-content>
+    <div nz-row>
+      <div class="content">
+        <p nz-paragraph>
+          {{ 'page.generage.mappingCreateSubtitle' | translate }}
+        </p>
+      </div>
+    </div>
+  </nz-page-header-content>
+</nz-page-header>
+
+<form nz-form [formGroup]="form">
+  <div style="display: flex">
+    <nz-form-item>
+      <nz-form-label nzRequired="true" nzFor="mappingName">
+        {{ 'page.datastore.mapping.mappingName' | translate }}
+      </nz-form-label>
+      <nz-form-control [nzErrorTip]="nameError">
+        <input
+          nz-input
+          formControlName="mappingName"
+          [placeholder]="
+            'common.placeholder.input' | translate: { label: 'page.datastore.mapping.mappingName' | translate }
+          "
+          [ngStyle]="{ width: isSmall ? '220px' : '380px' }"
+        />
+        <ng-template #nameError let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+
+          <ng-container *ngIf="control.hasError('duplicated')">
+            {{ 'common.validator.mappingDuplicated' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+  <div style="display: flex">
+    <nz-form-item>
+      <nz-form-label nzRequired="true" nzFor="mappingType">
+        {{ 'page.datastore.mapping.mappingType' | translate }}
+      </nz-form-label>
+      <nz-form-control [nzErrorTip]="errorMappingType">
+        <nz-select
+          formControlName="mappingType"
+          nzAllowClear
+          (ngModelChange)="mappingTypeChange($event)"
+          [nzPlaceHolder]="'common.validator.requiredSelect' | translate"
+          [ngStyle]="{ width: isSmall ? '220px' : '120px' }"
+        >
+          <nz-option nzValue="insert" [nzLabel]="'page.datastore.mapping.mappingTypeInsert' | translate"></nz-option>
+          <nz-option nzValue="update" [nzLabel]="'page.datastore.mapping.mappingTypeUpdate' | translate"></nz-option>
+          <nz-option nzValue="upsert" [nzLabel]="'page.datastore.mapping.mappingTypeUpsert' | translate"></nz-option>
+        </nz-select>
+        <ng-template #errorMappingType let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredSelect' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzRequired="true" nzFor="updateType">
+        {{ 'page.datastore.mapping.updateType' | translate }}
+      </nz-form-label>
+      <nz-form-control [nzErrorTip]="errorUpdateType">
+        <nz-select
+          formControlName="updateType"
+          nzAllowClear
+          [nzPlaceHolder]="'common.validator.requiredSelect' | translate"
+          [ngStyle]="{ width: isSmall ? '220px' : '120px' }"
+        >
+          <nz-option nzValue="error" [nzLabel]="'page.datastore.mapping.updateTypeError' | translate"></nz-option>
+          <nz-option nzValue="update-one" [nzLabel]="'page.datastore.mapping.updateTypeOne' | translate"></nz-option>
+          <nz-option nzValue="update-many" [nzLabel]="'page.datastore.mapping.updateTypeMany' | translate"></nz-option>
+        </nz-select>
+        <ng-template #errorUpdateType let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredSelect' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+  <div style="display: flex">
+    <nz-form-item>
+      <nz-form-label nzRequired="true" nzFor="separatorChar">
+        {{ 'page.datastore.mapping.separatorChar' | translate }}
+      </nz-form-label>
+      <nz-form-control [nzErrorTip]="errorSeparatorChar">
+        <nz-select
+          formControlName="separatorChar"
+          nzAllowClear
+          [nzPlaceHolder]="'common.validator.requiredSelect' | translate"
+          style="width: 120px"
+        >
+          <nz-option nzValue="," [nzLabel]="'page.datastore.mapping.separatorCharComma' | translate"></nz-option>
+          <nz-option nzValue="ht" [nzLabel]="'page.datastore.mapping.separatorCharTab' | translate"></nz-option>
+        </nz-select>
+        <ng-template #errorSeparatorChar let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredSelect' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzRequired="true" nzFor="lineBreakCode">
+        {{ 'page.datastore.mapping.lineBreakCode' | translate }}
+      </nz-form-label>
+      <nz-form-control [nzErrorTip]="errorLineBreakCode">
+        <nz-select
+          formControlName="lineBreakCode"
+          nzAllowClear
+          [nzPlaceHolder]="'common.validator.requiredSelect' | translate"
+          style="width: 120px"
+        >
+          <nz-option nzValue="\r\n" [nzLabel]="'page.datastore.mapping.lineBreakCodeWindows' | translate"></nz-option>
+          <nz-option nzValue="\n" [nzLabel]="'page.datastore.mapping.lineBreakCodeUnix' | translate"></nz-option>
+        </nz-select>
+        <ng-template #errorLineBreakCode let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredSelect' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired="true" nzFor="charEncoding">
+        {{ 'page.datastore.mapping.charEncoding' | translate }}
+      </nz-form-label>
+      <nz-form-control [nzErrorTip]="errorCharEncoding">
+        <nz-select
+          formControlName="charEncoding"
+          nzAllowClear
+          [nzPlaceHolder]="'common.validator.requiredSelect' | translate"
+          style="width: 120px"
+        >
+          <nz-option nzValue="UTF-8" [nzLabel]="'page.datastore.mapping.charEncodingUtf8' | translate"></nz-option>
+          <nz-option
+            nzValue="Shift-JIS"
+            [nzLabel]="'page.datastore.mapping.charEncodingShiftJIS' | translate"
+          ></nz-option>
+        </nz-select>
+        <ng-template #errorCharEncoding let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredSelect' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+</form>
+<div class="dashed_border" style="padding: 8px; margin-top: 8px">
+  <h4>
+    {{ 'page.datastore.mapping.mappingSet' | translate }}
+    <button nz-button nzType="primary" nzSize="small" style="margin-left: 24px" (click)="addEmptyLine()">
+      <i nz-icon nzType="plus" nzTheme="outline"></i>
+      {{ 'page.datastore.mapping.mappingAddEmptyLine' | translate }}
+    </button>
+  </h4>
+  <nz-table
+    [nzData]="fields"
+    [nzFrontPagination]="false"
+    [nzPageSize]="100"
+    [nzShowPagination]="false"
+    nzBordered="true"
+    [nzScroll]="{ y: '250px', x: '700px' }"
+    nzSize="middle"
+    [nzPageSize]="500"
+  >
+    <thead>
+      <tr>
+        <ng-container *ngFor="let col of cols">
+          <th
+            *ngIf="col.width"
+            nz-resizable
+            nzBounds="window"
+            [nzWidth]="col.width"
+            [nzMinWidth]="60"
+            (nzResizeEnd)="onResize($event, col.title)"
+          >
+            {{ col.title | translate }}
+            <nz-resize-handle nzDirection="right"></nz-resize-handle>
+          </th>
+          <th *ngIf="!col.width">
+            {{ col.title | translate }}
+          </th>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody cdkDropList (cdkDropListDropped)="drop($event)">
+      <tr *ngFor="let item of fields; let i = index" cdkDrag>
+        <td>{{ item.show_order }}</td>
+        <!-- pit项目名 -->
+        <td>
+          <span style="color: red" *ngIf="item.is_required">*</span>
+          {{ item.field_name }}
+        </td>
+        <!-- 项目类型 -->
+        <td>{{ item.field_type }}</td>
+        <!-- 映射项 -->
+        <td>
+          {{ item.csv_header }}
+        </td>
+        <!-- 主键 -->
+        <td *ngIf="form.get('mappingType').value == 'update' || form.get('mappingType').value == 'upsert'">
+          <label
+            nz-checkbox
+            [(ngModel)]="item.primary_key"
+            [nzDisabled]="item.field_type == 'options' || item.field_type == 'user' || item.field_type == 'lookup'"
+          ></label>
+        </td>
+        <!-- 日期形式 -->
+        <td>
+          <nz-select
+            style="width: 100%"
+            [(ngModel)]="item.format"
+            nzAllowClear
+            [nzDisabled]="item.field_type !== 'date'"
+            nzPlaceHolder="YYYY-MM-DD"
+          >
+            <nz-option nzValue="2006/01/02" nzLabel="YYYY/MM/DD"></nz-option>
+            <nz-option nzValue="20060102" nzLabel="YYYYMMDD"></nz-option>
+            <nz-option nzValue="2006/1/2" nzLabel="YYYY/M/D"></nz-option>
+            <nz-option nzValue="2006-01-02" nzLabel="YYYY-MM-DD"></nz-option>
+            <nz-option nzValue="2006-1-2" nzLabel="YYYY-M-D"></nz-option>
+            <nz-option nzValue="01/02/2006" nzLabel="MM/DD/YYYY"></nz-option>
+          </nz-select>
+        </td>
+        <!-- 默认值 -->
+        <td>
+          <input
+            nz-input
+            [(ngModel)]="item.default_value"
+            [placeholder]="
+              'common.placeholder.input'
+                | translate: { label: 'page.datastore.mapping.mappingDefaultValue' | translate }
+            "
+          />
+        </td>
+        <!-- 空按钮 -->
+        <td></td>
+      </tr>
+    </tbody>
+  </nz-table>
+  <div style="text-align: left; margin-top: 8px" *ngIf="isSmall">
+    <button nz-button nzType="primary" type="button" (click)="submit()" [disabled]="form.invalid">
+      <i nz-icon nzType="save" nzTheme="outline"></i>
+      {{ 'common.button.save' | translate }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cn.rxcsoft.pit3">
+    <!-- Flutter needs it to communicate with the running application
+         to allow setting breakpoints, to provide hot reload, etc.
+    -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!--接続（Android6用）-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!--接続リクエスト、接続受入、データ転送-->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <!--端末検出、設定操作-->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <!--外部ストレージアクセス(Dangerous Permission)-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+</manifest>

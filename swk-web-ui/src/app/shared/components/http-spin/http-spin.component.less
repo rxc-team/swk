@@ -1,0 +1,28 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    .container {
+      text-align: center;
+      background:fade(@component-background, 65%);
+      height: calc(100% - 10px);
+      width: calc(100% - 10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      .spin {
+        justify-content: center;
+        align-items: center;
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+    
+        span {
+          margin-top: 16px;
+          color: @primary-color;
+        }
+      }
+    }
+  }
+});

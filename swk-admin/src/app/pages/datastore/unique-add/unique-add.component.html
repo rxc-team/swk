@@ -1,0 +1,31 @@
+{{ form.errors }}
+<form nz-form [formGroup]="form" nzLayout="horizontal">
+  <nz-form-item>
+    <nz-form-label nzRequired="true">{{ 'page.datastore.field.groupField' | translate }}</nz-form-label>
+    <nz-form-control [nzErrorTip]="errorTip">
+      <nz-select
+        [ngStyle]="{ width: '300px' }"
+        formControlName="unique_fields"
+        nzAllowClear="true"
+        nzMode="multiple"
+        [nzPlaceHolder]="
+          'common.placeholder.select' | translate: { label: 'page.datastore.field.selectOptionType' | translate }
+        "
+      >
+        <nz-option
+          *ngFor="let o of fieldsOptions"
+          [nzValue]="o.field_id"
+          [nzLabel]="o.field_name | translate"
+        ></nz-option>
+      </nz-select>
+      <ng-template #errorTip let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredSelect' | translate }}
+        </ng-container>
+        <ng-container *ngIf="control.hasError('duplicated')">
+          {{ 'common.validator.groupExisted' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+</form>

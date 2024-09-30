@@ -1,0 +1,12 @@
+<nz-steps nzType="default" nzProgressDot="true" nzSize="small" [nzCurrent]="current">
+  <nz-step [nzTitle]="'page.generage.upload' | translate"></nz-step>
+  <nz-step [nzTitle]="'page.generage.datastoreSet' | translate"></nz-step>
+  <nz-step [nzTitle]="'page.generage.fieldSet' | translate"></nz-step>
+  <nz-step [nzTitle]="'page.generage.datastoreCreate' | translate"></nz-step>
+  <nz-step [nzTitle]="'page.generage.mappingCreate' | translate"></nz-step>
+  <nz-step [nzTitle]="'page.generage.complete' | translate"></nz-step>
+</nz-steps>
+
+<div class="steps-content">
+  <router-outlet></router-outlet>
+</div>

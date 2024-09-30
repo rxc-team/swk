@@ -1,0 +1,657 @@
+<div class="approve">
+  <div style="height: 100%; overflow: hidden">
+    <div nz-row nzJustify="space-around" nzAlign="top">
+      <div nz-col [nzSm]="24" [nzMd]="18">
+        <nz-card style="height: 100%" [nzTitle]="fileTitle" nzType="inner" nzSize="small">
+          <div [style.height.px]="height">
+            <gridster
+              [options]="options"
+              [ngClass]="{ draggable: options.draggable.enabled, undraggable: !options.draggable.enabled }"
+            >
+              <gridster-item
+                [item]="item"
+                *ngFor="let item of listData; let i = index"
+                [ngClass]="{
+                  label: item.type === 'text' && item.as_title
+                }"
+              >
+                <div [ngSwitch]="item.type">
+                  <div style="height: 100%; padding: 0" *ngSwitchCase="'text'" class="box">
+                    <ng-container *ngIf="item.as_title; then thenTemplate; else elseTemplate"></ng-container>
+                    <ng-template #thenTemplate>
+                      <nz-form-item style="width: 100%">
+                        <span class="label-title">▼ {{ item.name | translate }}</span>
+                      </nz-form-item>
+                    </ng-template>
+                    <ng-template #elseTemplate>
+                      <nz-form-item style="width: 100%">
+                        <nz-form-label [nzRequired]="item.is_required">
+                          <span class="title">
+                            {{ item.name | translate }}
+                          </span>
+                        </nz-form-label>
+                        <nz-form-control style="width: 100%">
+                          <app-text-item [item]="item" style="width: 100%">
+                            <span
+                              class="value"
+                              [ngClass]="{
+                                'approve-item': item.isApproveField,
+                                'changed-item': item.hasChange
+                              }"
+                              *ngIf="item.hasChange"
+                            >
+                              {{ item.oldValue }}
+                            </span>
+                            <span class="eq" *ngIf="item.hasChange">
+                              <i nz-icon nzType="arrow-down" nzTheme="outline"></i>
+                            </span>
+                            <span
+                              class="value"
+                              [ngClass]="{
+                                'approve-item': item.isApproveField,
+                                'changed-item': item.hasChange
+                              }"
+                            >
+                              {{ item.value }}
+                            </span>
+                          </app-text-item>
+                        </nz-form-control>
+                        <!-- <span class="value">{{ item.value }}</span> -->
+                      </nz-form-item>
+                    </ng-template>
+                  </div>
+                  <div style="height: 100%; padding: 0" *ngSwitchCase="'textarea'">
+                    <nz-form-item style="width: 100%">
+                      <nz-form-label [nzRequired]="item.is_required">
+                        <span class="title">
+                          {{ item.name | translate }}
+                        </span>
+                      </nz-form-label>
+                      <nz-form-control style="width: 100%">
+                        <app-textarea-item [item]="item">
+                          <textarea
+                            nz-input
+                            readonly
+                            *ngIf="item.hasChange"
+                            [rows]="(item.rows - 1) * 0.5"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                            >{{ item.oldValue }}</textarea
+                          >
+                          <span class="eq" *ngIf="item.hasChange">
+                            <i nz-icon nzType="arrow-down" nzTheme="outline"></i>
+                          </span>
+                          <textarea
+                            nz-input
+                            readonly
+                            [rows]="(item.rows - 1) * 0.5"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                            >{{ item.value }}</textarea
+                          >
+                        </app-textarea-item>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </div>
+                  <div style="height: 100%; padding: 0" *ngSwitchCase="'number'">
+                    <nz-form-item style="width: 100%">
+                      <nz-form-label [nzRequired]="item.is_required">
+                        <span class="title">
+                          {{ item.name | translate }}
+                        </span>
+                      </nz-form-label>
+                      <nz-form-control style="width: 100%">
+                        <app-text-item [item]="item">
+                          <span
+                            class="value"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                            *ngIf="item.hasChange"
+                          >
+                            {{ item.oldValue }}
+                          </span>
+                          <span class="eq" *ngIf="item.hasChange">
+                            <i nz-icon nzType="arrow-down" nzTheme="outline"></i>
+                          </span>
+                          <span
+                            class="value"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                          >
+                            {{ item.value }}
+                          </span>
+                        </app-text-item>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </div>
+                  <div style="height: 100%; padding: 0" *ngSwitchCase="'autonum'">
+                    <nz-form-item style="width: 100%">
+                      <nz-form-label [nzRequired]="item.is_required">
+                        <span class="title">
+                          {{ item.name | translate }}
+                        </span>
+                      </nz-form-label>
+                      <nz-form-control style="width: 100%">
+                        <span class="value">{{ item.value | translate }}</span>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </div>
+                  <div style="height: 100%; padding: 0" *ngSwitchCase="'function'">
+                    <nz-form-item style="width: 100%">
+                      <nz-form-label [nzRequired]="item.is_required">
+                        <span class="title">
+                          {{ item.name | translate }}
+                        </span>
+                      </nz-form-label>
+                      <nz-form-control style="width: 100%">
+                        <span class="value">{{ item.value | translate }}</span>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </div>
+                  <div style="height: 100%; padding: 0" *ngSwitchCase="'date'">
+                    <nz-form-item style="width: 100%">
+                      <nz-form-label [nzRequired]="item.is_required">
+                        <span class="title">
+                          {{ item.name | translate }}
+                        </span>
+                      </nz-form-label>
+                      <nz-form-control style="width: 100%">
+                        <app-text-item [item]="item">
+                          <span
+                            class="value"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                            *ngIf="item.hasChange"
+                          >
+                            {{ item.oldValue }}
+                          </span>
+                          <span class="eq" *ngIf="item.hasChange">
+                            <i nz-icon nzType="arrow-down" nzTheme="outline"></i>
+                          </span>
+                          <span
+                            class="value"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                          >
+                            {{ item.value }}
+                          </span>
+                        </app-text-item>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </div>
+                  <div style="height: 100%; padding: 0" *ngSwitchCase="'time'">
+                    <nz-form-item style="width: 100%">
+                      <nz-form-label [nzRequired]="item.is_required">
+                        <span class="title">
+                          {{ item.name | translate }}
+                        </span>
+                      </nz-form-label>
+                      <nz-form-control style="width: 100%">
+                        <app-text-item [item]="item">
+                          <span
+                            class="value"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                            *ngIf="item.hasChange"
+                          >
+                            {{ item.oldValue }}
+                          </span>
+                          <span class="eq" *ngIf="item.hasChange">
+                            <i nz-icon nzType="arrow-down" nzTheme="outline"></i>
+                          </span>
+                          <span
+                            class="value"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                          >
+                            {{ item.value }}
+                          </span>
+                        </app-text-item>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </div>
+                  <div style="height: 100%; padding: 0" *ngSwitchCase="'switch'">
+                    <nz-form-item style="width: 100%">
+                      <nz-form-label [nzRequired]="item.is_required">
+                        <span class="title">
+                          {{ item.name | translate }}
+                        </span>
+                      </nz-form-label>
+                      <nz-form-control style="width: 100%">
+                        <app-switch-item [item]="item">
+                          <div
+                            *ngIf="item.hasChange"
+                            style="width: 100%; height: 32px; display: inline-flex; align-items: center"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                          >
+                            <nz-switch [(ngModel)]="item.Oldvalue" nzDisabled *ngIf="item.hasChange"></nz-switch>
+                          </div>
+                          <span class="eq" *ngIf="item.hasChange">
+                            <i nz-icon nzType="arrow-down" nzTheme="outline"></i>
+                          </span>
+                          <div
+                            style="width: 100%; height: 32px; padding: 0 8px; display: inline-flex; align-items: center"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                          >
+                            <nz-switch [(ngModel)]="item.value" nzDisabled></nz-switch>
+                          </div>
+                        </app-switch-item>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </div>
+                  <div *ngSwitchCase="'options'">
+                    <nz-form-item style="width: 100%">
+                      <nz-form-label [nzRequired]="item.is_required">
+                        <span class="title">
+                          {{ item.name | translate }}
+                        </span>
+                      </nz-form-label>
+                      <nz-form-control style="width: 100%">
+                        <app-options-item [item]="item">
+                          <span
+                            class="value"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                            *ngIf="item.hasChange"
+                          >
+                            {{ item.oldValue }}
+                          </span>
+                          <span class="eq" *ngIf="item.hasChange">
+                            <i nz-icon nzType="arrow-down" nzTheme="outline"></i>
+                          </span>
+                          <span
+                            class="value"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                          >
+                            {{ item.value }}
+                          </span>
+                        </app-options-item>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </div>
+                  <div *ngSwitchCase="'lookup'">
+                    <nz-form-item style="width: 100%">
+                      <nz-form-label [nzRequired]="item.is_required">
+                        <span class="title">
+                          {{ item.name | translate }}
+                        </span>
+                      </nz-form-label>
+                      <nz-form-control style="width: 100%">
+                        <app-text-item [item]="item">
+                          <span
+                            class="value"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                            *ngIf="item.hasChange"
+                          >
+                            {{ item.oldValue }}
+                          </span>
+                          <span class="eq" *ngIf="item.hasChange">
+                            <i nz-icon nzType="arrow-down" nzTheme="outline"></i>
+                          </span>
+                          <span
+                            class="value"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                          >
+                            {{ item.value }}
+                          </span>
+                        </app-text-item>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </div>
+                  <div *ngSwitchCase="'user'">
+                    <nz-form-item style="width: 100%">
+                      <nz-form-label [nzRequired]="item.is_required">
+                        <span class="title">
+                          {{ item.name | translate }}
+                        </span>
+                      </nz-form-label>
+                      <nz-form-control style="width: 100%">
+                        <app-user-item [item]="item">
+                          <div
+                            *ngIf="item.hasChange"
+                            style="display: flex; flex-direction: row; height: 42px; overflow-x: auto; padding: 4px 0"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                          >
+                            <span [title]="it" *ngFor="let it of item.oldValue" class="user-value">
+                              <nz-avatar nzIcon="user" nzSize="small"></nz-avatar>
+                              {{ it }}
+                            </span>
+                          </div>
+                          <span class="eq" *ngIf="item.hasChange">
+                            <i nz-icon nzType="arrow-down" nzTheme="outline"></i>
+                          </span>
+                          <div
+                            style="display: flex; flex-direction: row; height: 42px; overflow-x: auto; padding: 4px 0"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                          >
+                            <span [title]="it" *ngFor="let it of item.value" class="user-value">
+                              <nz-avatar nzIcon="user" nzSize="small"></nz-avatar>
+                              {{ it }}
+                            </span>
+                          </div>
+                        </app-user-item>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </div>
+                  <div *ngSwitchCase="'file'">
+                    <nz-form-item style="width: 100%">
+                      <nz-form-label [nzRequired]="item.is_required">
+                        <span class="title">
+                          {{ item.name | translate }}
+                        </span>
+                      </nz-form-label>
+                      <nz-form-control
+                        style="width: 100%"
+                        [ngClass]="{
+                          'approve-item': item.isApproveField,
+                          'changed-item': item.hasChange
+                        }"
+                      >
+                        <app-image-item [item]="item" *ngIf="item.image">
+                          <nz-image-group *ngIf="item.hasChange" class="img-box">
+                            <img
+                              nz-image
+                              [height]="(item.rows / 2 - 1) * 32"
+                              [width]="(item.rows / 2 - 1) * 32"
+                              [nzSrc]="file.url"
+                              [alt]="file.name"
+                              *ngFor="let file of item.oldValue"
+                            />
+                          </nz-image-group>
+                          <span class="eq" *ngIf="item.hasChange">
+                            <i nz-icon nzType="arrow-down" nzTheme="outline"></i>
+                          </span>
+                          <nz-image-group class="img-box">
+                            <img
+                              nz-image
+                              [height]="((item.hasChange ? item.rows / 2 : item.rows) - 1) * 32"
+                              [width]="((item.hasChange ? item.rows / 2 : item.rows) - 1) * 32"
+                              [nzSrc]="file.url"
+                              [alt]="file.name"
+                              style="flex: none"
+                              *ngFor="let file of item.value"
+                            />
+                          </nz-image-group>
+                        </app-image-item>
+                        <app-file-item [item]="item" *ngIf="!item.image">
+                          <ng-container *ngIf="item.hasChange">
+                            <div
+                              class="value"
+                              [ngClass]="{
+                                'approve-item': item.isApproveField,
+                                'changed-item': item.hasChange
+                              }"
+                            >
+                              <span *ngFor="let file of item.oldValue">
+                                <a [href]="file.url" target="_blank">{{ file.name }}</a>
+                              </span>
+                            </div>
+                          </ng-container>
+                          <span class="eq" *ngIf="item.hasChange">
+                            <i nz-icon nzType="arrow-down" nzTheme="outline"></i>
+                          </span>
+                          <div
+                            class="value"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                          >
+                            <span *ngFor="let file of item.value">
+                              <a [href]="file.url" target="_blank">{{ file.name }}</a>
+                            </span>
+                          </div>
+                        </app-file-item>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </div>
+                  <div style="height: 100%; padding: 0" *ngSwitchDefault>
+                    <nz-form-item style="width: 100%">
+                      <nz-form-label [nzRequired]="item.is_required">
+                        <span class="title">
+                          {{ item.name | translate }}
+                        </span>
+                      </nz-form-label>
+                      <nz-form-control style="width: 100%">
+                        <app-text-item [item]="item">
+                          <span
+                            class="value"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                            *ngIf="item.hasChange"
+                          >
+                            {{ item.oldValue }}
+                          </span>
+                          <span class="eq" *ngIf="item.hasChange">
+                            <i nz-icon nzType="arrow-down" nzTheme="outline"></i>
+                          </span>
+                          <span
+                            class="value"
+                            [ngClass]="{
+                              'approve-item': item.isApproveField,
+                              'changed-item': item.hasChange
+                            }"
+                          >
+                            {{ item.value }}
+                          </span>
+                        </app-text-item>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </div>
+                </div>
+              </gridster-item>
+            </gridster>
+          </div>
+          <ng-template #fileTitle>
+            <i nz-icon nzType="profile"></i>
+            <span>{{ 'common.text.baseInfo' | translate }}</span>
+          </ng-template>
+        </nz-card>
+        <nz-card style="height: 100%; margin-top: 16px" [nzTitle]="sysTitle" nzType="inner" nzSize="small">
+          <div style="padding: 8px">
+            <div style="display: flex">
+              <div
+                style="width: 100px; display: flex; justify-content: center; align-items: center"
+                class="solid_border"
+              >
+                <span [ngSwitch]="status">
+                  <nz-tag [nzColor]="'lightskyblue'" *ngSwitchCase="1">
+                    {{ 'page.approve.statusApproval' | translate }}
+                  </nz-tag>
+                  <nz-tag [nzColor]="'green'" *ngSwitchCase="2">
+                    {{ 'page.approve.statusAdmitted' | translate }}
+                  </nz-tag>
+                  <nz-tag [nzColor]="'red'" *ngSwitchDefault>
+                    {{ 'page.approve.statusRejected' | translate }}
+                  </nz-tag>
+                </span>
+              </div>
+              <div style="overflow: auto; padding: 16px 8px; flex: 1; margin-left: 2px" class="solid_border">
+                <span *ngFor="let item of itemInfo.nodes; let i = index">
+                  <span nz-popover nzType="primary" [nzPopoverTitle]="title" [nzPopoverContent]="desc">
+                    <span>{{ i + 1 }}. {{ item.node_name }}</span>
+                    <span style="padding: 0 4px">
+                      <nz-tag [nzColor]="'green'" *ngIf="item.node_id < currentNode">
+                        <i nz-icon nzType="check-circle" nzTheme="outline"></i>
+                      </nz-tag>
+                      <nz-tag
+                        [nzColor]="'lightskyblue'"
+                        *ngIf="item.node_id === currentNode && itemInfo.status.approve_status === 1"
+                      >
+                        <i nz-icon [nzType]="'loading'"></i>
+                      </nz-tag>
+                      <nz-tag
+                        [nzColor]="'green'"
+                        *ngIf="
+                          item.node_id === currentNode && item.next_node === '0' && itemInfo.status.approve_status === 2
+                        "
+                      >
+                        <i nz-icon nzType="check-circle" nzTheme="outline"></i>
+                      </nz-tag>
+                      <nz-tag
+                        [nzColor]="'red'"
+                        *ngIf="item.node_id === currentNode && itemInfo.status.approve_status === 3"
+                      >
+                        <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+                      </nz-tag>
+                    </span>
+                    <span *ngIf="i < itemInfo.nodes.length - 1" style="padding: 0 16px">
+                      <i nz-icon nzType="arrow-down" nzTheme="outline"></i>
+                    </span>
+                  </span>
+                  <ng-template #title>
+                    <div style="text-align: center">
+                      <h4>{{ 'page.approve.approvalUser' | translate }}</h4>
+                    </div>
+                  </ng-template>
+                  <ng-template #desc>
+                    <div style="padding: 8px; text-align: center">
+                      <span
+                        *ngFor="let a of item.assignees"
+                        class="dashed_border"
+                        style="display: inline-block; padding: 2px; height: 32px"
+                      >
+                        <ng-container *ngIf="a.startsWith('u_'); else elseTemplate">
+                          <span *ngIf="a.substring(2) as user">
+                            <nz-avatar nzSize="small" nzIcon="user"></nz-avatar>
+                            {{ user | user: userList }}
+                          </span>
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                          <span *ngIf="a.substring(2) as role">
+                            <nz-avatar nzSize="small" nzShape="square" nzText="R"></nz-avatar>
+                            {{ [role] | role | async }}
+                          </span>
+                        </ng-template>
+                      </span>
+                    </div>
+                  </ng-template>
+                </span>
+              </div>
+            </div>
+            <div style="height: 150px; overflow: auto; margin-top: 2px" class="solid_border">
+              <div *ngFor="let item of itemInfo.process" style="padding: 4px">
+                <ng-container *ngIf="item.user_id === 'system'; then thenTemplate; else elseTemplate"></ng-container>
+                <ng-template #thenTemplate>
+                  <nz-avatar nzText="system" nzSize="small" style="vertical-align: middle"></nz-avatar>
+                  【SYSTEM】 {{ item.comment }}
+                </ng-template>
+                <ng-template #elseTemplate>
+                  <nz-avatar
+                    [nzText]="item.user_id | user: userList"
+                    nzSize="small"
+                    style="vertical-align: middle"
+                  ></nz-avatar>
+                  【{{ item.user_id | user: userList }}】 {{ item.comment }}
+                </ng-template>
+
+                <span [ngSwitch]="item.status">
+                  <nz-tag [nzColor]="'green'" *ngSwitchCase="1">
+                    {{ 'page.approve.statusAdmitted' | translate }}
+                  </nz-tag>
+                  <nz-tag [nzColor]="'red'" *ngSwitchCase="2">
+                    {{ 'page.approve.statusRejected' | translate }}
+                  </nz-tag>
+                  <nz-tag [nzColor]="'lightskyblue'" *ngSwitchDefault>
+                    {{ 'page.approve.statusApproval' | translate }}
+                  </nz-tag>
+                </span>
+              </div>
+            </div>
+          </div>
+          <ng-template #sysTitle>
+            <i nz-icon nzType="node-expand" nzTheme="outline"></i>
+            <span>{{ 'page.approve.status' | translate }}</span>
+          </ng-template>
+        </nz-card>
+      </div>
+      <div nz-col [nzSm]="24" [nzMd]="5">
+        <nz-collapse>
+          <nz-collapse-panel [nzHeader]="'page.approve.approvalTitle' | translate" nzActive="true">
+            <div style="margin-bottom: 16px">
+              <textarea
+                nz-input
+                [(ngModel)]="comment"
+                rows="5"
+                [placeholder]="'page.approve.placeholderApproval' | translate"
+                [disabled]="checkDisable(currentNode)"
+              ></textarea>
+            </div>
+            <button
+              nz-button
+              (click)="admit(itemInfo.example_id)"
+              nzBlock="true"
+              nzSize="large"
+              nzType="primary"
+              [disabled]="checkDisable(currentNode)"
+            >
+              <i nz-icon nzType="check" nzTheme="outline"></i>
+              {{ 'common.button.admit' | translate }}
+            </button>
+            <button
+              nz-button
+              (click)="dismiss(itemInfo.example_id)"
+              nzBlock="true"
+              nzSize="large"
+              [disabled]="checkDisable(currentNode)"
+            >
+              <i nz-icon nzType="close" nzTheme="outline"></i>
+              {{ 'common.button.reject' | translate }}
+            </button>
+          </nz-collapse-panel>
+          <nz-collapse-panel [nzHeader]="'page.approve.applicantTitle' | translate" nzActive="true">
+            <div>
+              {{ 'page.approve.applicant' | translate }}:
+              {{ itemInfo.created_by | user: userList }}
+            </div>
+            <div>
+              {{ 'page.approve.approvalAt' | translate }}:
+              {{ itemInfo.created_at | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}
+            </div>
+          </nz-collapse-panel>
+        </nz-collapse>
+      </div>
+    </div>
+  </div>
+</div>

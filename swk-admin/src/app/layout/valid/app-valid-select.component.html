@@ -1,0 +1,13 @@
+<div style="overflow-y: scroll; max-height: 300px">
+  <nz-radio-group [(ngModel)]="selectedAppId">
+    <label *ngFor="let app of appsOption" nz-radio [ngStyle]="style" [nzValue]="app.app_id" [nzDisabled]="!app.isValid">
+      <span style="width: 150px; display: inline-block">{{ app.app_name | translate }}</span>
+      <span style="width: 100px; display: inline-block">
+        {{ (app.is_trial ? 'page.home.trialVersion' : 'page.home.formalVersion') | translate }}
+      </span>
+      <span style="width: 100px; display: inline-block" [style.color]="app.isValid ? 'black' : 'red'">
+        {{ (app.isValid ? 'page.home.normal' : 'page.home.expired') | translate }}
+      </span>
+    </label>
+  </nz-radio-group>
+</div>

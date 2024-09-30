@@ -1,0 +1,107 @@
+<form nz-form [formGroup]="roleForm" nzLayout="vertical">
+  <!-- 基本信息 -->
+  <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'common.text.baseInfo' | translate">
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.role.roleName' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="name">
+        <input
+          nz-input
+          style="width: 300px"
+          formControlName="name"
+          trim="blur"
+          [placeholder]="'common.placeholder.input' | translate: { label: 'page.role.roleName' | translate }"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+        />
+        <ng-template #name let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+
+          <ng-container *ngIf="control.hasError('duplicated')">
+            {{ 'common.validator.roleNameDuplicated' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>{{ 'page.role.roleDescription' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="errorName">
+        <textarea
+          formControlName="description"
+          nz-input
+          rows="3"
+          style="width: 300px"
+          trim="blur"
+          [placeholder]="'common.placeholder.input' | translate: { label: 'page.role.roleDescription' | translate }"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+        ></textarea>
+        <ng-template #errorName let-control></ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzFor="ipWhitelist">{{ 'page.role.ipWhitelist' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="ipErrorName">
+        <textarea
+          formControlName="ipWhitelist"
+          nz-input
+          rows="5"
+          style="width: 300px"
+          trim="blur"
+          [placeholder]="'common.placeholder.input' | translate: { label: 'page.role.ipWhitelist' | translate }"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+        ></textarea>
+        <ng-template #ipErrorName let-control>
+          <ng-container *ngIf="control.hasError('validateIP')">
+            {{ 'page.role.ipError' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </nz-card>
+  <br />
+  <!-- 菜单设置 -->
+  <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'page.role.menuSetting' | translate">
+    <nz-tree
+      [nzData]="menuList"
+      nzShowLine="true"
+      nzShowIcon="false"
+      nzCheckable
+      nzExpandAll="true"
+      [nzTreeTemplate]="treeTpl"
+    ></nz-tree>
+
+    <ng-template #treeTpl let-node>
+      <i nz-icon nzType="file"></i>
+      <span>{{ node.title | translate }}</span>
+    </ng-template>
+  </nz-card>
+  <br />
+  <nz-form-item>
+    <nz-space>
+      <div *nzSpaceItem>
+        <button
+          nz-button
+          nzType="primary"
+          [disabled]="!roleForm.valid"
+          appDebounceClick
+          (click)="submitroleForm($event, roleForm.value)"
+        >
+          <i nz-icon [nzType]="'save'" nzTheme="outline"></i>
+          {{ 'common.button.save' | translate }}
+        </button>
+      </div>
+      <div *nzSpaceItem>
+        <button nz-button nzType="default" (click)="reset()" *ngIf="status === 'add'">
+          <i nz-icon nzType="redo" nzTheme="outline"></i>
+          {{ 'common.button.reset' | translate }}
+        </button>
+      </div>
+      <div *nzSpaceItem>
+        <button nz-button nzType="default" (click)="cancel()">
+          <i nz-icon nzType="close" nzTheme="outline"></i>
+          {{ 'common.button.cancel' | translate }}
+        </button>
+      </div>
+    </nz-space>
+  </nz-form-item>
+</form>

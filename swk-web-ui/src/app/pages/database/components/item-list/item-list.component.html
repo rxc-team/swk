@@ -1,0 +1,80 @@
+<div class="search">
+  <nz-table
+    #basicTable
+    nzShowSizeChanger
+    [nzFrontPagination]="false"
+    [nzData]="dataSet"
+    nzBordered="true"
+    [nzTotal]="total"
+    [(nzPageIndex)]="pageIndex"
+    [(nzPageSize)]="pageSize"
+    [nzLoading]="loading"
+    nzSize="middle"
+    [nzScroll]="scroll"
+    [nzShowTotal]="rangeTemplate"
+    [nzLoadingDelay]="500"
+    [nzVirtualItemSize]="35"
+    [nzVirtualForTrackBy]="trackBy"
+    [nzPageSizeOptions]="[50, 100, 200, 500]"
+    (nzQueryParams)="onQueryParamsChange($event)"
+  >
+    <thead>
+      <tr>
+        <th nzWidth="60px">{{ 'page.datastore.no' | translate }}</th>
+        <th
+          *ngFor="let f of fields"
+          [nzWidth]="f.width + 'px'"
+          [nzShowSort]="f.field_type !== 'file' && f.field_type !== 'user'"
+          [nzSortFn]="true"
+          [nzSortPriority]="true"
+          [nzColumnKey]="f.field_type === 'lookup' ? f.field_id + '.value' : f.field_id"
+          [title]="f.field_id"
+        >
+          {{ f.field_name | translate }}
+        </th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-template nz-virtual-scroll let-row>
+        <tr (click)="goTo(row[0].value)">
+          <td *ngFor="let col of row.slice(1); let i = index">
+            <div [ngSwitch]="col.data_type" class="content">
+              <!--Text-->
+              <div *ngSwitchDefault class="text">
+                <span [title]="col.value">{{ col.value }}</span>
+              </div>
+              <div *ngSwitchCase="'number'" class="text">
+                <div style="padding: 0 2px; text-align: right">
+                  {{ col.value | number: '1.0-9' }}
+                </div>
+              </div>
+              <div *ngSwitchCase="'user'" class="text">
+                <span style="padding: 0 2px" [title]="col.value">
+                  {{ col.value }}
+                </span>
+              </div>
+              <div *ngSwitchCase="'file'" class="text">
+                <span style="padding: 0 2px" [title]="it.name" *ngFor="let it of col.value">
+                  <a [href]="it.url" (click)="$event.stopPropagation()" target="_blank">{{ it.name }}</a>
+                </span>
+              </div>
+              <div *ngSwitchCase="'options'" class="text">
+                <span [title]="col.value | translate">{{ col.value | translate }}</span>
+              </div>
+              <div *ngSwitchCase="'lookup'" class="text">
+                <span [title]="col.value">
+                  {{ col.value }}
+                </span>
+              </div>
+            </div>
+          </td>
+          <td></td>
+        </tr>
+      </ng-template>
+    </tbody>
+  </nz-table>
+  <ng-template #rangeTemplate let-range="range" let-total>
+    {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+  </ng-template>
+</div>

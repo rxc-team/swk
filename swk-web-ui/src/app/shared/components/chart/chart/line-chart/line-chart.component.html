@@ -1,0 +1,6 @@
+<div (dblclick)="toggleFullScreen()" class="container" #chart>
+  <div #container></div>
+  <div *ngIf="data.length === 0" style="height: 400px">
+    <nz-empty></nz-empty>
+  </div>
+</div>

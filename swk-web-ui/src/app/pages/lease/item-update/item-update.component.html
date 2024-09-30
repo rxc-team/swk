@@ -1,0 +1,50 @@
+<div style="padding: 16px 0px 0px 0px">
+  <ng-container [ngSwitch]="action">
+    <ng-container *ngSwitchCase="'info'">
+      <app-info-change
+        *ngIf="!loading"
+        [controlArray]="controlArray"
+        (nxCancel)="cancel()"
+        [userList]="userList"
+        (nxSubmit)="submit($event)"
+      ></app-info-change>
+    </ng-container>
+    <ng-container *ngSwitchCase="'debt'">
+      <app-debt-change
+        *ngIf="!loading"
+        [controlArray]="controlArray"
+        (nxCancel)="cancel()"
+        [userList]="userList"
+        (nxSubmit)="submit($event)"
+      ></app-debt-change>
+    </ng-container>
+    <ng-container *ngSwitchCase="'cancel'">
+      <app-midway-cancel
+        *ngIf="!loading"
+        [controlArray]="controlArray"
+        (nxCancel)="cancel()"
+        [userList]="userList"
+        (nxSubmit)="submit($event)"
+      ></app-midway-cancel>
+    </ng-container>
+    <ng-container *ngSwitchCase="'expire'">
+      <app-expire
+        *ngIf="!loading"
+        [controlArray]="controlArray"
+        (nxCancel)="cancel()"
+        [userList]="userList"
+        (nxSubmit)="submit($event)"
+      ></app-expire>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+      <app-datatype-form
+        *ngIf="!loading"
+        [controlArray]="controlArray"
+        [isUpdate]="true"
+        (nxCancel)="cancel()"
+        [userList]="userList"
+        (nxSubmit)="submit($event)"
+      ></app-datatype-form>
+    </ng-container>
+  </ng-container>
+</div>

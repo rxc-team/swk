@@ -1,0 +1,26 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    .logo-horizontal {
+      height: 32px;
+      margin: 16px;
+      background-image: url(@logo-horizontal-url);
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      -moz-background-size: 100% 100%;
+      float: left;
+    }
+  
+    .logo-vertical {
+      height: 32px;
+      padding: 8px;
+      margin: 16px;
+      background-image: url(@logo-vertical-url);
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      -moz-background-size: 100% 100%;
+      float: left;
+    }
+  }
+});

@@ -1,0 +1,83 @@
+<nz-tabset [nzTabPosition]="position" style="height: 500px; padding: 16px" nzSize="small">
+  <nz-tab [nzTitle]="'page.document.public' | translate">
+    <ng-template nz-tab>
+      <app-search-list [fo]="'public'"></app-search-list>
+    </ng-template>
+  </nz-tab>
+  <nz-tab [nzTitle]="'page.document.company' | translate">
+    <ng-template nz-tab>
+      <app-search-list [fo]="'company'" [delete]="true" [write]="true"></app-search-list>
+    </ng-template>
+  </nz-tab>
+  <nz-tab [nzTitle]="'page.document.personFile' | translate">
+    <ng-template nz-tab>
+      <app-search-list [fo]="'user'" [delete]="true" [write]="true"></app-search-list>
+    </ng-template>
+  </nz-tab>
+  <nz-tab *ngFor="let tab of folderTabs" [nzTitle]="tab.folder_name">
+    <ng-template nz-tab>
+      <app-search-list [fo]="tab.folder_id" [delete]="true" [write]="true"></app-search-list>
+    </ng-template>
+  </nz-tab>
+  <nz-tab [nzTitle]="foladerAdd">
+    <nz-card nzBordered="true" nzSize="small" nzType="inner" [nzTitle]="'page.document.newFolder' | translate">
+      <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" nzLayout="vertical">
+        <nz-form-item>
+          <nz-form-label nzFor="folder_name" nzRequired>
+            {{ 'page.document.folderName' | translate }}
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="fileName">
+            <nz-input-group>
+              <input
+                type="text"
+                nz-input
+                trim="blur"
+                formControlName="folder_name"
+                [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+                [placeholder]="
+                  'common.placeholder.input' | translate: { label: 'page.document.folderName' | translate }
+                "
+              />
+            </nz-input-group>
+            <ng-template #fileName let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.folderNameDuplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-space>
+            <div *nzSpaceItem>
+              <button nz-button nzType="primary" nzSize="default" [disabled]="validateForm.invalid">
+                <i nz-icon nzType="save" nzTheme="outline"></i>
+                {{ 'common.button.save' | translate }}
+              </button>
+            </div>
+            <div *nzSpaceItem>
+              <button
+                nz-button
+                nzType="default"
+                type="button"
+                nzSize="default"
+                (click)="reset()"
+                style="margin-left: 16px"
+              >
+                <i nz-icon nzType="redo" nzTheme="outline"></i>
+                {{ 'common.button.reset' | translate }}
+              </button>
+            </div>
+          </nz-space>
+        </nz-form-item>
+      </form>
+    </nz-card>
+    <ng-template #foladerAdd>
+      {{ 'common.button.add' | translate }}
+      <i nz-icon nzType="plus" nzTheme="outline"></i>
+    </ng-template>
+  </nz-tab>
+</nz-tabset>

@@ -1,0 +1,21 @@
+<form nz-form [formGroup]="form">
+  <nz-form-item>
+    <nz-form-label nzRequired="true">{{ 'page.datastore.field.selectGroup' | translate }}</nz-form-label>
+    <nz-form-control [nzErrorTip]="userGroup">
+      <nz-tree-select
+        formControlName="userGroup"
+        [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+        [nzNodes]="selectNodes"
+        nzDefaultExpandAll
+        [nzPlaceHolder]="
+          'common.placeholder.select' | translate: { label: 'page.datastore.field.selectGroup' | translate }
+        "
+      ></nz-tree-select>
+      <ng-template #userGroup let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          {{ 'common.validator.requiredSelect' | translate }}
+        </ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+</form>

@@ -1,0 +1,62 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    .container {
+      text-align: center;
+      position: fixed;
+      right: 0px;
+      top: 80px;
+      z-index: 5000;
+      // box-shadow: 2px 2px 5px 2px #333333;
+    }
+    
+    .opend {
+      box-shadow: none;
+    }
+    
+    .job {
+      margin-top: 16px;
+    
+      ::ng-deep .ant-card-body {
+        padding: 0px !important;
+      }
+    
+      &-header {
+        background-color: @table-header-bg;
+        padding: 8px 16px;
+      }
+    
+      &-progress {
+        margin: 8px 0;
+        padding: 0 16px;
+    
+        &-message {
+          text-align: left;
+        }
+      }
+    
+      &-steps {
+        padding: 8px;
+    
+        &-active {
+          color: red;
+        }
+      }
+    
+      &-info {
+        border-bottom: 1px solid @border-color-base;
+        padding: 0px 16px;
+      }
+    
+      &-actions {
+        background-color: @table-header-bg;
+        padding: 8px 16px;
+    
+        button {
+          margin-right: 16px;
+        }
+      }
+    }
+  }
+});

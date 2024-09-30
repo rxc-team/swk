@@ -1,0 +1,206 @@
+<nz-collapse [nzBordered]="true">
+  <nz-collapse-panel [nzHeader]="'common.button.search' | translate">
+    <form nz-form [formGroup]="seachForm" nzLayout="inline">
+      <nz-form-item>
+        <nz-form-label nzFor="groupId">
+          {{ 'page.dataAccess.group' | translate }}
+        </nz-form-label>
+        <nz-form-control>
+          <nz-select
+            style="width: 200px"
+            formControlName="groupId"
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.dataAccess.group' | translate }"
+            nzAllowClear
+          >
+            <nz-option
+              *ngFor="let item of groups"
+              [nzLabel]="item.group_name | translate"
+              [nzValue]="item.group_id"
+            ></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="roleId">
+          {{ 'page.dataAccess.role' | translate }}
+        </nz-form-label>
+        <nz-form-control>
+          <nz-select
+            style="width: 200px"
+            formControlName="roleId"
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.dataAccess.role' | translate }"
+            nzAllowClear
+          >
+            <nz-option *ngFor="let item of roles" [nzLabel]="item.role_name" [nzValue]="item.role_id"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <label nz-checkbox formControlName="invalidatedIn">{{ 'page.role.invalidatedIn' | translate }}</label>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button [nzType]="'primary'" (click)="search()" [disabled]="!seachForm.valid">
+            <i nz-icon nzType="search"></i>
+            {{ 'common.button.search' | translate }}
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </nz-collapse-panel>
+</nz-collapse>
+<div style="padding-top: 16px" *ngIf="!isSmall; else elseButtonZoom">
+  <nz-space>
+    <div *nzSpaceItem>
+      <nz-button-group>
+        <button nz-button [nzType]="'primary'" (click)="foward()">
+          <i nz-icon nzType="plus"></i>
+          {{ 'common.button.add' | translate }}
+        </button>
+        <button nz-button [nzType]="'primary'" (click)="refresh()">
+          <i nz-icon nzType="sync"></i>
+          {{ 'common.button.refresh' | translate }}
+        </button>
+      </nz-button-group>
+    </div>
+    <div *nzSpaceItem>
+      <nz-button-group>
+        <button
+          nz-button
+          nzType="primary"
+          nzDanger="true"
+          [disabled]="selectDataOfValid.length === 0 || selectData.length !== selectDataOfValid.length"
+          (click)="deleteAll()"
+        >
+          <i nz-icon nzType="rest"></i>
+          {{ 'common.button.invalid' | translate }}
+        </button>
+        <button
+          nz-button
+          nzType="primary"
+          nzDanger="true"
+          [disabled]="selectData.length === 0"
+          (click)="hardDeleteAll()"
+        >
+          <i nz-icon nzType="delete"></i>
+          {{ 'common.button.delete' | translate }}
+        </button>
+        <button
+          nz-button
+          [disabled]="selectDataOfInvalid.length === 0 || selectData.length !== selectDataOfInvalid.length"
+          (click)="recover()"
+        >
+          <i nz-icon nzType="redo"></i>
+          {{ 'common.button.recover' | translate }}
+        </button>
+      </nz-button-group>
+    </div>
+  </nz-space>
+</div>
+<!-- 画面变小，折叠按钮 -->
+<ng-template #elseButtonZoom>
+  <div nz-row style="padding-top: 16px">
+    <nz-button-group>
+      <button nz-button nzType="primary" (click)="foward()">
+        <i nz-icon nzType="plus"></i>
+        {{ 'page.role.roleAdd' | translate }}
+      </button>
+      <button
+        nz-button
+        nz-dropdown
+        nzType="primary"
+        [nzDropdownMenu]="buttonZoom"
+        [(nzVisible)]="isZoomFlg"
+        nzPlacement="bottomLeft"
+      >
+        <i nz-icon nzType="ellipsis"></i>
+      </button>
+    </nz-button-group>
+    <nz-dropdown-menu #buttonZoom="nzDropdownMenu">
+      <ul nz-menu nzSelectable>
+        <li nz-menu-item (click)="refresh()">
+          <i nz-icon nzType="sync"></i>
+          {{ 'common.button.refresh' | translate }}
+        </li>
+        <li nz-menu-item (click)="deleteAll()">
+          <i nz-icon nzType="rest"></i>
+          {{ 'common.button.invalid' | translate }}
+        </li>
+        <li nz-menu-item (click)="hardDeleteAll()">
+          <i nz-icon nzType="delete"></i>
+          {{ 'common.button.delete' | translate }}
+        </li>
+        <li nz-menu-item (click)="recover()">
+          <i nz-icon nzType="redo"></i>
+          {{ 'common.button.recover' | translate }}
+        </li>
+      </ul>
+    </nz-dropdown-menu>
+  </div>
+</ng-template>
+
+<div style="padding-top: 16px">
+  <nz-table
+    #basicTable
+    [nzData]="listData"
+    nzBordered="true"
+    nzSize="middle"
+    [nzPageSize]="100"
+    [nzScroll]="{ y: '300px' }"
+    [nzTotal]="listData.length"
+    [nzShowTotal]="rangeTemplate"
+  >
+    <thead>
+      <tr>
+        <th
+          nzWidth="40px"
+          nzLeft="0"
+          nzShowCheckbox
+          [(nzChecked)]="selectAll"
+          (nzCheckedChange)="checkAll($event)"
+        ></th>
+        <ng-container *ngFor="let col of cols">
+          <th
+            *ngIf="col.width"
+            nz-resizable
+            nzBounds="window"
+            [nzWidth]="col.width"
+            [nzMinWidth]="80"
+            (nzResizeEnd)="onResize($event, col.title)"
+          >
+            {{ col.title | translate }}
+            <nz-resize-handle nzDirection="right"></nz-resize-handle>
+          </th>
+          <th *ngIf="!col.width">
+            {{ col.title | translate }}
+          </th>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-template ngFor let-data [ngForOf]="basicTable.data">
+        <tr
+          (click)="data.deleted_by ? null : goToDetail(data.access_id)"
+          [style.background]="data.deleted_by ? '#eeeeee' : ''"
+        >
+          <td
+            nzLeft="0"
+            nzShowCheckbox
+            [(nzChecked)]="data.checked"
+            (nzCheckedChange)="checked($event)"
+            [style.background]="data.deleted_by ? '#eeeeee' : ''"
+          ></td>
+          <td>{{ getGroupName(data.group_id) | translate }}</td>
+          <td>{{ getRoleName(data.role_id) }}</td>
+          <td>{{ data.created_at | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}</td>
+          <td>{{ data.updated_at | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}</td>
+        </tr>
+      </ng-template>
+    </tbody>
+  </nz-table>
+  <ng-template #rangeTemplate let-range="range" let-total>
+    {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+  </ng-template>
+</div>

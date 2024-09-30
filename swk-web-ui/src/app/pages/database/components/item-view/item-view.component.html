@@ -1,0 +1,20 @@
+<div [ngSwitch]="type">
+  <div classe *ngSwitchCase="'options'">
+    <span class="title" *ngIf="label">{{ label }}：</span>
+    <span class="value">{{ value | translate }}</span>
+  </div>
+  <div class="item" *ngSwitchCase="'user'">
+    <span class="title" *ngIf="label">{{ label }}：</span>
+    <span class="value">{{ value }}</span>
+  </div>
+  <div class="item" *ngSwitchCase="'file'">
+    <span class="title" *ngIf="label">{{ label }}：</span>
+    <span class="value" *ngIf="value !== '[]'">
+      <span *ngFor="let file of value">{{ file.name }}</span>
+    </span>
+  </div>
+  <div class="item" *ngSwitchDefault>
+    <span class="title" *ngIf="label">{{ label }}：</span>
+    <span class="value">{{ value }}</span>
+  </div>
+</div>

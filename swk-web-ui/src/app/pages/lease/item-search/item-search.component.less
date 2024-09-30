@@ -1,0 +1,30 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    .content {
+      position: relative;
+      height: 18px;
+    }
+    
+    .text {
+      width: 100%;
+      position: absolute;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .spin{
+      width: 100%;
+    }
+    
+    .loading {
+      text-align: center;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+});

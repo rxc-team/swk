@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  Runner
+
+  Created by RXC on 2020/9/22.
+  Copyright © 2020 The Chromium Authors. All rights reserved.
+*/
+"NSCameraUsageDescription" = "我们需要使用您的相机去扫描二维码，请允许！";
+"NSPhotoLibraryUsageDescription" = "我们需要读取您的相册文件，以便上传图片或者图片，请允许！";

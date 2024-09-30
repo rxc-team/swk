@@ -1,0 +1,108 @@
+<nz-table #basicTable nzShowSizeChanger [nzFrontPagination]="false" [nzData]="dataSet" [nzTitle]="title"
+  nzBordered="true" [nzTotal]="total" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" nzSize="middle"
+  [nzLoading]="loading" [nzShowTotal]="rangeTemplate" [nzScroll]="scroll" nzShowQuickJumper="false">
+  <thead>
+    <tr>
+      <ng-container *ngFor="let col of header">
+        <th *ngIf="col.width" nz-resizable nzBounds="window" [nzWidth]="col.width" [nzMinWidth]="60"
+          (nzResizeEnd)="onResize($event, col.name)">
+          {{ col.name }}
+          <nz-resize-handle nzDirection="right"></nz-resize-handle>
+        </th>
+        <th *ngIf="!col.width">
+          {{ col.name }}
+        </th>
+      </ng-container>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let row of basicTable.data">
+      <td *ngFor="let col of row">
+        <div [ngSwitch]="col.data_type" class="content">
+          <!--Text-->
+          <div class="text" *ngSwitchDefault>
+            <ng-container *ngIf="col.unique; else elseTemplate">
+              <a (click)="goTo(col)" [title]="col.value">{{ col.value }}</a>
+            </ng-container>
+            <ng-template #elseTemplate>
+              <span [title]="col.value">{{ col.value }}</span>
+            </ng-template>
+          </div>
+          <div class="text" *ngSwitchCase="'number'">
+            <ng-container *ngIf="col.unique; else elseTemplate">
+              <div style="padding: 0 2px; text-align: right">
+                <a (click)="goTo(col)" [title]="col.value">{{ col.value | number: '1.0-9' }}</a>
+              </div>
+            </ng-container>
+            <ng-template #elseTemplate>
+              <div style="padding: 0 2px; text-align: right">
+                {{ col.value | number: '1.0-9' }}
+              </div>
+            </ng-template>
+          </div>
+          <div class="text" *ngSwitchCase="'autonum'">
+            <div style="padding: 0 2px; text-align: left" [title]="col.value">
+              {{ col.value }}
+            </div>
+          </div>
+          <div class="text" *ngSwitchCase="'user'">
+            <span style="padding: 0 2px" [title]="col.value">
+              {{ col.value }}
+            </span>
+          </div>
+          <div class="text" *ngSwitchCase="'system_user'">
+            <span style="padding: 0 2px" [title]="col.value | user: userList">
+              {{ col.value | user: userList }}
+            </span>
+          </div>
+          <div class="text" *ngSwitchCase="'file'">
+            <span style="padding: 0 2px" [title]="it.name" *ngFor="let it of col.value">
+              {{ it.name }}
+            </span>
+          </div>
+          <div class="text" *ngSwitchCase="'date'">
+            <ng-container *ngIf="col.value === '0001-01-01'; else elseTemplate"></ng-container>
+            <ng-template #elseTemplate>
+              <span [title]="col.value">
+                {{ col.value }}
+              </span>
+            </ng-template>
+
+            <span [title]="col.value | dateFormat: 'yyyy-MM-dd'">
+              {{ col.value | dateFormat: 'yyyy-MM-dd' }}
+            </span>
+          </div>
+          <div class="text" *ngSwitchCase="'datetime'">
+            <span [title]="col.value | dateFormat: 'yyyy-MM-dd HH:mm:ss'">
+              {{ col.value | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}
+            </span>
+          </div>
+          <div class="text" *ngSwitchCase="'options'">
+            <span [title]="col.value | translate">{{ col.value | translate }}</span>
+          </div>
+          <div class="text" *ngSwitchCase="'lookup'">
+            <span [title]="col.value">
+              {{ col.value }}
+            </span>
+          </div>
+        </div>
+      </td>
+      <td></td>
+    </tr>
+  </tbody>
+</nz-table>
+<ng-template #rangeTemplate let-range="range" let-total>
+  {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+</ng-template>
+<ng-template #title>
+  <span>{{ reportName | translate }}</span>
+  <span class="update">
+    {{ 'common.text.updateDate' | translate }}
+    {{ lastUpdateTime | distance }}
+
+    <button nz-button nzType="primary" nzSize="small" [nzLoading]="update" (click)="genReportData()">
+      <i nz-icon nzType="sync"></i>
+    </button>
+  </span>
+</ng-template>

@@ -1,0 +1,146 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    .title {
+      display: inline-block;
+      color: @text-color;
+      height: 100%;
+      min-width: 100px;
+      padding-left: 4px;
+      line-height: 25px;
+      text-align: left;
+      font-weight: bolder;
+    }
+
+    .block {
+      line-height: 25px;
+      padding: 4px;
+    }
+
+    .box {
+      display: inline-flex;
+      flex-direction: row;
+    }
+
+    .value {
+      display: inline-block;
+      height: 100%;
+      color: @text-color-secondary;
+      line-height: 25px;
+    }
+
+    .user-value {
+      display: inline-block;
+      height: 100%;
+      margin-right: 2px;
+      padding: 2px 4px;
+      border-radius: 30px;
+      background-color: @layout-body-background;
+    }
+
+    
+
+    .horizontal-scroll {
+      display: inline-block;
+      min-height: 25px;
+      line-height: 25px;
+      padding-left: 8px;
+      width: 100%;
+    }
+
+    .img-box{
+      flex: 1;
+      display: flex;
+      justify-content: left;
+      align-items: center;
+      flex-direction: row;
+      overflow-x: auto;
+    }
+
+    .file-box{
+      flex: 1;
+      display: inline-flex;
+      color: @text-color-secondary;
+      line-height: 25px;
+      width: 100%;
+      justify-content: left;
+      align-items: center;
+      flex-direction: row;
+      overflow-x: auto;
+    }
+
+    gridster-item img {
+      padding: 2px;
+    }
+
+    gridster-item a {
+      text-decoration: underline;
+    }
+
+    .ellipsis {
+      text-align: right;
+      width: 80px;
+      float: left;
+      display: block;
+      word-break: keep-all;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -o-text-overflow: ellipsis;
+      -icab-text-overflow: ellipsis;
+      -khtml-text-overflow: ellipsis;
+      -moz-text-overflow: ellipsis;
+      -webkit-text-overflow: ellipsis;
+    }
+
+    .card-container {
+      margin-top: 16px;
+      padding: 2px;
+    }
+
+    .approve {
+      .draggable {
+        background-color: @layout-body-background;
+      }
+
+      .undraggable {
+        background-color: @component-background;
+
+        .item {
+          padding: 2px 0;
+          border: 1px solid @border-color-base;
+        }
+
+        .label {
+          background-color: @primary-1;
+          padding-top: 4px;
+          border-bottom: none;
+          border-top: 2px solid @primary-color;
+          border-radius: 4px;
+          .title{
+            color: @primary-7;
+          }
+        }
+      }
+
+      .approve-item{
+          background-color:  @warning-color;
+      }
+      .changed-item{
+          background-color:  @error-color;
+      }
+
+      .eq{
+        display: inline-block;
+        color: #e2e2e2;
+        font-weight: 900;
+        line-height: 16px;
+      }
+
+      gridster-item {
+        background-color: @component-background;
+      }
+    }
+  }
+});

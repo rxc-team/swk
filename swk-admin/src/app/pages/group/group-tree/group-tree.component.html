@@ -1,0 +1,183 @@
+<div nz-row nzJustify="space-between" style="height: 100%" [nzGutter]="[16, 16]">
+  <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="8" style="height: 100%">
+    <nz-card
+      style="height: 100%"
+      [nzTitle]="'page.group.companyStructure' | translate"
+      [nzExtra]="extra"
+      nzType="inner"
+    >
+      <ng-template #extra>
+        <button nz-button nzType="primary" nzSize="small" (click)="openModal('')" style="margin-right: 8px">
+          <i nz-icon nzType="plus" nzTheme="outline"></i>
+          {{ 'common.button.add' | translate }}
+        </button>
+        <button nz-button [nzType]="'primary'" nzSize="small" (click)="refresh()">
+          <i nz-icon nzType="sync"></i>
+          {{ 'common.button.refresh' | translate }}
+        </button>
+      </ng-template>
+
+      <nz-tree
+        *ngIf="nodes.length > 0"
+        [nzData]="nodes"
+        nzExpandAll
+        nzBlockNode="true"
+        nzShowIcon="false"
+        (nzClick)="select($event)"
+        [nzTreeTemplate]="nzTreeTemplate"
+      >
+        <ng-template #nzTreeTemplate let-node>
+          <div class="custom-node" [class.active]="activedNode?.key === node.key" [title]="node.title | translate">
+            <div *ngIf="!node.isLeaf">
+              <span class="folder-name">{{ node.title | translate }}</span>
+              <span style="padding: 0 16px; text-align: right; float: right">
+                <span nz-dropdown nzPlacement="bottomCenter" [nzDropdownMenu]="menu" nzTrigger="hover">
+                  <i nz-icon nzType="menu"></i>
+                </span>
+              </span>
+              <nz-dropdown-menu #menu="nzDropdownMenu">
+                <ul nzInDropDown nz-menu nzSelectable>
+                  <li nz-menu-item (click)="openModal(node.key)">
+                    <i nz-icon nzType="edit" nzTheme="outline"></i>
+                    {{ 'common.button.edit' | translate }}
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+            <div *ngIf="node.isLeaf">
+              <i nz-icon nzIconfont="icon-user"></i>
+              <span class="file-name">{{ node.title | translate }}</span>
+              <span style="padding: 0 16px; text-align: right; float: right">
+                <span nz-dropdown nzPlacement="bottomCenter" [nzDropdownMenu]="menu" nzTrigger="hover">
+                  <i nz-icon nzType="menu"></i>
+                </span>
+              </span>
+              <nz-dropdown-menu #menu="nzDropdownMenu">
+                <ul nzInDropDown nz-menu nzSelectable>
+                  <li nz-menu-item (click)="openModal(node.key)">
+                    <i nz-icon nzType="edit" nzTheme="outline"></i>
+                    {{ 'common.button.edit' | translate }}
+                  </li>
+                  <li nz-menu-item (click)="delete(node)">
+                    <i nz-icon nzType="delete" nzTheme="outline"></i>
+                    {{ 'common.button.delete' | translate }}
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+          </div>
+        </ng-template>
+      </nz-tree>
+    </nz-card>
+  </div>
+  <div nz-col nzXs="24" nzSm="24" nzMd="12" nzLg="16" style="padding: 8px; height: 100%">
+    <nz-card
+      style="height: 100%"
+      [nzTitle]="'page.group.permissionSetting' | translate"
+      [nzExtra]="setting"
+      nzType="inner"
+    >
+      <ng-template #setting>
+        <button nz-button nzSize="small" nzType="primary" (click)="showUserSetting()">
+          <i nz-icon nzType="user-switch"></i>
+          {{ 'page.group.user' | translate }}
+        </button>
+      </ng-template>
+      <p>{{ 'page.group.dataTips' | translate: { item: itemTotal } }}</p>
+      <div style="height: 100%; overflow: auto">
+        <div style="height: 30px; line-height: 30px; display: flex; flex-direction: row" *ngFor="let ds of datastores">
+          <span
+            class="datastore-node"
+            nz-tooltip
+            nzTooltipPlacement="bottom"
+            [nzTooltipTitle]="ds.datastore_name | translate"
+          >
+            {{ ds.datastore_name | translate }}
+          </span>
+          <span>：{{ 'page.group.lengthTips' | translate: { item: ds.total } }}</span>
+          <button
+            class="pull-right"
+            nz-button
+            nzSize="small"
+            (click)="showMigrationModal(ds.datastore_id, ds.datastore_name)"
+            [disabled]="ds.total === 0"
+          >
+            <i nz-icon nzType="arrow-right"></i>
+            {{ 'page.group.dataMigration' | translate }}
+          </button>
+        </div>
+      </div>
+    </nz-card>
+  </div>
+</div>
+
+<nz-modal
+  [(nzVisible)]="showUser"
+  [nzTitle]="'page.group.user' | translate"
+  [nzWidth]="800"
+  (nzOnCancel)="hiddeUserSetting()"
+  [nzFooter]="null"
+>
+  <ng-template nzModalContent>
+    <nz-transfer
+      [nzDataSource]="displayData"
+      nzShowSearch
+      (nzChange)="change($event)"
+      [nzTitles]="[selectedGroup | translate, 'page.group.allUser' | translate]"
+      [nzListStyle]="{ 'width.px': 400, 'height.px': 300 }"
+    ></nz-transfer>
+  </ng-template>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="migrationVisible"
+  (nzOnCancel)="handleMigrationCancel()"
+  [nzTitle]="
+    'page.group.dataMigrationTitle'
+      | translate: { group: selectedGroup | translate, datastore: selectDatastoreName | translate }
+  "
+>
+  <ng-template nzModalContent>
+    <form nz-form [formGroup]="migrationForm">
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="access_key">{{ 'page.group.userGroup' | translate }}</nz-form-label>
+        <nz-form-control [nzErrorTip]="accessKey">
+          <nz-tree-select
+            formControlName="access_key"
+            style="width: 300px"
+            [nzNodes]="migrationNodes"
+            nzDefaultExpandAll
+            [nzPlaceHolder]="'page.group.groupSelect' | translate"
+          ></nz-tree-select>
+          <ng-template #accessKey let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredSelect' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-template>
+  <div *nzModalFooter>
+    <nz-space>
+      <ng-template nzSpaceItem>
+        <button
+          nz-button
+          nzType="primary"
+          type="submit"
+          (click)="submitMigrationForm()"
+          [disabled]="!migrationForm.valid"
+        >
+          <i nz-icon nzType="check" nzTheme="outline"></i>
+          {{ 'common.button.ok' | translate }}
+        </button>
+      </ng-template>
+      <ng-template nzSpaceItem>
+        <button nz-button (click)="handleMigrationCancel()" type="reset">
+          <i nz-icon nzType="close" nzTheme="outline"></i>
+          {{ 'common.button.cancel' | translate }}
+        </button>
+      </ng-template>
+    </nz-space>
+  </div>
+</nz-modal>

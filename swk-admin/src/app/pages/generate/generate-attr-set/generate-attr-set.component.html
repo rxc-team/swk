@@ -1,0 +1,158 @@
+<nz-page-header class="site-page-header">
+  <!--title-->
+  <nz-page-header-title>{{ 'page.generage.fieldSetTitle' | translate }}</nz-page-header-title>
+  <!--extra-->
+  <nz-page-header-extra>
+    <button nz-button nzType="primary" nzDanger="true" (click)="generateField()">
+      {{ 'common.button.autoGenField' | translate }}
+    </button>
+    <button nz-button (click)="clear()">{{ 'common.button.cancel' | translate }}</button>
+    <button nz-button nzType="primary" (click)="pre()">{{ 'common.button.previous' | translate }}</button>
+    <button nz-button nzType="primary" (click)="next()">{{ 'common.button.next' | translate }}</button>
+  </nz-page-header-extra>
+
+  <!--content-->
+  <nz-page-header-content>
+    <div nz-row>
+      <div class="content">
+        <p nz-paragraph>
+          {{ 'page.generage.fieldSetSubtitle' | translate }}
+        </p>
+      </div>
+    </div>
+  </nz-page-header-content>
+</nz-page-header>
+<nz-table
+  #table
+  [nzData]="fieldList"
+  [nzPageSize]="100"
+  [nzShowPagination]="false"
+  [nzWidthConfig]="width"
+  nzBordered="true"
+  [nzScroll]="{ y: '300px', x: '1200px' }"
+  nzSize="small"
+  [nzPageSize]="500"
+>
+  <thead>
+    <tr>
+      <th rowSpan="2" nzAlign="center">{{ 'page.generage.no' | translate }}</th>
+      <th rowSpan="1" colSpan="2" nzAlign="center">{{ 'page.generage.fieldAttr' | translate }}</th>
+      <th rowSpan="2">{{ 'page.generage.csvColumn' | translate }}</th>
+      <th rowSpan="2">
+        {{ 'page.generage.systemName' | translate }}
+        <br />
+        （{{ fields.length > 0 ? ('page.generage.autoMatch' | translate) : ('page.generage.autoGen' | translate) }}）
+      </th>
+      <th rowSpan="2">{{ 'page.generage.fieldType' | translate }}</th>
+      <th rowSpan="2">{{ 'page.generage.relationSet' | translate }}</th>
+      <th rowSpan="2">{{ 'page.generage.fieldAttrSet' | translate }}</th>
+      <th rowSpan="2">{{ 'page.generage.errorMsg' | translate }}</th>
+    </tr>
+    <tr>
+      <th rowSpan="1" nzAlign="center">{{ 'page.generage.required' | translate }}</th>
+      <th rowSpan="1" nzAlign="center">{{ 'page.generage.unique' | translate }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of fieldList; let i = index">
+      <td
+        [ngClass]="{
+          new: item.can_change && !item.is_empty_line,
+          'not-match': item.is_empty_line
+        }"
+      >
+        {{ item.display_order }}
+      </td>
+      <td style="text-align: center">
+        <label nz-checkbox [nzDisabled]="disabled(item)" [(ngModel)]="item.is_required"></label>
+      </td>
+      <td style="text-align: center">
+        <label nz-checkbox [nzDisabled]="disabled(item)" [(ngModel)]="item.unique"></label>
+      </td>
+      <!-- CSV文件名 -->
+      <td>
+        <span style="color: red" *ngIf="item.is_required">*</span>
+        {{ item.csv_header }}
+      </td>
+
+      <!-- pit项目名 -->
+      <td>
+        <nz-select
+          *ngIf="fields.length > 0"
+          style="width: 100%"
+          [(ngModel)]="item.field_id"
+          nzBorderless="true"
+          (ngModelChange)="fieldSelectChange($event, i)"
+          nzAllowClear
+        >
+          <nz-option *ngFor="let f of fields" [nzValue]="f.field_id" [nzLabel]="f.field_name" nzCustomContent="true">
+            <span style="padding: 0 4px; color: red" *ngIf="f.can_change">NEW</span>
+            {{ f.field_name }}
+          </nz-option>
+        </nz-select>
+        <input
+          nz-input
+          nzBorderless="true"
+          *ngIf="fields.length == 0"
+          (ngModelChange)="fieldInputChange($event, i)"
+          [(ngModel)]="item.field_name"
+        />
+      </td>
+      <!-- 项目类型 -->
+      <td>
+        <nz-select
+          style="width: 100%"
+          [(ngModel)]="item.field_type"
+          [nzDisabled]="disabled(item)"
+          nzBorderless="true"
+          nzAllowClear
+          (ngModelChange)="dataTypeChange($event, item, i)"
+        >
+          <nz-option *ngFor="let f of filedTypes" [nzValue]="f.value" [nzLabel]="f.label | translate"></nz-option>
+        </nz-select>
+      </td>
+      <!-- 关联设置 -->
+      <td>
+        <span [ngSwitch]="item.field_type">
+          <ng-container *ngSwitchCase="'lookup'">
+            <button nz-button nzType="primary" (click)="masterSetting(item, i)">
+              {{ 'common.button.lookupSet' | translate }}
+            </button>
+          </ng-container>
+          <ng-container *ngSwitchCase="'options'">
+            <button nz-button nzType="primary" (click)="optionSetting(item, i)">
+              {{ 'common.button.optionSet' | translate }}
+            </button>
+          </ng-container>
+          <ng-container *ngSwitchCase="'user'">
+            <button nz-button nzType="primary" (click)="userSetting(item)">
+              {{ 'common.button.userSet' | translate }}
+            </button>
+          </ng-container>
+          <p *ngSwitchDefault></p>
+        </span>
+      </td>
+      <!-- 特殊属性设置 -->
+      <td>
+        <button nz-button nzType="primary" (click)="fieldSetting(item)">
+          {{ 'common.button.attrSet' | translate }}
+        </button>
+      </td>
+      <!-- 空按钮 -->
+      <td>
+        <span
+          style="
+            color: red;
+            display: inline-block;
+            word-break: normal;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow: hidden;
+          "
+        >
+          {{ item.check_errors }}
+        </span>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>

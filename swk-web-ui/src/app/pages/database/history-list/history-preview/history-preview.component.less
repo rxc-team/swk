@@ -1,0 +1,126 @@
+@import 'mixin';
+
+.themeMixin({
+    :host {
+        .title {
+          color: @text-color;
+          width: 100%;
+          padding-left: 4px;
+          height: 25px;
+          line-height: 25px;
+          text-align: left;
+          font-weight: bolder;
+        }
+      
+        .sys-title {
+          color: @text-color;
+          padding-left: 4px;
+          height: 28px;
+          line-height: 28px;
+          text-align: left;
+          font-weight: bolder;
+        }
+      
+        .box {
+          display: inline-flex;
+          flex-direction: row;
+          width: 100%;
+        }
+      
+        .value {
+          display: inline-block;
+          padding: 0 8px;
+          color: @text-color-secondary;
+          line-height: 32px;
+          height: 32px;
+          width: 100%;
+          overflow: hidden;
+          word-break: keep-all;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          border: 1px solid @border-color-base;
+          background-color: @layout-body-background;
+        }
+      
+        .sys-value {
+          display: inline-block;
+          padding: 0 4px;
+          color: @text-color-secondary;
+          line-height: 25px;
+          height: 25px;
+        }
+      
+        .text-right {
+          text-align: right;
+        }
+      
+        .user-value {
+          display: inline-block;
+          flex-basis: auto;
+          flex-shrink: 0;
+          height: 100%;
+          margin-right: 2px;
+          padding: 2px 4px;
+          border-radius: 30px;
+          background-color: @layout-body-background;
+        }
+      
+        textarea {
+          box-shadow: none;
+          min-height: 64px;
+          resize: none;
+          line-height: 25px;
+          color: @text-color-secondary;
+          border: 1px solid @border-color-base;
+          background-color: @layout-body-background;
+      
+          &:hover,
+          &:focus {
+            box-shadow: none;
+          }
+        }
+      
+        .img-box {
+          flex: 1;
+          display: flex;
+          justify-content: left;
+          align-items: center;
+          flex-direction: row;
+          overflow-x: auto;
+        }
+      
+        .file-box {
+          flex: 1;
+          display: inline-flex;
+          color: @text-color-secondary;
+          line-height: 25px;
+          width: 100%;
+          justify-content: left;
+          align-items: center;
+          flex-direction: row;
+          overflow-x: auto;
+        }
+      
+        gridster-item a {
+          text-decoration: underline;
+        }
+      
+        .undraggable {
+          background-color: @component-background;
+      
+          .label {
+            background-color: @primary-color;
+            padding-left: 4px;
+            line-height: 32px;
+            border-radius: 4px;
+            .label-title {
+              color: @white;
+            }
+          }
+        }
+      
+        gridster-item {
+          background-color: @component-background;
+        }
+      }
+});

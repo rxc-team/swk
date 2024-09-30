@@ -1,0 +1,416 @@
+<!-- 基本情报 -->
+<form nz-form [formGroup]="form">
+  <div nz-row nzJustify="start" nzAlign="top" [nzGutter]="[2, 2]">
+    <div nz-col [nzXs]="24" [nzMd]="24">
+      <nz-card [nzTitle]="'common.text.baseInfo' | translate" nzSize="small" nzType="inner">
+        <nz-form-item>
+          <nz-form-label nzFor="wfName" nzRequired>
+            {{ 'page.workflow.workflowName' | translate }}
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="wfNameTips">
+            <input
+              nz-input
+              [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+              formControlName="wfName"
+              [placeholder]="
+                'common.placeholder.input' | translate: { label: 'page.workflow.workflowName' | translate }
+              "
+            />
+            <ng-template #wfNameTips let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.workflowNameDuplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzFor="menuName" nzRequired>
+            {{ 'page.workflow.menuName' | translate }}
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="menuNameTips">
+            <input
+              nz-input
+              [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+              formControlName="menuName"
+              [placeholder]="'common.placeholder.input' | translate: { label: 'page.workflow.menuName' | translate }"
+            />
+            <ng-template #menuNameTips let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.workflowMenuNameDuplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzFor="isValid" nzRequired>
+            {{ 'page.workflow.validTitle' | translate }}
+          </nz-form-label>
+          <nz-form-control>
+            <nz-switch formControlName="isValid" (click)="validChange()" [nzControl]="true"></nz-switch>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzFor="acceptOrDismiss" nzRequired>
+            {{ 'page.workflow.defaultAction' | translate }}
+          </nz-form-label>
+          <nz-form-control>
+            <nz-radio-group formControlName="acceptOrDismiss">
+              <label nz-radio [nzValue]="true">{{ 'page.workflow.admit' | translate }}</label>
+              <label nz-radio [nzValue]="false">{{ 'page.workflow.rejecte' | translate }}</label>
+            </nz-radio-group>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-card>
+    </div>
+    <!-- 承认对象情报 -->
+    <div nz-col [nzXs]="24" [nzMd]="14">
+      <nz-card [nzTitle]="'page.workflow.formInfo' | translate" nzSize="small" nzType="inner">
+        <nz-form-item>
+          <nz-form-label nzFor="workflowType" nzRequired>
+            {{ 'page.workflow.formType' | translate }}
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="formTypeTip">
+            <nz-select
+              [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+              formControlName="workflowType"
+              [nzDisabled]="status !== 'add'"
+              [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.workflow.formType' | translate }"
+              nzAllowClear
+            >
+              <nz-option [nzLabel]="'page.workflow.formTypeDatastore' | translate" nzValue="datastore"></nz-option>
+            </nz-select>
+          </nz-form-control>
+          <ng-template #formTypeTip let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredSelect' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzFor="groupId" nzRequired>
+            {{ 'page.workflow.group' | translate }}
+          </nz-form-label>
+          <nz-form-control [nzErrorTip]="groupIdTips">
+            <nz-tree-select
+              formControlName="groupId"
+              [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+              nzAllowClear="false"
+              [nzDisabled]="status !== 'add' || !form.get('workflowType').value"
+              (ngModelChange)="datastoreChange()"
+              [nzNodes]="selectNodes"
+              nzDefaultExpandAll
+              [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.workflow.group' | translate }"
+            ></nz-tree-select>
+            <ng-template #groupIdTips let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.workflowMenuNameDuplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <div formGroupName="params">
+          <div *ngIf="form.get('workflowType').value == 'datastore'">
+            <nz-form-item>
+              <nz-form-label nzFor="datastore" nzRequired>
+                {{ 'page.workflow.formTypeDatastore' | translate }}
+              </nz-form-label>
+              <nz-form-control [nzErrorTip]="datastoreTip">
+                <nz-select
+                  [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+                  formControlName="datastore"
+                  [nzPlaceHolder]="
+                    'common.placeholder.select' | translate: { label: 'page.workflow.formTypeDatastore' | translate }
+                  "
+                  [nzDisabled]="status !== 'add' || !form.get('groupId').value"
+                  (ngModelChange)="datastoreChange()"
+                  nzAllowClear
+                >
+                  <nz-option
+                    [nzLabel]="item.datastore_name | translate"
+                    [nzValue]="item.datastore_id"
+                    *ngFor="let item of datastores"
+                  ></nz-option>
+                </nz-select>
+                <ng-template #datastoreTip let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    {{ 'common.validator.requiredSelect' | translate }}
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label nzFor="action" nzRequired>
+                {{ 'page.workflow.action' | translate }}
+              </nz-form-label>
+              <nz-form-control [nzErrorTip]="actionTip">
+                <nz-select
+                  [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+                  formControlName="action"
+                  [nzDisabled]="status !== 'add' || !form.get('params.datastore').value"
+                  [nzPlaceHolder]="
+                    'common.placeholder.select' | translate: { label: 'page.workflow.action' | translate }
+                  "
+                  nzAllowClear
+                >
+                  <nz-option
+                    [nzLabel]="item.name | translate"
+                    [nzValue]="item.action"
+                    [nzDisabled]="item.disabled"
+                    *ngFor="let item of actions"
+                  ></nz-option>
+                </nz-select>
+                <ng-template #actionTip let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    {{ 'common.validator.requiredSelect' | translate }}
+                  </ng-container>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item *ngIf="form.get('params.action').value == 'update'">
+              <nz-form-label nzFor="fields" nzRequired>
+                {{ 'page.workflow.field' | translate }}
+              </nz-form-label>
+              <nz-form-control>
+                <div class="solid_border" style="padding: 8px 4px; max-height: 100px; width: 300px; overflow: auto">
+                  <nz-checkbox-wrapper style="width: 100%" (nzOnChange)="fieldChange($event)">
+                    <nz-row *ngFor="let item of fields">
+                      <label
+                        nz-checkbox
+                        [nzValue]="item.field_id"
+                        [nzDisabled]="item.disabled"
+                        [nzChecked]="item.checked"
+                      >
+                        {{ item.field_name | translate }}
+                      </label>
+                    </nz-row>
+                  </nz-checkbox-wrapper>
+                </div>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </nz-card>
+    </div>
+    <!-- 节点情报 -->
+    <div nz-col [nzXs]="24" [nzMd]="10">
+      <nz-card [nzTitle]="'page.workflow.nodeInfo' | translate" nzSize="small" nzType="inner" [nzExtra]="extra">
+        <ng-template #extra>
+          <button nz-button nzType="primary" (click)="showNode = true" [disabled]="status !== 'add'">
+            <i nz-icon nzType="plus" nzTheme="outline"></i>
+            {{ 'common.button.add' | translate }}
+          </button>
+        </ng-template>
+
+        <div style="min-height: 300px">
+          <nz-table
+            [nzData]="form.get('nodes').value"
+            [nzFrontPagination]="false"
+            [nzPageSize]="100"
+            [nzShowPagination]="false"
+            nzBordered="true"
+            [nzScroll]="{ y: '300px' }"
+            nzSize="middle"
+          >
+            <thead>
+              <tr>
+                <ng-container *ngFor="let col of cols">
+                  <th
+                    *ngIf="col.width"
+                    nz-resizable
+                    nzBounds="window"
+                    [nzWidth]="col.width"
+                    [nzMinWidth]="80"
+                    (nzResizeEnd)="onResize($event, col.title)"
+                  >
+                    {{ col.title | translate }}
+                    <nz-resize-handle nzDirection="right"></nz-resize-handle>
+                  </th>
+                  <th *ngIf="!col.width">
+                    {{ col.title | translate }}
+                  </th>
+                </ng-container>
+              </tr>
+            </thead>
+            <tbody cdkDropList (cdkDropListDropped)="drop($event)">
+              <tr *ngFor="let item of form.get('nodes').value" cdkDrag>
+                <td>{{ item.node_id }}</td>
+                <td
+                  style="
+                    overflow: hidden;
+                    word-wrap: break-word;
+                    word-break: normal;
+                    white-space: normal;
+                    text-overflow: unset;
+                  "
+                >
+                  <div style="max-height: 100px; overflow: auto">
+                    <span *ngFor="let item of item.assignees">
+                      <ng-container *ngIf="item.startsWith('u_'); else elseTemplate">
+                        <span *ngIf="item.substring(2) as user">
+                          <nz-avatar nzSize="small" nzIcon="user"></nz-avatar>
+                          {{ user | user }}
+                        </span>
+                      </ng-container>
+                      <ng-template #elseTemplate>
+                        <span *ngIf="item.substring(2) as role">
+                          <nz-avatar nzSize="small" nzShape="square" nzText="R"></nz-avatar>
+                          {{ role | role | async }}
+                        </span>
+                      </ng-template>
+                    </span>
+                  </div>
+                </td>
+                <td>
+                  {{
+                    item.act_type == 'or'
+                      ? ('page.workflow.approveTypeOr' | translate)
+                      : ('page.workflow.approveTypeAnd' | translate)
+                  }}
+                </td>
+                <td>
+                  <button
+                    nz-button
+                    nzType="primary"
+                    nzDanger="true"
+                    nzSize="small"
+                    (click)="deleteNode(item.node_id)"
+                    [disabled]="status !== 'add'"
+                  >
+                    <i nz-icon nzType="close-circle"></i>
+                    {{ 'common.button.delete' | translate }}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </div>
+      </nz-card>
+    </div>
+    <!-- 按钮 -->
+    <div nz-col [nzXs]="24" [nzMd]="24">
+      <nz-form-item>
+        <nz-space>
+          <div *nzSpaceItem>
+            <button nz-button nzType="primary" [disabled]="form.invalid" appDebounceClick (click)="submit(form.value)">
+              <i nz-icon [nzType]="status === 'add' ? 'plus' : 'edit'" nzTheme="outline"></i>
+              {{ 'common.button.save' | translate }}
+            </button>
+          </div>
+          <div *nzSpaceItem>
+            <button nz-button *ngIf="status === 'add'" (click)="reset()">
+              <i nz-icon nzType="redo" nzTheme="outline"></i>
+              {{ 'common.button.reset' | translate }}
+            </button>
+          </div>
+          <div *nzSpaceItem>
+            <button nz-button (click)="back()">
+              <i nz-icon nzType="close" nzTheme="outline"></i>
+              {{ 'common.button.cancel' | translate }}
+            </button>
+          </div>
+        </nz-space>
+      </nz-form-item>
+    </div>
+  </div>
+</form>
+<!-- 弹窗 追加画面 -->
+<nz-modal
+  [nzTitle]="'page.workflow.addNodeTitle' | translate"
+  [(nzVisible)]="showNode"
+  (nzOnCancel)="showNode = false"
+  (nzOnOk)="addNode(nodeForm.value)"
+  [nzOkDisabled]="nodeForm.invalid"
+>
+  <ng-template nzModalContent>
+    <form nz-form nzLayout="vertical" [formGroup]="nodeForm">
+      <nz-form-item>
+        <nz-form-label nzFor="actType" nzRequired>
+          {{ 'page.workflow.approveType' | translate }}
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="actTypeTip">
+          <nz-select
+            formControlName="actType"
+            [nzPlaceHolder]="
+              'common.placeholder.select' | translate: { label: 'page.workflow.approveType' | translate }
+            "
+            nzAllowClear
+          >
+            <nz-option [nzLabel]="'page.workflow.approveTypeOr' | translate" nzValue="or"></nz-option>
+            <nz-option [nzLabel]="'page.workflow.approveTypeAnd' | translate" nzValue="and"></nz-option>
+          </nz-select>
+          <ng-template #actTypeTip let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredSelect' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="nodeGroupId">
+          {{ 'page.workflow.group' | translate }}
+        </nz-form-label>
+        <nz-form-control>
+          <nz-tree-select
+            formControlName="nodeGroupId"
+            nzAllowClear
+            [nzNodes]="nodeSelectNodes"
+            nzDefaultExpandAll
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.workflow.group' | translate }"
+          ></nz-tree-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="assignees" nzRequired>
+          {{ 'page.workflow.assigneProfile' | translate }}
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="roleTip">
+          <nz-select
+            formControlName="role"
+            [nzPlaceHolder]="
+              'common.placeholder.select' | translate: { label: 'page.workflow.assigneProfile' | translate }
+            "
+            nzAllowClear
+            (ngModelChange)="roleChange($event)"
+          >
+            <nz-option [nzLabel]="item.role_name" [nzValue]="item.role_id" *ngFor="let item of roles"></nz-option>
+          </nz-select>
+          <ng-template #roleTip let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              {{ 'common.validator.requiredSelect' | translate }}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="users">
+          {{ 'page.workflow.specialApprover' | translate }}
+        </nz-form-label>
+        <nz-form-control>
+          <nz-select
+            formControlName="users"
+            [nzPlaceHolder]="
+              'common.placeholder.select' | translate: { label: 'page.workflow.specialApprover' | translate }
+            "
+            nzMode="multiple"
+            nzAllowClear
+          >
+            <nz-option [nzLabel]="item.user_name" [nzValue]="item.user_id" *ngFor="let item of users"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-template>
+</nz-modal>

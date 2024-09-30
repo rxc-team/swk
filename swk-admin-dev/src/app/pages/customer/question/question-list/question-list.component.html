@@ -1,0 +1,171 @@
+<nz-collapse [nzBordered]="true">
+  <nz-collapse-panel [nzHeader]="'common.text.search' | translate">
+    <form nz-form [formGroup]="seachForm" nzLayout="inline">
+      <nz-form-item>
+        <nz-form-label nzFor="questionTitle">
+          {{ 'page.customer.qa.title' | translate }}
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="errorName">
+          <input
+            nz-input
+            formControlName="questionTitle"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.customer.qa.title' | translate }"
+            style="width: 200px"
+            trim="blur"
+          />
+          <ng-template #errorName let-control></ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="domain">{{ 'page.customer.qa.customerName' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select
+            style="width: 200px"
+            [nzPlaceHolder]="
+              'common.placeholder.select' | translate: { label: 'page.customer.qa.customerName' | translate }
+            "
+            formControlName="domain"
+            nzAllowClear="true"
+          >
+            <nz-option
+              [nzValue]="customer.domain"
+              [nzLabel]="customer.customer_name"
+              *ngFor="let customer of customerSelectData"
+            ></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="questionType">{{ 'page.customer.qa.type' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select
+            style="width: 200px"
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.customer.qa.type' | translate }"
+            formControlName="questionType"
+            nzAllowClear="true"
+          >
+            <nz-option
+              [nzValue]="type.value"
+              [nzLabel]="type.label | translate"
+              *ngFor="let type of questionTypes"
+            ></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="questionPos">{{ 'page.customer.qa.place' | translate }}</nz-form-label>
+        <nz-form-control>
+          <input
+            nz-input
+            formControlName="questionPos"
+            [placeholder]="'common.placeholder.input' | translate: { label: 'page.customer.qa.place' | translate }"
+            style="width: 200px"
+            trim="blur"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzFor="questionStatus">
+          {{ 'page.customer.qa.status' | translate }}
+        </nz-form-label>
+        <nz-form-control>
+          <nz-select
+            style="width: 200px"
+            [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.customer.qa.status' | translate }"
+            formControlName="questionStatus"
+            nzAllowClear="true"
+          >
+            <nz-option
+              [nzValue]="status.value"
+              [nzLabel]="status.label | translate"
+              *ngFor="let status of questionStatuss"
+            ></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" (click)="search()">
+            <i nz-icon nzType="search"></i>
+            {{ 'common.button.search' | translate }}
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </nz-collapse-panel>
+</nz-collapse>
+<div style="padding-top: 16px">
+  <nz-space>
+    <ng-template nzSpaceItem>
+      <button nz-button nzType="primary" (click)="refresh()">
+        <i nz-icon nzType="sync"></i>
+        {{ 'common.button.refresh' | translate }}
+      </button>
+    </ng-template>
+    <ng-template nzSpaceItem>
+      <button nz-button nzType="primary" nzDanger="true" [disabled]="selectData.length === 0" (click)="hardDeleteAll()">
+        <i nz-icon nzType="delete"></i>
+        {{ 'common.button.delete' | translate }}
+      </button>
+    </ng-template>
+  </nz-space>
+</div>
+<div style="padding-top: 16px">
+  <nz-table
+    #basicTable
+    [nzData]="listOfDataDisplay"
+    nzBordered="true"
+    nzSize="middle"
+    [nzTotal]="listOfDataDisplay.length"
+    [nzShowTotal]="rangeTemplate"
+    [nzScroll]="{ y: '400px', x: '1240px' }"
+    [nzPageSize]="100"
+  >
+    <thead>
+      <tr>
+        <th
+          nzWidth="40px"
+          nzLeft="0"
+          nzShowCheckbox
+          [(nzChecked)]="selectAll"
+          (nzCheckedChange)="checkAll($event)"
+        ></th>
+        <ng-container *ngFor="let col of cols">
+          <th
+            *ngIf="col.width"
+            nz-resizable
+            nzBounds="window"
+            [nzWidth]="col.width"
+            [nzMinWidth]="60"
+            (nzResizeEnd)="onResize($event, col.title)"
+          >
+            {{ col.title | translate }}
+            <nz-resize-handle nzDirection="right"></nz-resize-handle>
+          </th>
+          <th *ngIf="!col.width">
+            {{ col.title | translate }}
+          </th>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-template ngFor let-data [ngForOf]="basicTable.data">
+        <tr (click)="goToDetail(data.domain, data.question_id)">
+          <td nzLeft="0" nzShowCheckbox [(nzChecked)]="data.checked" (nzCheckedChange)="checked($event)"></td>
+          <td>{{ data.title }}</td>
+          <td>{{ getCustomerName(data.domain) }}</td>
+          <td>{{ getTypeName(data.type) | translate }}</td>
+          <td>{{ data.function }}</td>
+          <td>{{ getStatusName(data.status) | translate }}</td>
+          <td>{{ data.created_at | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}</td>
+          <td>{{ data.updated_at | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}</td>
+          <td>{{ data.questioner_name }}</td>
+          <td>{{ data.responder_name }}</td>
+        </tr>
+      </ng-template>
+    </tbody>
+  </nz-table>
+  <ng-template #rangeTemplate let-range="range" let-total>
+    {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+  </ng-template>
+</div>

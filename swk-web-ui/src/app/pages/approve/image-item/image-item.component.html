@@ -1,0 +1,22 @@
+<div style="width: 100%" nz-popover [nzPopoverContent]="image">
+  <ng-content></ng-content>
+</div>
+<ng-template #image>
+  <div style="display: inline-flex; flex-direction: row" *ngIf="item.hasChange">
+    <nz-card [nzTitle]="'page.approve.beforeChange' | translate" style="flex: 1" nzType="inner" nzSize="small">
+      <nz-image-group>
+        <img nz-image height="80" width="80" [nzSrc]="file.url" [alt]="file.name" *ngFor="let file of item.oldValue" />
+      </nz-image-group>
+    </nz-card>
+    <nz-card [nzTitle]="'page.approve.afterChange' | translate" style="flex: 1" nzType="inner" nzSize="small">
+      <nz-image-group>
+        <img nz-image height="80" width="80" [nzSrc]="file.url" [alt]="file.name" *ngFor="let file of item.value" />
+      </nz-image-group>
+    </nz-card>
+  </div>
+  <div *ngIf="!item.hasChange">
+    <nz-image-group>
+      <img nz-image height="80" width="80" [nzSrc]="file.url" [alt]="file.name" *ngFor="let file of item.value" />
+    </nz-image-group>
+  </div>
+</ng-template>

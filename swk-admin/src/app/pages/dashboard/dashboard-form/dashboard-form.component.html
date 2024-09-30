@@ -1,0 +1,677 @@
+<form nz-form [formGroup]="dashboardForm">
+  <nz-card [nzTitle]="'page.dashboard.dashboardType' | translate" nzType="inner" nzSize="small">
+    <div style="display: flex; flex-grow: 1; flex-basis: 0; padding: 10px 0; overflow: auto">
+      <nz-card
+        style="margin-right: 2px"
+        nzHoverable="true"
+        *ngFor="let item of dashboardOptions1"
+        (click)="select(item.value)"
+        [ngClass]="{ 'ds-active': item.value === getForm('dashboardType').value }"
+      >
+        <img [src]="'assets/images/chart/' + item.icon" alt="line" height="70" width="100" />
+      </nz-card>
+    </div>
+  </nz-card>
+
+  <nz-card>
+    <nz-tabset [nzTabBarExtraContent]="preview">
+      <nz-tab [nzTitle]="'page.dashboard.reportData' | translate">
+        <nz-form-item>
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.report' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="reportId">
+            <ng-container
+              *ngIf="
+                getForm('dashboardType').value === 'line' ||
+                  getForm('dashboardType').value === 'bar' ||
+                  getForm('dashboardType').value === 'pie' ||
+                  getForm('dashboardType').value === 'area' ||
+                  getForm('dashboardType').value === 'histogram' ||
+                  getForm('dashboardType').value === 'column';
+                else listReport
+              "
+            >
+              <nz-select
+                formControlName="reportId"
+                [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+                nzAllowClear="true"
+                [nzPlaceHolder]="
+                  'common.placeholder.select' | translate: { label: 'page.dashboard.report' | translate }
+                "
+                (ngModelChange)="reportChange($event)"
+              >
+                <nz-option
+                  nzCustomContent
+                  [nzValue]="item.report_id"
+                  [nzLabel]="item.report_name | translate"
+                  *ngFor="let item of groupReportOptions"
+                >
+                  <i nz-icon nzType="table"></i>
+                  {{ item.report_name | translate }}
+                </nz-option>
+              </nz-select>
+            </ng-container>
+            <ng-template #listReport>
+              <nz-select
+                formControlName="reportId"
+                [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+                nzAllowClear="true"
+                [nzPlaceHolder]="
+                  'common.placeholder.select' | translate: { label: 'page.dashboard.report' | translate }
+                "
+                (ngModelChange)="reportChange($event)"
+              >
+                <nz-option
+                  nzCustomContent
+                  [nzValue]="item.report_id"
+                  [nzLabel]="item.report_name | translate"
+                  *ngFor="let item of listReportOptions"
+                >
+                  <i nz-icon nzType="table"></i>
+                  {{ item.report_name | translate }}
+                </nz-option>
+              </nz-select>
+            </ng-template>
+
+            <ng-template #reportId let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredSelect' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item
+          *ngIf="
+            getForm('dashboardType').value === 'line' ||
+            getForm('dashboardType').value === 'bar' ||
+            getForm('dashboardType').value === 'radar' ||
+            getForm('dashboardType').value === 'area' ||
+            getForm('dashboardType').value === 'point' ||
+            getForm('dashboardType').value === 'column'
+          "
+        >
+          <nz-form-label [nzRequired]="gFieldRequired">{{ 'page.dashboard.gField' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="gFieldId">
+            <nz-select
+              formControlName="gFieldId"
+              [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+              nzAllowClear="true"
+              (ngModelChange)="gFieldChange($event)"
+              [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.dashboard.gField' | translate }"
+            >
+              <nz-option
+                [nzValue]="item.fieldId"
+                [nzLabel]="item.aliasName"
+                [nzDisabled]="item.disabled"
+                *ngFor="let item of gFields"
+              ></nz-option>
+            </nz-select>
+            <ng-template #gFieldId let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredSelect' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.xField' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="xFieldId">
+            <nz-select
+              formControlName="xFieldId"
+              [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+              (ngModelChange)="xFieldChange($event)"
+              nzAllowClear="true"
+              [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.dashboard.xField' | translate }"
+            >
+              <nz-option
+                [nzValue]="item.fieldId"
+                [nzLabel]="item.aliasName"
+                [nzDisabled]="item.disabled"
+                *ngFor="let item of xFields"
+              ></nz-option>
+            </nz-select>
+            <ng-template #xFieldId let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredSelect' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.yField' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="yFieldId">
+            <nz-select
+              formControlName="yFieldId"
+              [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+              nzAllowClear="true"
+              (ngModelChange)="yFieldChange($event)"
+              [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.dashboard.yField' | translate }"
+            >
+              <nz-option
+                [nzValue]="item.fieldId"
+                [nzLabel]="item.aliasName"
+                [nzDisabled]="item.disabled"
+                *ngFor="let item of yFields"
+              ></nz-option>
+            </nz-select>
+            <ng-template #yFieldId let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredSelect' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <div *ngIf="getForm('reportId').value">
+          <app-report-list [reportId]="getForm('reportId').value"></app-report-list>
+        </div>
+      </nz-tab>
+      <nz-tab [nzTitle]="'page.dashboard.dashboardSetting' | translate">
+        <nz-form-item>
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.dashboardName' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="dashboardName">
+            <input
+              [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+              nz-input
+              formControlName="dashboardName"
+              trim="blur"
+              [placeholder]="
+                'common.placeholder.input' | translate: { label: 'page.dashboard.dashboardName' | translate }
+              "
+            />
+            <ng-template #dashboardName let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.dashboardDuplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item *ngIf="getForm('dashboardType').value !== 'pie'">
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.cutTitle' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="limitInPlot">
+            <nz-radio-group formControlName="limitInPlot">
+              <label nz-radio [nzValue]="true">{{ 'page.dashboard.cut' | translate }}</label>
+              <label nz-radio [nzValue]="false">{{ 'page.dashboard.nocut' | translate }}</label>
+            </nz-radio-group>
+            <ng-template #limitInPlot let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item *ngIf="getForm('dashboardType').value === 'line'">
+          <nz-form-label>{{ 'page.dashboard.setpType' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="stepType">
+            <nz-select
+              formControlName="stepType"
+              (ngModelChange)="stepTypeChange($event)"
+              nzAllowClear
+              [nzPlaceHolder]="
+                'common.placeholder.select' | translate: { label: 'page.dashboard.setpType' | translate }
+              "
+              [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+            >
+              <nz-option nzValue="hv" nzLabel="HV"></nz-option>
+              <nz-option nzValue="vh" nzLabel="VH"></nz-option>
+              <nz-option nzValue="hvh" nzLabel="HVH"></nz-option>
+              <nz-option nzValue="vhv" nzLabel="VHV"></nz-option>
+            </nz-select>
+
+            <ng-template #stepType let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item
+          *ngIf="
+            getForm('dashboardType').value === 'line' ||
+            getForm('dashboardType').value === 'bar' ||
+            getForm('dashboardType').value === 'area' ||
+            getForm('dashboardType').value === 'column'
+          "
+        >
+          <nz-form-label>{{ 'page.dashboard.stackedState' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="isStack">
+            <nz-radio-group formControlName="isStack" (ngModelChange)="stackChange($event)">
+              <label
+                nz-radio
+                [nzValue]="item.value"
+                [nzDisabled]="item.disabled"
+                *ngFor="let item of stackedTypeOptions"
+              >
+                {{ item.label | translate }}
+              </label>
+            </nz-radio-group>
+            <ng-template #isStack let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item
+          *ngIf="
+            getForm('dashboardType').value === 'bar' ||
+            getForm('dashboardType').value === 'area' ||
+            getForm('dashboardType').value === 'column'
+          "
+        >
+          <nz-form-label>{{ 'page.dashboard.percentStackedState' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="isPercent">
+            <nz-radio-group formControlName="isPercent" (ngModelChange)="percentChange($event)">
+              <label
+                nz-radio
+                [nzValue]="item.value"
+                [nzDisabled]="item.disabled"
+                *ngFor="let item of percentTypeOptions"
+              >
+                {{ item.label | translate }}
+              </label>
+            </nz-radio-group>
+            <ng-template #isPercent let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item *ngIf="getForm('dashboardType').value === 'bar' || getForm('dashboardType').value === 'column'">
+          <nz-form-label>{{ 'page.dashboard.groupState' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="isGroup">
+            <nz-radio-group formControlName="isGroup" (ngModelChange)="groupChange($event)">
+              <label nz-radio [nzValue]="item.value" [nzDisabled]="item.disabled" *ngFor="let item of groupTypeOptions">
+                {{ item.label | translate }}
+              </label>
+            </nz-radio-group>
+            <ng-template #isGroup let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item *ngIf="getForm('dashboardType').value === 'line' || getForm('dashboardType').value === 'area'">
+          <nz-form-label>{{ 'page.dashboard.lineType' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="smooth">
+            <nz-radio-group formControlName="smooth">
+              <label
+                nz-radio
+                [nzValue]="item.value"
+                [nzDisabled]="item.disabled"
+                *ngFor="let item of smoothTypeOptions"
+              >
+                {{ item.label | translate }}
+              </label>
+            </nz-radio-group>
+            <ng-template #smooth let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item *ngIf="getForm('dashboardType').value === 'bar' || getForm('dashboardType').value === 'column'">
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.minBarWidth' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="minBarWidth">
+            <nz-input-number formControlName="minBarWidth" nzMin="1" nzMax="50"></nz-input-number>
+            <ng-template #minBarWidth let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item *ngIf="getForm('dashboardType').value === 'bar' || getForm('dashboardType').value === 'column'">
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.maxBarWidth' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="maxBarWidth">
+            <nz-input-number formControlName="maxBarWidth" nzMin="1" nzMax="50"></nz-input-number>
+            <ng-template #maxBarWidth let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item *ngIf="getForm('dashboardType').value === 'histogram'">
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.binWidth' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="binWidth">
+            <nz-input-number formControlName="binWidth"></nz-input-number>
+            <ng-template #binWidth let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item
+          *ngIf="
+            getForm('dashboardType').value === 'line' ||
+            getForm('dashboardType').value === 'bar' ||
+            getForm('dashboardType').value === 'area' ||
+            getForm('dashboardType').value === 'column'
+          "
+        >
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.xRange' | translate }}</nz-form-label>
+          <nz-form-control>
+            <div style="width: 300px">
+              <nz-slider
+                formControlName="xRange"
+                nzStep="0.1"
+                nzMax="1"
+                nzMin="0"
+                nzRange="true"
+                nzIncluded="true"
+              ></nz-slider>
+            </div>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item
+          *ngIf="
+            getForm('dashboardType').value === 'line' ||
+            getForm('dashboardType').value === 'bar' ||
+            getForm('dashboardType').value === 'area' ||
+            getForm('dashboardType').value === 'histogram' ||
+            getForm('dashboardType').value === 'column'
+          "
+        >
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.yRange' | translate }}</nz-form-label>
+          <nz-form-control>
+            <div style="width: 300px">
+              <nz-slider
+                formControlName="yRange"
+                nzStep="0.1"
+                nzMax="1"
+                nzMin="0"
+                nzRange="true"
+                nzIncluded="true"
+              ></nz-slider>
+            </div>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item
+          *ngIf="
+            getForm('dashboardType').value === 'line' ||
+            getForm('dashboardType').value === 'bar' ||
+            getForm('dashboardType').value === 'area' ||
+            getForm('dashboardType').value === 'column'
+          "
+        >
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.ySplitState' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="tickType">
+            <nz-radio-group formControlName="tickType">
+              <label nz-radio [nzValue]="item.value" *ngFor="let item of rangeTypeOptions">
+                {{ item.label | translate }}
+              </label>
+            </nz-radio-group>
+            <ng-template #tickType let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item *ngIf="getForm('tickType').value === 'count'">
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.ySplitNumber' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="tickCount">
+            <nz-input-number formControlName="tickCount" trim="blur" nzPlaceHolder="10"></nz-input-number>
+            <ng-template #tickCount let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item *ngIf="getForm('tickType').value === 'custom'">
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.ySplitData' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="ticks">
+            <input
+              [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+              nz-input
+              formControlName="ticks"
+              trim="blur"
+              placeholder="0,10,20,30"
+            />
+            <ng-template #ticks let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+
+              <ng-container *ngIf="control.hasError('duplicated')">
+                {{ 'common.validator.dashboardDuplicated' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-tab>
+      <nz-tab
+        [nzTitle]="'page.dashboard.scrollbarSetting' | translate"
+        *ngIf="getForm('dashboardType').value === 'bar' || getForm('dashboardType').value === 'column'"
+      >
+        <div formGroupName="scrollbar">
+          <nz-form-item>
+            <nz-form-label nzRequired="true">{{ 'page.dashboard.scrollbarDirection' | translate }}</nz-form-label>
+            <nz-form-control [nzErrorTip]="type">
+              <nz-select formControlName="type" nzAllowClear [ngStyle]="{ width: isSmall ? '220px' : '300px' }">
+                <nz-option
+                  nzValue="horizontal"
+                  [nzLabel]="'page.dashboard.scrollbarHorizontal' | translate"
+                ></nz-option>
+                <nz-option nzValue="vertical" [nzLabel]="'page.dashboard.scrollbarVertical' | translate"></nz-option>
+              </nz-select>
+              <ng-template #type let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{ 'common.validator.requiredInput' | translate }}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item *ngIf="getForm('scrollbar').get('type').value === 'vertical'">
+            <nz-form-label nzRequired="true">{{ 'page.dashboard.scrollbarWidth' | translate }}</nz-form-label>
+            <nz-form-control [nzErrorTip]="width">
+              <nz-input-number formControlName="width" nzMin="1"></nz-input-number>
+              <ng-template #width let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{ 'common.validator.requiredInput' | translate }}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item *ngIf="getForm('scrollbar').get('type').value === 'horizontal'">
+            <nz-form-label nzRequired="true">{{ 'page.dashboard.scrollbarWidth' | translate }}</nz-form-label>
+            <nz-form-control [nzErrorTip]="height">
+              <nz-input-number formControlName="height" nzMin="1"></nz-input-number>
+              <ng-template #height let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{ 'common.validator.requiredInput' | translate }}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label nzRequired="true">{{ 'page.dashboard.scrollbarCategorySize' | translate }}</nz-form-label>
+            <nz-form-control [nzErrorTip]="categorySize">
+              <nz-input-number formControlName="categorySize" nzMin="10"></nz-input-number>
+              <ng-template #categorySize let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{ 'common.validator.requiredInput' | translate }}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </nz-tab>
+      <nz-tab
+        [nzTitle]="'page.dashboard.sliderSetting' | translate"
+        *ngIf="getForm('dashboardType').value === 'line' || getForm('dashboardType').value === 'area'"
+      >
+        <div formGroupName="slider">
+          <nz-form-item>
+            <nz-form-label nzRequired="true">{{ 'page.dashboard.sliderStart' | translate }}</nz-form-label>
+            <nz-form-control [nzErrorTip]="start">
+              <nz-input-number formControlName="start" nzMin="0" nzMax="1" nzStep="0.1"></nz-input-number>
+              <ng-template #start let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{ 'common.validator.requiredInput' | translate }}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label nzRequired="true">{{ 'page.dashboard.sliderEnd' | translate }}</nz-form-label>
+            <nz-form-control [nzErrorTip]="end">
+              <nz-input-number formControlName="end" nzMin="0" nzMax="1" nzStep="0.1"></nz-input-number>
+              <ng-template #end let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{ 'common.validator.requiredInput' | translate }}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label nzRequired="true">{{ 'page.dashboard.sliderHeight' | translate }}</nz-form-label>
+            <nz-form-control [nzErrorTip]="height">
+              <nz-input-number formControlName="height" nzMin="1" nzMax="100" nzStep="1"></nz-input-number>
+              <ng-template #height let-control>
+                <ng-container *ngIf="control.hasError('required')">
+                  {{ 'common.validator.requiredInput' | translate }}
+                </ng-container>
+              </ng-template>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </nz-tab>
+      <nz-tab [nzTitle]="'page.dashboard.styleSetting' | translate" *ngIf="getForm('dashboardType').value === 'pie'">
+        <nz-form-item>
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.radius' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="radius">
+            <nz-input-number formControlName="radius" nzMin="0" nzMax="1" nzStep="0.1"></nz-input-number>
+            <ng-template #radius let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.innerRadius' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="innerRadius">
+            <nz-input-number formControlName="innerRadius" nzMin="0" nzMax="1" nzStep="0.1"></nz-input-number>
+            <ng-template #innerRadius let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.startAngle' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="startAngle">
+            <nz-input-number formControlName="startAngle" nzMin="1" nzMax="3" nzStep="0.1"></nz-input-number>
+            <ng-template #startAngle let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.endAngle' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="endAngle">
+            <nz-input-number formControlName="endAngle" nzMin="1" nzMax="3" nzStep="0.1"></nz-input-number>
+            <ng-template #endAngle let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-tab>
+      <nz-tab [nzTitle]="'page.dashboard.styleSetting' | translate" *ngIf="getForm('dashboardType').value === 'radar'">
+        <nz-form-item>
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.radius' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="radius">
+            <nz-input-number formControlName="radius" nzMin="0" nzMax="1" nzStep="0.1"></nz-input-number>
+            <ng-template #radius let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.startAngle' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="startAngle">
+            <nz-input-number formControlName="startAngle" nzMin="1" nzMax="3" nzStep="0.1"></nz-input-number>
+            <ng-template #startAngle let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzRequired="true">{{ 'page.dashboard.endAngle' | translate }}</nz-form-label>
+          <nz-form-control [nzErrorTip]="endAngle">
+            <nz-input-number formControlName="endAngle" nzMin="1" nzMax="3" nzStep="0.1"></nz-input-number>
+            <ng-template #endAngle let-control>
+              <ng-container *ngIf="control.hasError('required')">
+                {{ 'common.validator.requiredInput' | translate }}
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-tab>
+    </nz-tabset>
+
+    <ng-template #preview>
+      <button
+        nz-button
+        (click)="show()"
+        [disabled]="
+          !this.getForm('reportId').value ||
+          !this.getForm('xFieldId').value ||
+          !this.getForm('yFieldId').value ||
+          !this.getForm('dashboardName').value
+        "
+      >
+        {{ 'common.button.preview' | translate }}
+      </button>
+    </ng-template>
+  </nz-card>
+  <br />
+  <nz-form-item>
+    <nz-space>
+      <div *nzSpaceItem>
+        <button
+          nz-button
+          nzType="primary"
+          appDebounceClick
+          (click)="submitForm($event, dashboardForm.value)"
+          [disabled]="!dashboardForm.valid"
+        >
+          <i nz-icon [nzType]="status === 'add' ? 'plus' : 'edit'" nzTheme="outline"></i>
+          {{ 'common.button.save' | translate }}
+        </button>
+      </div>
+      <div *nzSpaceItem>
+        <button nz-button nzType="default" (click)="reset()" *ngIf="status === 'add'">
+          <i nz-icon nzType="redo" nzTheme="outline"></i>
+          {{ 'common.button.reset' | translate }}
+        </button>
+      </div>
+      <div *nzSpaceItem>
+        <button nz-button (click)="cancel()">
+          <i nz-icon nzType="close" nzTheme="outline"></i>
+          {{ 'common.button.cancel' | translate }}
+        </button>
+      </div>
+    </nz-space>
+  </nz-form-item>
+</form>

@@ -1,0 +1,356 @@
+<div nz-row nzJustify="start" nzAlign="top">
+  <div style="padding: 10px 0">
+    <i nz-icon nzType="table" nzRotate="40" style="font-size: 2em; vertical-align: middle"></i>
+    <a style="padding: 0 16px">
+      <span style="font-size: 2em">{{ reportName | translate }}</span>
+
+      <span class="update">
+        {{ 'common.text.updateDate' | translate }}
+        <span *ngIf="!update">{{ lastUpdateTime | distance }}</span>
+
+        <button nz-button nzType="primary" nzSize="small" (click)="genReportData()">
+          <i nz-icon nzType="sync"></i>
+        </button>
+      </span>
+    </a>
+  </div>
+
+  <div class="search" nz-col nzSpan="24">
+    <nz-collapse [nzBordered]="true">
+      <nz-collapse-panel [nzHeader]="'common.text.search' | translate" (nzActiveChange)="activeChange()">
+        <form nz-form [formGroup]="validateForm">
+          <div style="max-height: 200px; overflow: auto">
+            <div style="display: flex" *ngFor="let control of controlArray; let i = index">
+              <nz-form-item style="margin-bottom: 0px; width: 100px">
+                <nz-form-label *ngIf="i == 0">
+                  {{ 'page.datastore.searchCondition' | translate }}
+                </nz-form-label>
+                <nz-form-label nzNoColon="true" *ngIf="i >= 1">
+                  {{ conditionType ? 'and' : 'or' }}
+                </nz-form-label>
+              </nz-form-item>
+              <nz-form-item style="margin-bottom: 0px">
+                <nz-form-control>
+                  <nz-select [(ngModel)]="control.field_id" style="width: 200px"
+                    [nzPlaceHolder]="'page.datastore.fieldSelect' | translate" nzAllowClear="true"
+                    [ngModelOptions]="{ standalone: true }" (ngModelChange)="fieldChange($event, control)">
+                    <nz-option *ngFor="let item of searchFields"
+                      [nzLabel]="item.is_dynamic ? item.alias_name : (item.field_name | translate)"
+                      [nzValue]="item.field_id" [nzDisabled]="item.disabled"></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item style="margin-bottom: 0px">
+                <nz-form-control>
+                  <nz-select [(ngModel)]="control.operator" [ngModelOptions]="{ standalone: true }" style="width: 200px"
+                    *ngIf="control.field_type === ''" [nzDisabled]="true"></nz-select>
+                  <nz-select [(ngModel)]="control.operator" [ngModelOptions]="{ standalone: true }" style="width: 200px"
+                    *ngIf="
+                      control.field_type === 'text' ||
+                      control.field_type === 'textarea' ||
+                      control.field_type === 'lookup' ||
+                      control.field_type === 'autonum'
+                    ">
+                    <nz-option [nzLabel]="'page.datastore.equal' | translate" nzValue="="></nz-option>
+                    <nz-option [nzLabel]="'page.datastore.notEqual' | translate" nzValue="<>"></nz-option>
+                    <nz-option [nzLabel]="'page.datastore.fuzzyMatch' | translate" nzValue="like"></nz-option>
+                  </nz-select>
+                  <nz-select [(ngModel)]="control.operator" [ngModelOptions]="{ standalone: true }" style="width: 200px"
+                    *ngIf="
+                      control.field_type === 'user' || control.field_type === 'options' || control.field_type === 'type'
+                    ">
+                    <nz-option [nzLabel]="'page.datastore.equal' | translate" nzValue="="></nz-option>
+                    <nz-option [nzLabel]="'page.datastore.notEqual' | translate" nzValue="<>"></nz-option>
+                    <nz-option [nzLabel]="'page.datastore.exist' | translate" nzValue="in"></nz-option>
+                  </nz-select>
+                  <nz-select [(ngModel)]="control.operator" [ngModelOptions]="{ standalone: true }" style="width: 200px"
+                    *ngIf="control.field_type === 'switch'">
+                    <nz-option [nzLabel]="'page.datastore.equal' | translate" nzValue="="></nz-option>
+                  </nz-select>
+                  <nz-select [(ngModel)]="control.operator" [ngModelOptions]="{ standalone: true }" style="width: 200px"
+                    *ngIf="control.field_type === 'check'">
+                    <nz-option [nzLabel]="'page.datastore.equal' | translate" nzValue="="></nz-option>
+                  </nz-select>
+                  <nz-select [(ngModel)]="control.operator" [ngModelOptions]="{ standalone: true }" style="width: 200px"
+                    *ngIf="
+                      control.field_type === 'number' ||
+                      control.field_type === 'date' ||
+                      control.field_type === 'time' ||
+                      control.field_type === 'datetime'
+                    ">
+                    <nz-option [nzLabel]="'page.datastore.equal' | translate" nzValue="="></nz-option>
+                    <nz-option [nzLabel]="'page.datastore.greater' | translate" nzValue=">"></nz-option>
+                    <nz-option [nzLabel]="'page.datastore.less' | translate" nzValue="<"></nz-option>
+                    <nz-option [nzLabel]="'page.datastore.greaterEqual' | translate" nzValue=">="></nz-option>
+                    <nz-option [nzLabel]="'page.datastore.lessEqual' | translate" nzValue="<="></nz-option>
+                    <nz-option [nzLabel]="'page.datastore.notEqual' | translate" nzValue="<>"></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item style="margin-bottom: 0px">
+                <nz-form-control [nzErrorTip]="inputValueTip">
+                  <!--文本类型-->
+                  <input nz-input style="width: 200px" [placeholder]="'page.datastore.searchValueInput' | translate"
+                    [attr.id]="control.id" [(ngModel)]="control.search_value" [ngModelOptions]="{ standalone: true }"
+                    *ngIf="
+                      control.field_type === 'text' || control.field_type === 'textarea' || control.field_type === ''
+                    " trim="blur" />
+                  <!--数字类型-->
+                  <input nz-input style="width: 200px" [placeholder]="'page.datastore.searchValueInput' | translate"
+                    type="number" [attr.id]="control.id" [(ngModel)]="control.search_value"
+                    [ngModelOptions]="{ standalone: true }" *ngIf="control.field_type === 'number'" trim="blur" />
+                  <!-- 自动采番类型 -->
+
+                  <input nz-input style="width: 200px" *ngIf="control.field_type === 'autonum'"
+                    [placeholder]="'page.datastore.searchValueInput' | translate" type="text" [attr.id]="control.id"
+                    [(ngModel)]="control.search_value" [ngModelOptions]="{ standalone: true }" trim="blur" />
+                  <!--开关类型-->
+                  <nz-switch [(ngModel)]="control.search_value" [ngModelOptions]="{ standalone: true }"
+                    style="width: 200px" *ngIf="control.field_type === 'switch'"></nz-switch>
+                  <!--选项类型-->
+                  <nz-select [(ngModel)]="control.search_value" style="width: 200px"
+                    [nzMode]="control.operator === 'in' ? 'multiple' : 'default'"
+                    [ngModelOptions]="{ standalone: true }" *ngIf="control.field_type === 'options'"
+                    [nzPlaceHolder]="'page.datastore.searchValueSelect' | translate">
+                    <nz-option [nzLabel]="item.option_label | translate" [nzValue]="item.option_value"
+                      *ngFor="let item of optionArray[control.field_id]"></nz-option>
+                  </nz-select>
+                  <!--用户类型-->
+                  <nz-select [(ngModel)]="control.search_value" style="width: 200px"
+                    [nzMode]="control.operator === 'in' ? 'multiple' : 'default'"
+                    [ngModelOptions]="{ standalone: true }" *ngIf="control.field_type === 'user'"
+                    [nzPlaceHolder]="'page.datastore.searchValueSelect' | translate">
+                    <nz-option [nzLabel]="item.user_name" [nzValue]="item.user_id"
+                      *ngFor="let item of userArray[control.field_id]"></nz-option>
+                  </nz-select>
+                  <!--盘点type-->
+                  <nz-select [(ngModel)]="control.search_value" style="width: 200px"
+                    [nzMode]="control.operator === 'in' ? 'multiple' : 'default'"
+                    [ngModelOptions]="{ standalone: true }" *ngIf="control.field_type === 'type'"
+                    [nzPlaceHolder]="'page.datastore.searchValueSelect' | translate">
+                    <nz-option [nzLabel]="item.label | translate" [nzValue]="item.value"
+                      *ngFor="let item of checkTypes"></nz-option>
+                  </nz-select>
+                  <!--检查状态-->
+                  <nz-select [(ngModel)]="control.search_value" style="width: 200px"
+                    [ngModelOptions]="{ standalone: true }" *ngIf="control.field_type === 'check'"
+                    [nzPlaceHolder]="'page.datastore.searchValueSelect' | translate">
+                    <nz-option [nzLabel]="item.label | translate" [nzValue]="item.value"
+                      *ngFor="let item of checkStatuss"></nz-option>
+                  </nz-select>
+                  <!--日期-->
+                  <nz-date-picker [(ngModel)]="control.search_value" style="width: 200px"
+                    [ngModelOptions]="{ standalone: true }" *ngIf="control.field_type === 'date'"
+                    [nzPlaceHolder]="'page.datastore.searchValueSelect' | translate"></nz-date-picker>
+                  <!--时刻-->
+                  <nz-time-picker [(ngModel)]="control.search_value" style="width: 200px"
+                    [ngModelOptions]="{ standalone: true }" *ngIf="control.field_type === 'time'"
+                    [nzPlaceHolder]="'page.datastore.searchValueSelect' | translate"></nz-time-picker>
+                  <!--日期+时间-->
+                  <nz-date-picker [(ngModel)]="control.search_value" [ngModelOptions]="{ standalone: true }"
+                    *ngIf="control.field_type === 'datetime'" style="width: 200px"
+                    [nzPlaceHolder]="'page.datastore.searchValueSelect' | translate"></nz-date-picker>
+                  <!--关联字段类型-->
+                  <input nz-input [disabled]="true" style="width: 200px"
+                    [placeholder]="'page.datastore.searchValueInput' | translate" [attr.id]="control.id"
+                    [ngModel]="control.search_value" [ngModelOptions]="{ standalone: true }"
+                    *ngIf="control.field_type === 'lookup' && (control.operator === '=' || control.operator === '<>')"
+                    trim="blur" />
+                  <button nz-button nzType="default" nzShape="circle" style="width: 20px"
+                    (click)="openLookupModal(i, control.lookup_datastore_id, control.lookup_field_id)"
+                    *ngIf="control.field_type === 'lookup' && (control.operator === '=' || control.operator === '<>')">
+                    <i nz-icon nzType="search"></i>
+                  </button>
+                  <input nz-input style="width: 200px" [placeholder]="'page.datastore.searchValueInput' | translate"
+                    [attr.id]="control.id" [(ngModel)]="control.search_value" [ngModelOptions]="{ standalone: true }"
+                    *ngIf="control.field_type === 'lookup' && control.operator === 'like'" trim="blur" />
+                  <button nz-button nzType="default" nzShape="circle" (click)="removeField(control)" *ngIf="i > 0">
+                    <i nz-icon nzType="minus"></i>
+                  </button>
+                  <button nz-button nzType="default" nzShape="circle" (click)="addField()" *ngIf="i == 0">
+                    <i nz-icon nzType="plus"></i>
+                  </button>
+                  <ng-template #inputValueTip let-control></ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+          <nz-form-item style="margin: 16px 0px">
+            <nz-form-control [nzSpan]="24">
+              <nz-space>
+                <div *nzSpaceItem>
+                  <!-- 检索 -->
+                  <button nz-button nzType="primary" (click)="search(true)">
+                    <i nz-icon nzType="search"></i>
+                    {{ 'common.button.search' | translate }}
+                  </button>
+                </div>
+                <div *nzSpaceItem>
+                  <nz-button-group>
+                    <!-- 重置 -->
+                    <button nz-button nzType="default" (click)="reset()">
+                      <i nz-icon nzType="redo"></i>
+                      {{ 'common.button.reset' | translate }}
+                    </button>
+                  </nz-button-group>
+                </div>
+                <div *nzSpaceItem>
+                  <!-- 检索条件连接方式 -->
+                  <nz-switch style="margin-left: 4px" [(ngModel)]="conditionType" nzSize="default"
+                    [ngModelOptions]="{ standalone: true }" nzCheckedChildren="and"
+                    nzUnCheckedChildren="or"></nz-switch>
+                </div>
+              </nz-space>
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+      </nz-collapse-panel>
+    </nz-collapse>
+  </div>
+  <div style="margin-top: 16px">
+    <button nz-button nzType="primary" (click)="openModal()">
+      <i nz-icon nzType="download"></i>
+      {{ 'common.button.csvDownload' | translate }}
+    </button>
+  </div>
+  <!-- <div style="margin-top: 16px; margin-left: 16px">
+    <button nz-button nzType="primary" (click)="downloadEXCEL()">
+      <i nz-icon nzType="download"></i>
+      {{ 'common.button.excelDownload' | translate }}
+    </button>
+  </div> -->
+  <div nz-col nzSpan="24" style="padding-top: 16px">
+    <nz-spin [nzSpinning]="loading">
+      <nz-table #basicTable nzShowSizeChanger [nzFrontPagination]="false" [nzData]="dataSet" nzBordered="true"
+        [nzTotal]="showTotal" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" nzSize="middle"
+        [nzShowTotal]="rangeTemplate" [nzScroll]="scroll" [nzPageSizeOptions]="[30, 50, 100, 500]"
+        (nzPageIndexChange)="search(false)" (nzPageSizeChange)="search(true)">
+        <thead>
+          <tr>
+            <ng-container *ngFor="let col of header">
+              <th *ngIf="col.width" nz-resizable nzBounds="window" [nzWidth]="col.width" [nzMinWidth]="60"
+                (nzResizeEnd)="onResize($event, col.name)">
+                {{ col.name }}
+                <nz-resize-handle nzDirection="right"></nz-resize-handle>
+              </th>
+              <th *ngIf="!col.width">
+                {{ col.name }}
+              </th>
+            </ng-container>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of basicTable.data">
+            <td *ngFor="let col of row">
+              <div [ngSwitch]="col.data_type" class="content">
+                <!--Text-->
+                <div class="text" *ngSwitchDefault>
+                  <ng-container *ngIf="col.item_id != '' || col.unique; else elseTemplate">
+                    <a (click)="goTo(col)" [title]="col.item_id">{{ col.value }}</a>
+                  </ng-container>
+                  <ng-template #elseTemplate>
+                    <span [title]="col.value">{{ col.value }}</span>
+                  </ng-template>
+                </div>
+                <div class="text" *ngSwitchCase="'number'">
+                  <ng-container *ngIf="col.item_id != '' || col.unique; else elseTemplate">
+                    <div style="padding: 0 2px; text-align: right">
+                      <a (click)="goTo(col)" [title]="col.item_id">{{ col.value | number: '1.0-9' }}</a>
+                    </div>
+                  </ng-container>
+                  <ng-template #elseTemplate>
+                    <div style="padding: 0 2px; text-align: right">
+                      {{ col.value | number: '1.0-9' }}
+                    </div>
+                  </ng-template>
+                </div>
+                <div class="text" *ngSwitchCase="'autonum'">
+                  <div style="padding: 0 2px; text-align: left" [title]="col.value">
+                    {{ col.value }}
+                  </div>
+                </div>
+                <div class="text" *ngSwitchCase="'user'">
+                  <span style="padding: 0 2px" [title]="col.value">
+                    {{ col.value }}
+                  </span>
+                </div>
+                <div class="text" *ngSwitchCase="'system_user'">
+                  <span style="padding: 0 2px" [title]="col.value | user: userList">
+                    {{ col.value | user: userList }}
+                  </span>
+                </div>
+                <div class="text" *ngSwitchCase="'file'">
+                  <span style="padding: 0 2px" [title]="it.name" *ngFor="let it of col.value">
+                    {{ it.name }}
+                  </span>
+                </div>
+                <div class="text" *ngSwitchCase="'date'">
+                  <ng-container *ngIf="col.value === '0001-01-01'; else elseTemplate"></ng-container>
+                  <ng-template #elseTemplate>
+                    <span [title]="col.value">
+                      {{ col.value }}
+                    </span>
+                  </ng-template>
+
+                  <span [title]="col.value | dateFormat: 'yyyy-MM-dd'">
+                    {{ col.value | dateFormat: 'yyyy-MM-dd' }}
+                  </span>
+                </div>
+                <div class="text" *ngSwitchCase="'datetime'">
+                  <span [title]="col.value | dateFormat: 'yyyy-MM-dd HH:mm:ss'">
+                    {{ col.value | dateFormat: 'yyyy-MM-dd HH:mm:ss' }}
+                  </span>
+                </div>
+                <div class="text" *ngSwitchCase="'options'">
+                  <span [title]="col.value | translate">{{ col.value | translate }}</span>
+                </div>
+                <div class="text" *ngSwitchCase="'lookup'">
+                  <span [title]="col.value">
+                    {{ col.value }}
+                  </span>
+                </div>
+              </div>
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-spin>
+    <ng-template #rangeTemplate let-range="range">
+      {{ 'common.text.totalTmp' | translate: { total: total, now: range[0], size: range[1] } }}
+    </ng-template>
+  </div>
+</div>
+<!--关联字段数据-->
+<nz-modal [(nzVisible)]="isLookupVisible" [nzTitle]="'common.text.search' | translate" (nzOnCancel)="cancel()"
+  [nzFooter]="null">
+  <ng-template nzModalContent>
+    <app-report-search [index]="lookIndex" [clear]="true" [lookupDatastoreId]="lookupDatastoreId" [userList]="userList"
+      (nxReflect)="reflect($event)" [lookField]="lookField" (nxCancel)="cancel()"></app-report-search>
+  </ng-template>
+</nz-modal>
+<nz-modal [(nzVisible)]="isVisible" [nzTitle]="'common.button.csvDownload'  | translate" (nzOnCancel)="close()"
+  nzWidth="40%" [nzFooter]="null">
+  <ng-template nzModalContent>
+    <nz-form-item>
+      <nz-form-label nzFor="wordflow" style="width: 100px" nzRequired="true">
+        {{ 'page.datastore.fileUploadCharacterCode' | translate }}
+      </nz-form-label>
+      <nz-form-control>
+        <nz-radio-group [(ngModel)]="encoding" nzButtonStyle="solid">
+          <label nz-radio-button nzValue="sjis">Shift-JIS</label>
+          <label nz-radio-button nzValue="utf-8">UTF-8</label>
+        </nz-radio-group>
+      </nz-form-control>
+    </nz-form-item>
+    <div style="margin-left: 15px;">
+      <button nz-button nzType="primary" (click)="downloadCSV(encoding)" style="margin-right:10px;">
+        {{ 'common.button.fileDownload' | translate }}
+      </button>
+      <button nz-button nzType="Default" (click)="close()">
+        {{ 'common.button.cancel' | translate }}
+      </button>
+    </div>
+  </ng-template>
+</nz-modal>

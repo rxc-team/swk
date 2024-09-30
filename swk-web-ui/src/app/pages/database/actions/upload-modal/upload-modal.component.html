@@ -1,0 +1,33 @@
+<button nz-button nzType="primary" (click)="show()" *ngIf="!showText">
+  <i nz-icon nzType="upload"></i>
+  {{ 'common.button.upload' | translate }}
+</button>
+<li nz-menu-item (click)="show()" *ngIf="showText">
+  <i nz-icon nzType="upload"></i>
+  {{ 'common.button.upload' | translate }}
+</li>
+
+<nz-modal
+  [nzTitle]="'page.datastore.fileUpload' | translate"
+  [(nzVisible)]="visible"
+  nzWidth="600px"
+  (nzOnCancel)="onCancel()"
+  [nzFooter]="null"
+>
+  <ng-template nzModalContent>
+    <nz-card style="height: 200px">
+      <div nz-card-grid [ngStyle]="gridStyle" (click)="imageUpload()" appAccess action="image">
+        <i nz-icon nzType="picture" style="font-size: 3em" nzTheme="outline"></i>
+        <div>{{ 'page.datastore.imageUpload' | translate }}</div>
+      </div>
+      <div nz-card-grid [ngStyle]="gridStyle" (click)="csvUpload()" appAccess action="csv">
+        <i nz-icon nzType="file-excel" style="font-size: 3em" nzTheme="outline"></i>
+        <div>{{ 'page.datastore.csvUpload' | translate }}</div>
+      </div>
+      <div nz-card-grid [ngStyle]="gridStyle" (click)="checkUpload()" appAccess action="inventory">
+        <i nz-icon nzType="check-square" style="font-size: 3em" nzTheme="outline"></i>
+        <div>{{ 'page.datastore.checkUpload' | translate }}</div>
+      </div>
+    </nz-card>
+  </ng-template>
+</nz-modal>

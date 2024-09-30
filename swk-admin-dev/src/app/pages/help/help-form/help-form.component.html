@@ -1,0 +1,238 @@
+<nz-card [nzTitle]="'common.text.baseInfo' | translate" nzSize="small" nzType="inner">
+  <form nz-form [formGroup]="helpForm">
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.help.title' | translate }}</nz-form-label>
+      <nz-form-control [nzErrorTip]="helpTitle">
+        <input
+          nz-input
+          formControlName="helpTitle"
+          [placeholder]="'common.placeholder.input' | translate: { label: 'page.help.title' | translate }"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          trim="blur"
+        />
+        <ng-template #helpTitle let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            {{ 'common.validator.requiredInput' | translate }}
+          </ng-container>
+
+          <ng-container *ngIf="control.hasError('duplicated')">
+            {{ 'common.validator.helpNameDuplicated' | translate }}
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.help.supportLang' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select
+          formControlName="langCD"
+          nzAllowClear
+          [nzPlaceHolder]="'page.language.selectLang' | translate"
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          (ngModelChange)="setTypeList()"
+        >
+          <nz-option *ngFor="let lang of langList" [nzValue]="lang.code" [nzLabel]="lang.text"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired="true">{{ 'page.help.type.name' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select
+          [ngStyle]="{ width: isSmall ? '220px' : '300px' }"
+          [nzPlaceHolder]="'common.placeholder.select' | translate: { label: 'page.help.type.name' | translate }"
+          formControlName="helpType"
+        >
+          <nz-option [nzValue]="item.type_id" [nzLabel]="item.type_name" *ngFor="let item of typeList"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>{{ 'page.help.tag' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-tag *ngFor="let tag of tags" [nzMode]="'closeable'" (nzOnClose)="handleClose(tag)">
+          {{ sliceTagName(tag) }}
+        </nz-tag>
+        <nz-tag *ngIf="!inputVisible" class="editable-tag" nzNoAnimation (click)="showInput()">
+          <i nz-icon nzType="plus"></i>
+          {{ 'common.button.add' | translate }}
+        </nz-tag>
+        <input
+          #inputElement
+          nz-input
+          *ngIf="inputVisible"
+          formControlName="tag"
+          type="text"
+          style="width: 78px"
+          (blur)="handleInputConfirm()"
+          (keydown.enter)="handleInputConfirm()"
+        />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-card>
+<div>
+  <button nz-button (click)="insert('****', 2)" [disabled]="!isShowView">
+    <i nz-icon nzType="bold" nzTheme="outline"></i>
+  </button>
+  <button nz-button (click)="insert('~~~~', 2)" [disabled]="!isShowView">
+    <i nz-icon nzType="strikethrough" nzTheme="outline"></i>
+  </button>
+  <button nz-button (click)="insert('**', 1)" [disabled]="!isShowView">
+    <i nz-icon nzType="italic" nzTheme="outline"></i>
+  </button>
+  <button nz-button (click)="insert('> ', 2)" [disabled]="!isShowView">
+    <i nz-icon nzType="share-alt" nzTheme="outline"></i>
+  </button>
+  <button nz-button (click)="insert('1. ', 3)" [disabled]="!isShowView">
+    <i nz-icon nzType="ordered-list" nzTheme="outline"></i>
+  </button>
+  <button nz-button (click)="insert('- ', 2)" [disabled]="!isShowView">
+    <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+  </button>
+  <button nz-button (click)="insert('# ', 2)" [disabled]="!isShowView">
+    <i nz-icon nzIconfont="icon-h2"></i>
+  </button>
+  <button nz-button (click)="insert('## ', 3)" [disabled]="!isShowView">
+    <i nz-icon nzIconfont="icon-h"></i>
+  </button>
+  <button nz-button (click)="insert('### ', 4)" [disabled]="!isShowView">
+    <i nz-icon nzIconfont="icon-h3"></i>
+  </button>
+  <button nz-button (click)="insert('#### ', 5)" [disabled]="!isShowView">
+    <i nz-icon nzIconfont="icon-h5"></i>
+  </button>
+  <button nz-button (click)="insert('##### ', 6)" [disabled]="!isShowView">
+    <i nz-icon nzIconfont="icon-h1"></i>
+  </button>
+  <button nz-button (click)="insert('###### ', 7)" [disabled]="!isShowView">
+    <i nz-icon nzIconfont="icon-h4"></i>
+  </button>
+  <button nz-button (click)="showModal()" [disabled]="!isShowView">
+    <i nz-icon nzIconfont="icon-zu3"></i>
+  </button>
+  <button nz-button (click)="insert('[title](https://)', 16)" [disabled]="!isShowView">
+    <i nz-icon nzType="link"></i>
+  </button>
+  <button nz-button (click)="insert('```\r\n```', 3)" [disabled]="!isShowView">
+    <i nz-icon nzType="code" nzTheme="outline"></i>
+  </button>
+  <button nz-button (click)="insert('``', 1)" [disabled]="!isShowView">
+    <i nz-icon nzType="tag" nzTheme="outline"></i>
+  </button>
+  <button nz-button (click)="insert(tableStr, tableStr.length)" [disabled]="!isShowView">
+    <i nz-icon nzIconfont="icon-zu4"></i>
+  </button>
+  <button nz-button (click)="taggleView()">
+    <i nz-icon [nzType]="isShowView ? 'eye-invisible' : 'eye'" nzTheme="outline"></i>
+  </button>
+</div>
+
+<div *ngIf="isShowView; else showView">
+  <!-- <ngx-monaco-editor
+    style="height: 400px"
+    class="solid_border"
+    [options]="editorOptions"
+    [(ngModel)]="code"
+    [model]
+    (onInit)="onInit($event)"
+  ></ngx-monaco-editor> -->
+
+  <nz-code-editor
+    class="editor solid_border"
+    [nzEditorOption]="editorOptions"
+    [(ngModel)]="code"
+    (nzEditorInitialized)="onEditorInit($event)"
+  ></nz-code-editor>
+</div>
+<ng-template #showView>
+  <div nz-col nzSpan="24" style="height: 400px; overflow: auto; padding: 8px" class="solid_border">
+    <markdown [data]="code" (ready)="onReady()"></markdown>
+  </div>
+</ng-template>
+<div class="solid_border" style="margin-top: 4px; margin-bottom: 16px">
+  {{ 'page.help.tips' | translate }}
+</div>
+<nz-form-item>
+  <nz-form-control>
+    <nz-space [nzSize]="16">
+      <ng-template nzSpaceItem>
+        <button nz-button nzType="primary" (click)="submit()" [disabled]="!code || !helpForm.valid">
+          <i nz-icon nzType="save" nzTheme="outline"></i>
+          {{ 'common.button.save' | translate }}
+        </button>
+      </ng-template>
+      <ng-template nzSpaceItem *ngIf="status == 'add'">
+        <button nz-button nzType="default" (click)="reset()">
+          <i nz-icon nzType="redo" nzTheme="outline"></i>
+          {{ 'common.button.reset' | translate }}
+        </button>
+      </ng-template>
+      <ng-template nzSpaceItem>
+        <button nz-button nzType="default" (click)="cancel()">
+          <i nz-icon nzType="close" nzTheme="outline"></i>
+          {{ 'common.button.cancel' | translate }}
+        </button>
+      </ng-template>
+    </nz-space>
+  </nz-form-control>
+</nz-form-item>
+
+<nz-modal
+  [(nzVisible)]="isVisible"
+  [nzTitle]="'page.help.selectPicture' | translate"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOk()"
+>
+  <ng-template nzModalContent>
+    <nz-upload
+      nzAction="/file/header/upload"
+      [(nzFileList)]="fileList"
+      [nzHeaders]="{ token: 'true' }"
+      (nzChange)="handleChange($event)"
+      [nzShowUploadList]="{ showPreviewIcon: true, showRemoveIcon: true, showDownloadIcon: false }"
+    >
+      <button nz-button>
+        <i nz-icon nzType="upload"></i>
+        {{ 'common.button.selectFile' | translate }}
+      </button>
+    </nz-upload>
+    <div>
+      <span>{{ 'page.help.selectPicture' | translate }}</span>
+      <button nz-button (click)="deleteImg()">
+        <i nz-icon nzType="delete"></i>
+        {{ 'common.button.delete' | translate }}
+      </button>
+    </div>
+    <div style="max-height: 225px; min-height: 100px" class="solid_border">
+      <div *ngFor="let item of displayFileList" class="picture-box">
+        <label nz-checkbox [(ngModel)]="item.checked" ngDefaultControl></label>
+        <img
+          [src]="item.response.url"
+          [ngClass]="{ select: item.checked }"
+          height="102"
+          width="102"
+          (click)="item.checked = !item.checked"
+        />
+      </div>
+      <nz-empty *ngIf="displayFileList.length == 0"></nz-empty>
+    </div>
+    <span>{{ 'page.help.setteing' | translate }}</span>
+    <div>
+      {{ 'page.help.width' | translate }}：
+      <input
+        nz-input
+        [placeholder]="'common.placeholder.input' | translate: { label: 'page.help.width' | translate }"
+        [(ngModel)]="width"
+        style="width: 80px"
+      />
+      {{ 'page.help.height' | translate }}：
+      <input
+        nz-input
+        [placeholder]="'common.placeholder.input' | translate: { label: 'page.help.height' | translate }"
+        [(ngModel)]="height"
+        style="width: 80px"
+      />
+    </div>
+  </ng-template>
+</nz-modal>

@@ -1,0 +1,22 @@
+@import 'mixin';
+
+.themeMixin({
+  :host {
+    :host ::ng-deep .ant-calendar-picker-input {
+      width: 300px;
+    }
+    
+    nz-form-label {
+      width: 120px;
+      white-space: normal;
+      word-break: keep-all;
+    }
+    
+    ::ng-deep .ant-table-tbody>tr>td {
+      max-width: 0;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+});
