@@ -16,7 +16,6 @@ export * from './database.service';
 export * from './datastore.service';
 export * from './field.service';
 export * from './file.service';
-export * from './folder.service';
 export * from './group.service';
 export * from './help-type.service';
 export * from './help.service';

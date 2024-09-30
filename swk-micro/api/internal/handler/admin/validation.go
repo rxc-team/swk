@@ -26,7 +26,6 @@ import (
 	"rxcsoft.cn/pit3/srv/manage/proto/user"
 	"rxcsoft.cn/pit3/srv/report/proto/report"
 	"rxcsoft.cn/pit3/srv/storage/proto/file"
-	"rxcsoft.cn/pit3/srv/storage/proto/folder"
 )
 
 // Validation 验证
@@ -481,51 +480,6 @@ func (a *Validation) FileNameUinqueValidation(c *gin.Context) {
 	c.JSON(200, httpx.Response{
 		Status:  0,
 		Message: msg.GetMsg("ja-JP", msg.Info, msg.I003, fmt.Sprintf(httpx.Temp, ValidationProcessName, ActionFileNameUinqueValidation)),
-		Data:    valid,
-	})
-}
-
-// UniqueValidation 验证文件夹名称唯一性
-// @Router /validation/foldername [post]
-func (a *Validation) FolderNameDuplicated(c *gin.Context) {
-	loggerx.InfoLog(c, ActionFolderNameUinqueValidation, loggerx.MsgProcessStarted)
-
-	type ReqParam struct {
-		Name string `json:"name"`
-	}
-	var valid bool = true
-	var param ReqParam
-	err := c.BindJSON(&param)
-	if err != nil {
-		httpx.GinHTTPError(c, ActionFolderNameUinqueValidation, err)
-		return
-	}
-	folderService := folder.NewFolderService("storage", client.DefaultClient)
-
-	var req folder.FindFoldersRequest
-	// 从共通中获取参数
-	req.Domain = sessionx.GetUserDomain(c)
-	req.Database = sessionx.GetUserCustomer(c)
-	response, err := folderService.FindFolders(context.TODO(), &req)
-	if err != nil {
-		c.JSON(200, httpx.Response{
-			Status:  0,
-			Message: msg.GetMsg("ja-JP", msg.Info, msg.I003, fmt.Sprintf(httpx.Temp, ValidationProcessName, ActionFolderNameUinqueValidation)),
-			Data:    valid,
-		})
-		return
-	}
-	for _, folder := range response.GetFolderList() {
-		if folder.FolderName == param.Name {
-			valid = false
-			break
-		}
-	}
-
-	loggerx.InfoLog(c, ActionFolderNameUinqueValidation, loggerx.MsgProcessEnded)
-	c.JSON(200, httpx.Response{
-		Status:  0,
-		Message: msg.GetMsg("ja-JP", msg.Info, msg.I003, fmt.Sprintf(httpx.Temp, ValidationProcessName, ActionFolderNameUinqueValidation)),
 		Data:    valid,
 	})
 }

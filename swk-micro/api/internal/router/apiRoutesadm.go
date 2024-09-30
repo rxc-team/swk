@@ -171,18 +171,6 @@ func initAuthRouterAdm(router *gin.Engine) {
 		fileRoute.DELETE("/folders/:fo_id/files/:file_id", file.HardDeleteFile)
 	}
 
-	// folder
-	folder := new(admin.Folder)
-	{
-		folderRoute := v1.Group("/folder")
-		// 查找多个文件夹
-		folderRoute.GET("/folders", folder.FindFolders)
-		// 添加文件夹
-		folderRoute.POST("/folders", folder.AddFolder)
-		// 物理删除多个文件夹
-		folderRoute.DELETE("/phydel/folders", folder.HardDeleteFolders)
-	}
-
 	// language
 	{
 		languageRoute := v1.Group("/language")
@@ -221,8 +209,6 @@ func initAuthRouterAdm(router *gin.Engine) {
 		v1.POST("/validation/field", validation.FieldIDUinqueValidation)
 		// 验证文件名称唯一性
 		v1.POST("/validation/filename", validation.FileNameUinqueValidation)
-		// 验证文件夹名称唯一性
-		v1.POST("/validation/foldername", validation.FolderNameDuplicated)
 		// 验证问题标题唯一性
 		v1.POST("/validation/questiontitle", validation.QuestionTitleDuplicated)
 		// 验证角色名称唯一性

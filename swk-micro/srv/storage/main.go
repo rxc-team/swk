@@ -9,7 +9,6 @@ import (
 
 	"rxcsoft.cn/pit3/srv/storage/handler"
 	"rxcsoft.cn/pit3/srv/storage/proto/file"
-	"rxcsoft.cn/pit3/srv/storage/proto/folder"
 	"rxcsoft.cn/pit3/srv/storage/server"
 	myLogger "rxcsoft.cn/utils/logger"
 	utilsServer "rxcsoft.cn/utils/server"
@@ -42,7 +41,6 @@ func main() {
 
 	// 注册handler
 	file.RegisterFileServiceHandler(service.Server(), new(handler.File))
-	folder.RegisterFolderServiceHandler(service.Server(), new(handler.Folder))
 
 	// 运行服务
 	if err := service.Run(); err != nil {

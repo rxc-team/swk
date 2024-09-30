@@ -192,16 +192,6 @@ func initAuthRouterDev(router *gin.Engine) {
 		fileRoute.DELETE("/folders/:fo_id/files/:file_id", file.HardDeleteFile)
 	}
 
-	// folder
-	folder := new(dev.Folder)
-	{
-		folderRoute := v1.Group("/folder")
-		// 查找多个文件夹
-		folderRoute.GET("/folders", folder.FindFolders)
-		// 添加文件夹
-		folderRoute.POST("/folders", folder.AddFolder)
-	}
-
 	// language
 	{
 		languageRoute := v1.Group("/language")

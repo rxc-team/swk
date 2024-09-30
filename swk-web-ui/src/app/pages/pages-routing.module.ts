@@ -42,10 +42,6 @@ export const ROUTES: Routes = [
         }
       },
       {
-        path: 'document',
-        loadChildren: () => import('./document/document.module').then(m => m.DocumentModule)
-      },
-      {
         path: 'lease',
         loadChildren: () => import('./lease/lease.module').then(m => m.LeaseModule)
       },
