@@ -93,7 +93,7 @@ func (f *Field) FindAppFields(c *gin.Context) {
 		preq.Database = sessionx.GetUserCustomer(c)
 		pResp, err := pmService.FindActions(context.TODO(), &preq)
 		if err != nil {
-			httpx.GinHTTPError(c, ActionFindFolders, err)
+			httpx.GinHTTPError(c, ActionFindAppFields, err)
 			return
 		}
 		set := containerx.New()
@@ -174,7 +174,7 @@ func (f *Field) FindFields(c *gin.Context) {
 		preq.Database = sessionx.GetUserCustomer(c)
 		pResp, err := pmService.FindActions(context.TODO(), &preq)
 		if err != nil {
-			httpx.GinHTTPError(c, ActionFindFolders, err)
+			httpx.GinHTTPError(c, ActionFindFields, err)
 			return
 		}
 		for _, act := range pResp.GetActions() {

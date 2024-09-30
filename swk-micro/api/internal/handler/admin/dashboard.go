@@ -76,7 +76,7 @@ func (r *Dashboard) FindDashboards(c *gin.Context) {
 		preq.Database = sessionx.GetUserCustomer(c)
 		pResp, err := pmService.FindActions(context.TODO(), &preq)
 		if err != nil {
-			httpx.GinHTTPError(c, ActionFindFolders, err)
+			httpx.GinHTTPError(c, ActionFindDashboards, err)
 			return
 		}
 		for _, act := range pResp.GetActions() {

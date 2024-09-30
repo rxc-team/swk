@@ -117,7 +117,7 @@ func (u *Role) FindRoleActions(c *gin.Context) {
 	req.Database = sessionx.GetUserCustomer(c)
 	response, err := pmService.FindActions(context.TODO(), &req)
 	if err != nil {
-		httpx.GinHTTPError(c, ActionFindFolders, err)
+		httpx.GinHTTPError(c, ActionFindRole, err)
 		return
 	}
 
